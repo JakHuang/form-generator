@@ -1,0 +1,29 @@
+{
+  "name": "form-generator",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.7.4",
+    "clipboard": "^2.0.4",
+    "core-js": "^3.4.3",
+    "file-saver": "^2.0.2",
+    "vuedraggable": "^2.23.2"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^4.1.0",
+    "@vue/cli-plugin-eslint": "^4.1.0",
+    "@vue/cli-service": "^4.1.0",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^5.16.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "sass": "^1.23.7",
+    "sass-loader": "^8.0.0",
+    "svg-sprite-loader": "^4.1.6",
+    "vue-template-compiler": "^2.6.10"
+  }
+}
