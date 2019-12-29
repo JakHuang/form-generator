@@ -1,0 +1,25 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build-and-deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    
+    - name: 打包构建
+      run: |
+        npm install
+        npm run build
+
+    - name: 发布
+      uses: JamesIves/github-pages-deploy-action@releases/v3
+      with:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        BRANCH: gh-pages
+        BASE_BRANCH: master  
+        FOLDER: dist
