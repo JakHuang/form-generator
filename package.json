@@ -2,6 +2,7 @@
   "name": "form-generator",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://jakhuang.github.io/form-generator",
   "scripts": {
     "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
