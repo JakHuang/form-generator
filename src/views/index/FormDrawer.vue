@@ -50,8 +50,9 @@
                 关闭
               </span>
             </div>
-            <iframe ref='previewPage' class="result-wrapper" frameborder="0" @load="iframeLoad"
+            <iframe v-show="isIframeLoaded" ref='previewPage' class="result-wrapper" frameborder="0" @load="iframeLoad"
               src="preview.html"></iframe>
+            <div v-show="!isIframeLoaded" v-loading="true" class="result-wrapper"></div>
           </el-col>
         </el-row>
       </div>
@@ -78,8 +79,7 @@ var editorObj = {
     html: "html",
     js: "javascript",
     css: "css"
-  },
-  isIframeLoaded = false
+  }
 
 export default {
   components: {},
@@ -90,7 +90,8 @@ export default {
       htmlCode: "",
       jsCode: "",
       cssCode: "",
-      codeFrame: ""
+      codeFrame: "",
+      isIframeLoaded: false
     }
   },
   computed: {},
@@ -122,12 +123,12 @@ export default {
         this.setEditorValue("editorHtml", "html", this.htmlCode)
         this.setEditorValue("editorJs", "js", this.jsCode)
         this.setEditorValue("editorCss", "css", this.cssCode)
-        isIframeLoaded && this.runCode()
+        this.isIframeLoaded && this.runCode()
       })
     },
     onClose() {},
     iframeLoad() {
-      isIframeLoaded = true
+      this.isIframeLoaded = true
       this.jsCode && this.runCode()
     },
     setEditorValue(id, type, codeStr) {
