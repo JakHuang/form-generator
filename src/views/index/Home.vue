@@ -113,9 +113,8 @@ export default {
   },
   watch: {
     "activeData.label"(val, oldVal) {
-      if (!this.activeData.tag || oldActiveId !== this.activeId) return
-      this.activeData.placeholder =
-        this.activeData.placeholder.replace(oldVal, "") + val
+      if (this.activeData.placeholder === undefined || !this.activeData.tag || oldActiveId !== this.activeId) return
+      this.activeData.placeholder = this.activeData.placeholder.replace(oldVal, "") + val
     },
     activeId: {
       handler(val) {
