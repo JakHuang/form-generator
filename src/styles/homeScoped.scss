@@ -114,11 +114,19 @@ $selectedColor: #f6f7ff;
   color: #00afff;
   font-weight: 600;
   font-size: 17px;
-  
-  img{
+  white-space: nowrap;
+  > img{
     width: 30px;
     height: 30px;
     vertical-align: top;
+  }
+  .github{
+    display: inline-block;
+    vertical-align: sub;
+    margin-left: 15px;
+    > img{
+      height: 22px;
+    }
   }
 }
 
