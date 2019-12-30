@@ -23,7 +23,7 @@
                 <span slot="label">
                   <i class="el-icon-edit" v-if="activeTab==='css'"></i>
                   <i class="el-icon-document" v-else></i>
-                  CSS
+                  css
                 </span>
               </el-tab-pane>
             </el-tabs>

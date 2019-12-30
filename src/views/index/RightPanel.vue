@@ -105,10 +105,9 @@
             <el-input :value="activeData['inactive-value']" @input="setSwitchValue($event, 'inactive-value')"
               placeholder="请输入关闭值" />
           </el-form-item>
-          <el-form-item label="时间类型" v-if="activeData.type!==undefined&&'el-date-picker'===activeData.tag&&
-            activeData['start-placeholder']===undefined">
+          <el-form-item label="时间类型" v-if="activeData.type!==undefined&&'el-date-picker'===activeData.tag">
             <el-select v-model="activeData.type" placeholder="请选择时间类型" style="{width: '100%'}" @change="dateTypeChange">
-              <el-option v-for="(item, index) in dateTypeOptions" :key="index" :label="item.label" :value="item.value"></el-option>
+              <el-option v-for="(item, index) in dateOptions" :key="index" :label="item.label" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="文件字段名" v-if="activeData.name!==undefined">
@@ -426,6 +425,14 @@ export default {
   computed: {
     documentLink() {
       return this.activeData.document || 'https://element.eleme.cn/#/zh-CN/component/installation'
+    },
+    dateOptions() {
+      if(this.activeData.type !== undefined && 'el-date-picker' === this.activeData.tag) {
+        if(this.activeData['start-placeholder'] === undefined)
+          return this.dateTypeOptions
+        return this.dateRangeTypeOptions
+      }
+      return []
     }
   },
   methods: {
@@ -505,9 +512,10 @@ export default {
         this.$set(this.activeData, name, isNumberStr(val) ? +val : val)
       }
     },
-    setTimeValue(val) {
+    setTimeValue(val, type) {
+      let valueFormat = type === 'week' ? dateTimeFormat.date : val
       this.$set(this.activeData, 'defaultValue', null)
-      this.$set(this.activeData, 'value-format', val)
+      this.$set(this.activeData, 'value-format', valueFormat)
       this.$set(this.activeData, 'format', val)
     },
     spanChange(val) {
@@ -517,7 +525,7 @@ export default {
       this.$set(this.activeData, "defaultValue", val ? [] : "")
     },
     dateTypeChange(val) {
-      this.setTimeValue(dateTimeFormat[val])
+      this.setTimeValue(dateTimeFormat[val], val)
     },
     rangeChange(val) {
       this.$set(this.activeData, "defaultValue", val ?
