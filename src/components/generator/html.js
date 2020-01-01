@@ -31,7 +31,7 @@ export function cssStyle(cssStr){
   </style>`
 }
 
-function buildFormTemplate (conf, child) {
+function buildFormTemplate (conf, child, type) {
   var labelPosition = ""
   if(conf.labelPosition !== 'right') {
     labelPosition = `label-position="${conf.labelPosition}"`
@@ -41,15 +41,15 @@ function buildFormTemplate (conf, child) {
 `<el-row :gutter="${conf.gutter}">
   <el-form ref="${conf.formRef}" :model="${conf.formModel}" :rules="${conf.formRules}" size="${conf.size}" ${disabled} label-width="${conf.labelWidth}px" ${labelPosition}>
     ${child}
-    ${buildFromBtns(conf)}
+    ${buildFromBtns(conf, type)}
   </el-form>
 </el-row>`
   return str
 }
 
-function buildFromBtns(conf) {
+function buildFromBtns(conf, type) {
   var str = ''
-  if(conf.formBtns) {
+  if(conf.formBtns && 'file' === type) {
     str =
       `<el-col :span="24">
         <el-form-item size="large">
@@ -291,7 +291,7 @@ export function makeUpHtml (conf, type) {
   })
   let htmlStr = htmlList.join('\n')
 
-  let temp = buildFormTemplate(conf, htmlStr)
+  let temp = buildFormTemplate(conf, htmlStr, type)
   if(type=== 'dialog') {
     temp = dialogWrapper(temp)
   }
