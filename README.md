@@ -1,6 +1,9 @@
 
 ## 简介
-Element UI表单设计及代码生成器，可将生成的代码直接运行在基于Element的vue项目中。 [项目地址](https://jakhuang.github.io/form-generator)
+Element UI表单设计及代码生成器，可将生成的代码直接运行在基于Element的vue项目中。 
+- [github pages地址](https://jakhuang.github.io/form-generator)
+- [gitee pages地址 较快](https://mrhj.gitee.io/form-generator)
+
 ![image](https://ae01.alicdn.com/kf/U51bfb661aba945b48a4c71774421d414C.gif)
 
 ## 特点
