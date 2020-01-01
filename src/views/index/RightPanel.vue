@@ -27,8 +27,7 @@
             <el-input v-model="activeData['end-placeholder']" placeholder="请输入占位提示" />
           </el-form-item>
           <el-form-item label="表单栅格">
-            <el-input-number v-model="activeData.span" :min="1" :max="24" @change="spanChange"
-              placeholder="栅格数" />
+            <el-slider :max='24' :min="1" v-model="activeData.span" @change="spanChange" :marks="{12:12}"/>
           </el-form-item>
           <el-form-item label="标签宽度">
             <el-input type="number" v-model.number="activeData.labelWidth" placeholder="请输入标签宽度" />
@@ -106,7 +105,7 @@
               placeholder="请输入关闭值" />
           </el-form-item>
           <el-form-item label="时间类型" v-if="activeData.type!==undefined&&'el-date-picker'===activeData.tag">
-            <el-select v-model="activeData.type" placeholder="请选择时间类型" style="{width: '100%'}" @change="dateTypeChange">
+            <el-select v-model="activeData.type" placeholder="请选择时间类型" :style="{width: '100%'}" @change="dateTypeChange">
               <el-option v-for="(item, index) in dateOptions" :key="index" :label="item.label" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
@@ -343,6 +342,9 @@
           </el-form-item>
           <el-form-item label="禁用表单">
             <el-switch v-model="formConf.disabled" />
+          </el-form-item>
+          <el-form-item label="表单按钮">
+            <el-switch v-model="formConf.formBtns" />
           </el-form-item>
         </el-form>
       </el-scrollbar>

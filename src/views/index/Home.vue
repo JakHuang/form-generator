@@ -43,9 +43,9 @@
 
     <div class="center-board">
       <div class="action-bar">
-        <el-button icon="el-icon-video-play" type="text" @click="generate">运行</el-button>
-        <el-button icon="el-icon-download" type="text" @click="exportFile">导出vue文件</el-button>
-        <el-button class="copy-btn-main" icon="el-icon-document-copy" type="text">复制代码</el-button>
+        <el-button icon="el-icon-video-play" type="text" @click="run">运行</el-button>
+        <el-button icon="el-icon-download" type="text" @click="download">导出vue文件</el-button>
+        <el-button class="copy-btn-main" icon="el-icon-document-copy" type="text" @click="copy">复制代码</el-button>
         <el-button class="delete-btn" icon="el-icon-delete" type="text" @click="empty">清空</el-button>
       </div>
       <el-scrollbar class="center-scrollbar">
@@ -77,7 +77,9 @@
     <right-panel :activeData="activeData" :formConf="formConf" :show-field="!!drawingList.length">
     </right-panel>
 
-    <form-drawer :visible.sync="drawerVisible" :formData="formData" size="100%" />
+    <form-drawer :visible.sync="drawerVisible" :formData="formData" size="100%" :generateConf="generateConf"/>
+    <code-type-dialog :visible.sync="dialogVisible" title="选择生成类型" @confirm="generate" :showFileName="showFileName"/>
+    <input type="hidden" id="copyNode">
   </div>
 </template>
 
@@ -92,7 +94,7 @@ import {
   formConf
 } from "@/components/generator/config"
 import { saveAs } from "file-saver"
-import { exportDefault, beautifierConf, isNumberStr } from "@/utils/index"
+import { exportDefault, beautifierConf, isNumberStr, titleCase } from "@/utils/index"
 import beautifier from "beautifier"
 import { makeUpHtml, vueTemplate, vueScript, cssStyle } from "@/components/generator/html"
 import { makeUpJs } from "@/components/generator/js"
@@ -100,6 +102,7 @@ import { makeUpCss } from "@/components/generator/css"
 import drawingDefalut from "@/components/generator/drawingDefalut"
 import ClipboardJS from "clipboard"
 import logo from "@/assets/logo.png"
+import CodeTypeDialog from "./CodeTypeDialog"
 
 var emptyActiveData = { style: {}, autosize: {} }
 var oldActiveId
@@ -109,7 +112,8 @@ export default {
     draggable,
     render,
     FormDrawer,
-    RightPanel
+    RightPanel,
+    CodeTypeDialog
   },
   watch: {
     "activeData.label"(val, oldVal) {
@@ -132,16 +136,8 @@ export default {
     }
   },
   mounted() {
-    new ClipboardJS(".copy-btn-main", {
+    let clipboard = new ClipboardJS('#copyNode', {
       text: trigger => {
-        if (this.drawingList.length === 0) {
-          this.$message({
-            showClose: true,
-            message: "未选择任何组件",
-            type: "warning"
-          })
-          return ""
-        }
         var codeStr = this.generateCode()
         this.$notify({
           title: "成功",
@@ -150,6 +146,9 @@ export default {
         })
         return codeStr
       }
+    })
+    clipboard.on('error', function(e) {
+      this.$message.error('代码复制失败')
     })
   },
   data() {
@@ -164,7 +163,10 @@ export default {
       drawingData: {},
       activeId: drawingDefalut[0].formId,
       drawerVisible: false,
-      formData: {}
+      formData: {},
+      dialogVisible: false,
+      generateConf: null,
+      showFileName: false
     }
   },
   methods: {
@@ -201,17 +203,22 @@ export default {
         this.formConf
       )
     },
-    generate() {
-      if (this.drawingList.length === 0) {
-        this.$message({
-          showClose: true,
-          message: "未选择任何组件",
-          type: "warning"
-        })
-        return
-      }
+    generate(data) {
+      let func = this['exec' + titleCase(this.operationType)]
+      this.generateConf = data
+      func && func(data)
+    },
+    execRun(data) {
       this.AssembleFromData()
       this.drawerVisible = true
+    },
+    execDownload(data) {
+      let codeStr = this.generateCode(),
+          blob = new Blob([codeStr], { type: "text/plain;charset=utf-8" })
+      saveAs(blob, data.fileName)
+    },
+    execCopy(data) {
+      document.getElementById('copyNode').click()
     },
     empty() {
       this.$confirm("确定要清空所有组件吗？", "提示", { type: "warning" }).then(
@@ -237,31 +244,27 @@ export default {
       })
     },
     generateCode() {
+      let { type } = this.generateConf
       this.AssembleFromData()
-      let script =vueScript(makeUpJs(this.formData))
-      let html = vueTemplate(makeUpHtml(this.formData))
+      let script =vueScript(makeUpJs(this.formData, type))
+      let html = vueTemplate(makeUpHtml(this.formData, type))
       let css = cssStyle(makeUpCss(this.formData))
       return beautifier.html(html + script + css, beautifierConf.html)
     },
-    exportFile() {
-      if (this.drawingList.length === 0) {
-        this.$message({
-          showClose: true,
-          message: "未选择任何组件",
-          type: "warning"
-        })
-        return
-      }
-      this.$prompt("文件名:", "导出文件", {
-        inputValue: `${+new Date()}.vue`,
-        closeOnClickModal: false,
-        inputPlaceholder: "请输入文件名"
-      }).then(({ value }) => {
-        if (!value) value = `${+new Date()}.vue`
-        var codeStr = this.generateCode(),
-          blob = new Blob([codeStr], { type: "text/plain;charset=utf-8" })
-        saveAs(blob, value)
-      })
+    download() {
+      this.dialogVisible = true
+      this.showFileName = true
+      this.operationType = 'download'
+    },
+    run() {
+      this.dialogVisible = true
+      this.showFileName = false
+      this.operationType = 'run'
+    },
+    copy() {
+      this.dialogVisible = true
+      this.showFileName = false
+      this.operationType = 'copy'
     }
   }
 }

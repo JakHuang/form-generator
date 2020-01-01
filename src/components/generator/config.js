@@ -7,7 +7,8 @@ export let formConf = {
   formRules: "rules",
   gutter: 15,
   disabled: false,
-  span: 24
+  span: 24,
+  formBtns: true
 }
 
 export let inputComponents = [

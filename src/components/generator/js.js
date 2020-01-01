@@ -6,11 +6,18 @@ var units = {
   KB: '1024',
   MB: '1024 / 1024',
   GB: '1024 / 1024 / 1024'
+},
+confGlobal,
+inheritAttrs = {
+  file: '',
+  dialog: 'inheritAttrs: false,'
 }
 
-export function makeUpJs (conf) {
-  conf = JSON.parse(JSON.stringify(conf))
-  var dataList = [], ruleList = [], optionsList = [], props='', methodList = [], uploadVar=''
+
+export function makeUpJs (conf, type) {
+  confGlobal = conf = JSON.parse(JSON.stringify(conf))
+  var dataList = [], ruleList = [], optionsList = [], props='', methodList = mixinMethod(type), uploadVar=''
+
   conf.fields.forEach(el => {
     dataList.push(buildData(el))
     ruleList.push(buildRules(el))
@@ -38,7 +45,49 @@ export function makeUpJs (conf) {
     }
   })
 
-  return buildexport(conf, dataList.join('\n'), ruleList.join('\n'), optionsList.join('\n'), uploadVar, props, methodList.join('\n'))
+  let script = buildexport(conf, type, dataList.join('\n'), ruleList.join('\n'), optionsList.join('\n'), uploadVar, props, methodList.join('\n'))
+  confGlobal = null
+  return script
+}
+
+function mixinMethod(type) {
+  var list = [], minxins = {
+    file: confGlobal.formBtns ? {
+      submitForm: `submitForm() {
+        this.$refs['${confGlobal.formRef}'].validate(valid => {
+          if(!valid) return
+          // TODO 提交表单
+        })
+      },`,
+      resetForm: `resetForm() {
+        this.$refs['${confGlobal.formRef}'].resetFields()
+      },`
+    } : null,
+    dialog: {
+      onOpen: `onOpen() {},`,
+      onClose: `onClose() {
+        this.$refs['${confGlobal.formRef}'].resetFields()
+      },`,
+      close: `close() {
+        this.$emit('update:visible', false)
+      },`,
+      handelConfirm: `handelConfirm() {
+        this.$refs['${confGlobal.formRef}'].validate(valid => {
+          if(!valid) return
+          this.close()
+        })
+      },`
+    }
+  }
+
+  let methods = minxins[type]
+  if(methods) {
+    Object.keys(methods).forEach(key => {
+      list.push(methods[key])
+    })
+  }
+
+  return list
 }
 
 function buildData (conf) {
@@ -131,9 +180,10 @@ function buildOptionMethod(methodName, model) {
   return str
 }
 
-function buildexport (conf, data, rules, selectOptions, uploadVar, props, methods) {
+function buildexport(conf, type, data, rules, selectOptions, uploadVar, props, methods) {
   var str =
 `${exportDefault}{
+  ${inheritAttrs[type]}
   components: {},
   props: [],
   data () {

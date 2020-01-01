@@ -1,6 +1,16 @@
 var confGlobal
 import { trigger } from "./config"
 
+export function dialogWrapper(str) {
+  return `<el-dialog v-bind="$attrs" v-on="$listeners" @open="onOpen" @close="onClose" title="Dialog Titile">
+    ${str}
+    <div slot="footer">
+      <el-button @click="close">取消</el-button>
+      <el-button type="primary" @click="handelConfirm">确定</el-button>
+    </div>
+  </el-dialog>`
+}
+
 export function vueTemplate(str) {
   return `<template>
     <div>
@@ -31,8 +41,23 @@ function buildFormTemplate (conf, child) {
 `<el-row :gutter="${conf.gutter}">
   <el-form ref="${conf.formRef}" :model="${conf.formModel}" :rules="${conf.formRules}" size="${conf.size}" ${disabled} label-width="${conf.labelWidth}px" ${labelPosition}>
     ${child}
+    ${buildFromBtns(conf)}
   </el-form>
 </el-row>`
+  return str
+}
+
+function buildFromBtns(conf) {
+  var str = ''
+  if(conf.formBtns) {
+    str =
+      `<el-col :span="24">
+        <el-form-item size="large">
+          <el-button type="primary" @click="submitForm">提交</el-button>
+          <el-button @click="resetForm">重置</el-button>
+        </el-form-item>
+      </el-col>`
+  }
   return str
 }
 
@@ -256,7 +281,7 @@ function buildElUploadChild(conf) {
   return list.join('\n')
 }
 
-export function makeUpHtml (conf) {
+export function makeUpHtml (conf, type) {
   var htmlList = []
   confGlobal = conf
   conf.fields.forEach(el => {
@@ -266,6 +291,10 @@ export function makeUpHtml (conf) {
   })
   let htmlStr = htmlList.join('\n')
 
+  let temp = buildFormTemplate(conf, htmlStr)
+  if(type=== 'dialog') {
+    temp = dialogWrapper(temp)
+  }
   confGlobal = null
-  return buildFormTemplate(conf, htmlStr)
+  return temp
 }

@@ -83,7 +83,7 @@ var editorObj = {
 
 export default {
   components: {},
-  props: ["formData"],
+  props: ["formData", "generateConf"],
   data() {
     return {
       activeTab: "html",
@@ -113,9 +113,10 @@ export default {
   methods: {
     onOpen() {
       setTimeout(() => {
-        this.htmlCode = makeUpHtml(this.formData)
+        let { type } = this.generateConf
+        this.htmlCode = makeUpHtml(this.formData, type)
         this.htmlCode = beautifier.html(this.htmlCode, beautifierConf.html)
-        this.jsCode = makeUpJs(this.formData)
+        this.jsCode = makeUpJs(this.formData, type)
         this.jsCode = beautifier.js(this.jsCode, beautifierConf.js)
         this.cssCode = makeUpCss(this.formData)
         this.cssCode = beautifier.css(this.cssCode, beautifierConf.html)
@@ -162,6 +163,7 @@ export default {
           let postData = {
             type: "refreshFrame",
             data: {
+              generateConf: this.generateConf,
               html: editorObj.html.getValue(),
               js: jsCodeStr.replace(exportDefault, ""),
               css: editorObj.css.getValue()
