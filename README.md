@@ -16,7 +16,7 @@ Element UI表单设计及代码生成器，可将生成的代码直接运行在�
 - 快速查阅组件的官方文档
 
 ## 文档
-- [el-dialog的封装与调用](https://github.com/JakHuang/form-generator/wiki/el-dialog%E5%B0%81%E8%A3%85%E6%80%9D%E8%B7%AF)  
+- [el-dialog的封装与调用](https://github.com/JakHuang/form-generator/wiki/el-dialog%E7%9A%84%E5%B0%81%E8%A3%85%E4%B8%8E%E8%B0%83%E7%94%A8)  
 
 ## 开源协议
 [MIT](https://opensource.org/licenses/MIT)
