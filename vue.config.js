@@ -17,7 +17,7 @@ function resolve(dir) {
 
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production'
-    ? '/form-generator/'
+    ? '/form-generator-plugin-page/'
     : '/',
   pages: {
     index: {

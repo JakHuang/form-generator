@@ -5,7 +5,7 @@
         <div class="logo">
           <img :src="logo" alt="logo" /> Form Generator
           <span class="github" @click="openLink('https://github.com/JakHuang/form-generator')" target="_blank">
-            <img src="https://img.shields.io/github/stars/JakHuang/form-generator?style=social" alt=""/>
+            <img src="https://github.githubassets.com/pinned-octocat.svg" alt=""/>
           </span>
         </div>
       </div>
