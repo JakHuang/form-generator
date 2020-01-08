@@ -37,7 +37,11 @@
                 <i class="el-icon-refresh"></i>
                 刷新
               </span>
-              <span class="bar-btn" @click="exportFile">
+              <span class="bar-btn" @click="promptFileName('writeFile')">
+                <i class="el-icon-document-add"></i>
+                新建文件
+              </span>
+              <span class="bar-btn" @click="promptFileName('exportFile')">
                 <i class="el-icon-download"></i>
                 导出vue文件
               </span>
@@ -187,17 +191,30 @@ export default {
       let css = cssStyle(editorObj.css.getValue())
       return beautifier.html(html + script + css, beautifierConf.html)
     },
-    exportFile() {
+    promptFileName(method) {
+      var defalutName = `${+new Date()}.vue`
       this.$prompt("文件名:", "导出文件", {
-        inputValue: `${+new Date()}.vue`,
+        inputValue: defalutName,
         closeOnClickModal: false,
         inputPlaceholder: "请输入文件名"
       }).then(({ value }) => {
-        if (!value) value = `${+new Date()}.vue`
-        var codeStr = this.generateCode(),
-          blob = new Blob([codeStr], { type: "text/plain;charset=utf-8" })
-        saveAs(blob, value)
+        if (!value) value = defalutName
+        var codeStr = this.generateCode()
+        this[method](value, codeStr)
       })
+    },
+    exportFile(fileName, codeStr) {
+      var blob = new Blob([codeStr], { type: "text/plain;charset=utf-8" })
+      saveAs(blob, fileName)
+    },
+    writeFile(fileName, codeStr) {
+      window.parent.postMessage({
+        cmd: 'writeFile',
+        data: {
+          code: codeStr,
+          fileName: fileName
+        }
+      }, '*')
     }
   }
 }

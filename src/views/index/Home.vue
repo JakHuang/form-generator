@@ -4,9 +4,9 @@
       <div class="logo-wrapper">
         <div class="logo">
           <img :src="logo" alt="logo" /> Form Generator
-          <a class="github" href="https://github.com/JakHuang/form-generator" target="_blank">
-            <img src="https://github.githubassets.com/pinned-octocat.svg" alt=""/>
-          </a>
+          <span class="github" @click="openLink('https://github.com/JakHuang/form-generator')" target="_blank">
+            <img src="https://img.shields.io/github/stars/JakHuang/form-generator?style=social" alt=""/>
+          </span>
         </div>
       </div>
       <el-scrollbar class="left-scrollbar">
@@ -43,6 +43,7 @@
 
     <div class="center-board">
       <div class="action-bar">
+        <el-button icon="el-icon-document-add" type="text" @click="writeFile">新建文件</el-button>
         <el-button icon="el-icon-video-play" type="text" @click="run">运行</el-button>
         <el-button icon="el-icon-download" type="text" @click="download">导出vue文件</el-button>
         <el-button class="copy-btn-main" icon="el-icon-document-copy" type="text" @click="copy">复制代码</el-button>
@@ -103,6 +104,7 @@ import drawingDefalut from "@/components/generator/drawingDefalut"
 import ClipboardJS from "clipboard"
 import logo from "@/assets/logo.png"
 import CodeTypeDialog from "./CodeTypeDialog"
+import { mixins } from '@/utils/mixins'
 
 var emptyActiveData = { style: {}, autosize: {} }
 var oldActiveId
@@ -115,6 +117,7 @@ export default {
     RightPanel,
     CodeTypeDialog
   },
+  mixins: [mixins],
   watch: {
     "activeData.label"(val, oldVal) {
       if (this.activeData.placeholder === undefined || !this.activeData.tag || oldActiveId !== this.activeId) return
@@ -220,6 +223,16 @@ export default {
     execCopy(data) {
       document.getElementById('copyNode').click()
     },
+    execWriteFile(data) {
+      let codeStr = this.generateCode()
+      window.parent.postMessage({
+        cmd: 'writeFile',
+        data: {
+          code: codeStr,
+          fileName: data.fileName
+        }
+      }, '*')
+    },
     empty() {
       this.$confirm("确定要清空所有组件吗？", "提示", { type: "warning" }).then(
         () => {
@@ -265,6 +278,11 @@ export default {
       this.dialogVisible = true
       this.showFileName = false
       this.operationType = 'copy'
+    },
+    writeFile() {
+      this.dialogVisible = true
+      this.showFileName = true
+      this.operationType = 'writeFile'
     }
   }
 }
