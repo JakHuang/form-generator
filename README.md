@@ -1,4 +1,5 @@
 ## 简介
+**此分支配套插件地址为[form-generator-plugin](https://github.com/JakHuang/form-generator-plugin)**  
 Element UI表单设计及代码生成器，可将生成的代码直接运行在基于Element的vue项目中。 
 - [github pages地址](https://jakhuang.github.io/form-generator)
 - [gitee pages地址 较快](https://mrhj.gitee.io/form-generator)
