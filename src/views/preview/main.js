@@ -16,7 +16,7 @@ function init(event) {
     $previewApp.innerHTML = `<style>${code.css}</style><div id="app"></div>`
     main.template = `<div>${code.html}</div>`
     new Vue({
-      template: `<div id="${+new Date()}"><child ${attrs}/></div>`,
+      template: `<div><child ${attrs}/></div>`,
       data() {
         return {
           visible: true
