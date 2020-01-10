@@ -53,10 +53,14 @@
             <el-input v-model="activeData.append" placeholder="请输入后缀" />
           </el-form-item>
           <el-form-item label="前图标" v-if="activeData['prefix-icon']!==undefined">
-            <el-input v-model="activeData['prefix-icon']" placeholder="请输入前图标名称" />
+            <el-input v-model="activeData['prefix-icon']" placeholder="请输入前图标名称">
+              <el-button icon="el-icon-thumb" @click="openIconsDialog('prefix-icon')" slot="append">选择</el-button>
+            </el-input>
           </el-form-item>
           <el-form-item label="后图标" v-if="activeData['suffix-icon']!==undefined">
-            <el-input v-model="activeData['suffix-icon']" placeholder="请输入后图标名称" />
+            <el-input v-model="activeData['suffix-icon']" placeholder="请输入后图标名称">
+              <el-button icon="el-icon-thumb" @click="openIconsDialog('suffix-icon')" slot="append">选择</el-button>
+            </el-input>
           </el-form-item>
           <el-form-item label="选项分隔符" v-if="activeData.tag==='el-cascader'">
             <el-input v-model="activeData.separator" placeholder="请输入选项分隔符" />
@@ -351,6 +355,7 @@
     </div>
 
     <treeNode-dialog :visible.sync="dialogVisible" title="添加选项" @commit="addNode" />
+    <icons-dialog :visible.sync="iconsVisible" @select="setIcon" :current="activeData[currentIconModel]"/>
   </div>
 </template>
 
@@ -358,6 +363,7 @@
 import TreeNodeDialog from "@/views/index/TreeNodeDialog"
 import { isNumberStr } from "@/utils/index"
 import { isArray } from "util"
+import IconsDialog from  "./IconsDialog"
 
 let dateTimeFormat = {
   date: 'yyyy-MM-dd',
@@ -372,7 +378,8 @@ let dateTimeFormat = {
 
 export default {
   components: {
-    TreeNodeDialog
+    TreeNodeDialog,
+    IconsDialog
   },
   props: ["showField", "activeData", "formConf"],
   data() {
@@ -380,6 +387,8 @@ export default {
       currentTab: "field",
       currentNode: null,
       dialogVisible: false,
+      iconsVisible: false,
+      currentIconModel: null,
       dateTypeOptions: [{
         "label": "日(date)",
         "value": "date"
@@ -543,6 +552,13 @@ export default {
       this.activeData.defaultValue = null
       this.activeData['show-alpha'] = val.indexOf('a') > -1
       this.activeData.renderKey = +new Date() // 更新renderKey,重新渲染该组件
+    },
+    openIconsDialog(model) {
+      this.iconsVisible = true
+      this.currentIconModel = model
+    },
+    setIcon(val) {
+      this.activeData[this.currentIconModel] = val
     }
   }
 }
