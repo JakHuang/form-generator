@@ -363,11 +363,8 @@
 import TreeNodeDialog from "@/views/index/TreeNodeDialog"
 import { isNumberStr } from "@/utils/index"
 import { isArray } from "util"
-<<<<<<< HEAD
 import { mixins } from '@/utils/mixins'
-=======
-import IconsDialog from  "./IconsDialog"
->>>>>>> ec9c5a2... issue#4：支持弹框选择element icon
+import IconsDialog from "./IconsDialog"
 
 let dateTimeFormat = {
   date: 'yyyy-MM-dd',
