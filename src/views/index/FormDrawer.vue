@@ -232,6 +232,7 @@ export default {
           fileName: fileName
         }
       }, '*')
+    },
     showResource() {
       this.resourceVisible = true
     },
