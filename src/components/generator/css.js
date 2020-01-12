@@ -8,7 +8,7 @@ export function makeUpCss(conf) {
   conf = JSON.parse(JSON.stringify(conf))
   conf.fields.forEach(el => {
     let css = styles[el.tag]
-    css && cssList.push(css)
+    css && cssList.indexOf(css) === -1 && cssList.push(css)
   })
 
   return cssList.join('\n')
