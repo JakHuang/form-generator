@@ -1,30 +1,67 @@
 import Vue from 'vue'
+import load from "@/utils/loadScript"
+
 let $previewApp = document.getElementById('previewApp'),
-childAttrs = {
-  file: '',
-  dialog: ` width="600px" class="dialog-width" v-if="visible" :visible.sync="visible" :modal-append-to-body="false" `
-}
+  childAttrs = {
+    file: '',
+    dialog: ` width="600px" class="dialog-width" v-if="visible" :visible.sync="visible" :modal-append-to-body="false" `
+  }
 
 window.addEventListener('message', init, false)
 
-function init(event) {
-  if(event.data.type === 'refreshFrame'){
-    let code = event.data.data,
-      main = eval("(" + code.js + ")"),
-      attrs = childAttrs[code.generateConf.type]
-
-    $previewApp.innerHTML = `<style>${code.css}</style><div id="app"></div>`
-    main.template = `<div>${code.html}</div>`
-    new Vue({
-      template: `<div><child ${attrs}/></div>`,
-      data() {
-        return {
-          visible: true
-        }
-      },
-      components: {
-        child: main
-      }
-    }).$mount('#app')
+function loadScriptQueue(list, cb) {
+  let first = list.shift()
+  if (list.length === 0) {
+    load(first, cb)
+  } else {
+    load(first, () => {
+      loadScriptQueue(list, cb)
+    })
   }
+}
+
+function buildLinks(links) {
+  var strs = ''
+  links.forEach(url => {
+    strs += `<link href="${url}" rel="stylesheet">`
+  })
+  return strs
+}
+
+function init(event) {
+  if (event.data.type === 'refreshFrame') {
+    let code = event.data.data,
+      attrs = childAttrs[code.generateConf.type],
+      links = ''
+
+    if (Array.isArray(code.links) && code.links.length > 0) {
+      links = buildLinks(code.links)
+    }
+
+    $previewApp.innerHTML = `${links}<style>${code.css}</style><div id="app"></div>`
+
+    if (Array.isArray(code.scripts) && code.scripts.length > 0) {
+      loadScriptQueue(JSON.parse(JSON.stringify(code.scripts)), () => {
+        newVue(attrs, code.js, code.html)
+      })
+    } else {
+      newVue(attrs, code.js, code.html)
+    }
+  }
+}
+
+function newVue(attrs, main, html) {
+  main = eval("(" + main + ")")
+  main.template = `<div>${html}</div>`
+  new Vue({
+    template: `<div><child ${attrs}/></div>`,
+    data() {
+      return {
+        visible: true
+      }
+    },
+    components: {
+      child: main
+    }
+  }).$mount('#app')
 }

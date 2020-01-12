@@ -4,6 +4,11 @@
       <div style="height:100%">
         <el-row style="height:100%;overflow:auto">
           <el-col :md="24" :lg="12" class="left-editor">
+            <div class="setting" title="资源引用" @click="showResource">
+              <el-badge :is-dot="resources.length" class="item">
+                <i class="el-icon-setting"></i>
+              </el-badge>
+            </div>
             <el-tabs v-model="activeTab" type="card" class="editor-tabs">
               <el-tab-pane name="html">
                 <span slot="label">
@@ -61,6 +66,7 @@
         </el-row>
       </div>
     </el-drawer>
+    <resource-dialog :visible.sync="resourceVisible" @save="setResource" :originResource="resources"/>
   </div>
 </template>
 <script>
@@ -73,6 +79,7 @@ import { parse } from "@babel/parser"
 import beautifier from "beautifier"
 import ClipboardJS from "clipboard"
 import { saveAs } from "file-saver"
+import ResourceDialog from "./ResourceDialog"
 
 var editorObj = {
     html: null,
@@ -86,7 +93,7 @@ var editorObj = {
   }
 
 export default {
-  components: {},
+  components: {ResourceDialog},
   props: ["formData", "generateConf"],
   data() {
     return {
@@ -95,10 +102,17 @@ export default {
       jsCode: "",
       cssCode: "",
       codeFrame: "",
-      isIframeLoaded: false
+      isIframeLoaded: false,
+      resourceVisible: false,
+      scripts: [],
+      links: []
     }
   },
-  computed: {},
+  computed: {
+    resources() {
+      return this.scripts.concat(this.links)
+    }
+  },
   watch: {},
   created() {},
   mounted() {
@@ -170,9 +184,12 @@ export default {
               generateConf: this.generateConf,
               html: editorObj.html.getValue(),
               js: jsCodeStr.replace(exportDefault, ""),
-              css: editorObj.css.getValue()
+              css: editorObj.css.getValue(),
+              scripts: this.scripts,
+              links: this.links
             }
           }
+          
           this.$refs.previewPage.contentWindow.postMessage(
             postData,
             location.origin
@@ -215,6 +232,25 @@ export default {
           fileName: fileName
         }
       }, '*')
+    showResource() {
+      this.resourceVisible = true
+    },
+    setResource(arr) {
+      var scripts = [], links = []
+      if(Array.isArray(arr)) {
+        arr.forEach(item => {
+          if(item.endsWith('.css')) {
+            links.push(item)
+          } else {
+            scripts.push(item)
+          }
+        })
+        this.scripts = scripts
+        this.links = links
+      } else {
+        this.scripts = []
+        this.links = []
+      }
     }
   }
 }
@@ -234,6 +270,15 @@ export default {
   height: 100%;
   background: #1e1e1e;
   overflow: hidden;
+}
+.setting{
+  position: absolute;
+  right: 15px;
+  top: 3px;
+  color: #a9f122;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 1;
 }
 .right-preview {
   height: 100%;
