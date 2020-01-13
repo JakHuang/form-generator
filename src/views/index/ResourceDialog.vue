@@ -43,7 +43,6 @@ export default {
     },
     handelConfirm() {
       var results = this.resources.filter(item => !!item) || []
-      results = JSON.parse(JSON.stringify(results))
       this.$emit('save', results)
       this.close()
       if(results.length) {
