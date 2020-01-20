@@ -346,6 +346,7 @@ export const selectComponents = [
     tag: 'el-color-picker',
     tagIcon: 'color',
     defaultValue: null,
+    labelWidth: null,
     'show-alpha': false,
     'color-format': '',
     disabled: false,
@@ -360,6 +361,7 @@ export const selectComponents = [
     tagIcon: 'upload',
     action: 'https://jsonplaceholder.typicode.com/posts/',
     defaultValue: null,
+    labelWidth: null,
     disabled: false,
     required: true,
     accept: '',
@@ -373,7 +375,20 @@ export const selectComponents = [
     multiple: false,
     regList: [],
     document: 'https://element.eleme.cn/#/zh-CN/component/upload'
-  }
+  },
+]
+
+export let layoutComponents = [
+  {
+    layout: 'rowFormItem',
+    tagIcon: 'row',
+    type: 'default',
+    justify: 'start',
+    align: 'top',
+    label: "行容器",
+    children: [],
+    document: 'https://element.eleme.cn/#/zh-CN/component/layout'
+  },
 ]
 
 // 组件rule的触发方式，无触发方式的组件不生成rule

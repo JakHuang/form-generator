@@ -1,7 +1,8 @@
 export default [
   {
-    label: '手机号',
-    vModel: 'mobile',
+    layout: 'colFormItem',
+    label: "手机号",
+    vModel: "mobile",
     formId: 6,
     tag: 'el-input',
     placeholder: '请输入手机号',
