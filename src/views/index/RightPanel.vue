@@ -27,7 +27,7 @@
             <el-input v-model="activeData['end-placeholder']" placeholder="请输入占位提示" />
           </el-form-item>
           <el-form-item label="表单栅格">
-            <el-slider :max='24' :min="1" v-model="activeData.span" @change="spanChange" :marks="{12:12}"/>
+            <el-slider :max='24' :min="1" v-model="activeData.span" @change="spanChange" :marks="{12:'12'}"/>
           </el-form-item>
           <el-form-item label="标签宽度">
             <el-input type="number" v-model.number="activeData.labelWidth" placeholder="请输入标签宽度" />
@@ -349,6 +349,9 @@
           </el-form-item>
           <el-form-item label="表单按钮">
             <el-switch v-model="formConf.formBtns" />
+          </el-form-item>
+          <el-form-item label="显示未选中组件边框">
+            <el-switch v-model="formConf.unFocusedComponentBorder" />
           </el-form-item>
         </el-form>
       </el-scrollbar>
