@@ -72,9 +72,9 @@
               </div>
             </div>
           </draggable>
-          <div class="components-title">
+          <!-- <div class="components-title">
             <svg-icon icon-class="component" />布局型组件
-          </div>
+          </div> -->
         </div>
       </el-scrollbar>
     </div>
