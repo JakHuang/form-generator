@@ -19,12 +19,19 @@ module.exports = {
     'no-use-before-define': 0,
     'no-param-reassign': 0,
     'arrow-parens': [2, 'as-needed'],
+    "vue/max-attributes-per-line": [1, {
+      multiline: {
+        max: 3
+      }
+    }],
     'max-len': [
-      0,
+      1,
       {
         code: 120
       }
-    ]
+    ],
+    'no-eval': 0,
+    'no-multi-assign': 0
   },
   parserOptions: {
     parser: 'babel-eslint'
