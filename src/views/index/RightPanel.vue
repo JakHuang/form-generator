@@ -68,7 +68,7 @@
               v-model="activeData.span"
               :max="24"
               :min="1"
-              :marks="{ 12: '12' }"
+              :marks="{ 12: '' }"
               @change="spanChange"
             />
           </el-form-item>
