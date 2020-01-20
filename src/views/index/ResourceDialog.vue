@@ -83,7 +83,7 @@ export default {
       this.$emit('update:visible', false)
     },
     handelConfirm() {
-      const results = this.resources.filter((item) => !!item) || []
+      const results = this.resources.filter(item => !!item) || []
       this.$emit('save', results)
       this.close()
       if (results.length) {

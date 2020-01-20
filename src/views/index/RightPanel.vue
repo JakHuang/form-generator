@@ -1067,7 +1067,7 @@ export default {
     remove(node, data) {
       const { parent } = node
       const children = parent.data.children || parent.data
-      const index = children.findIndex((d) => d.id === data.id)
+      const index = children.findIndex(d => d.id === data.id)
       children.splice(index, 1)
     },
     addNode(data) {
@@ -1082,7 +1082,7 @@ export default {
         this.$set(
           this.activeData,
           'defaultValue',
-          str.split(',').map((val) => (isNumberStr(val) ? +val : val))
+          str.split(',').map(val => (isNumberStr(val) ? +val : val))
         )
       } else if (['true', 'false'].indexOf(str) > -1) {
         // 布尔

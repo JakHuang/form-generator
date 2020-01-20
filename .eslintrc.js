@@ -3,11 +3,7 @@ module.exports = {
   env: {
     node: true
   },
-  extends: [
-    'plugin:vue/recommended',
-    'eslint:recommended',
-    'airbnb-base'
-  ],
+  extends: ['plugin:vue/recommended', 'eslint:recommended', 'airbnb-base'],
   rules: {
     'no-console': 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
@@ -20,9 +16,15 @@ module.exports = {
     'no-unused-expressions': 0,
     'no-plusplus': 0,
     'import/prefer-default-export': 0,
-    "no-use-before-define": 0,
-    "no-param-reassign": 0,
-    "arrow-parens": [2, "as-needed"]
+    'no-use-before-define': 0,
+    'no-param-reassign': 0,
+    'arrow-parens': [2, 'as-needed'],
+    'max-len': [
+      0,
+      {
+        code: 120
+      }
+    ]
   },
   parserOptions: {
     parser: 'babel-eslint'

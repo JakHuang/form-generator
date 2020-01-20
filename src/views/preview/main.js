@@ -22,7 +22,7 @@ function loadScriptQueue(list, cb) {
 
 function buildLinks(links) {
   let strs = ''
-  links.forEach((url) => {
+  links.forEach(url => {
     strs += `<link href="${url}" rel="stylesheet">`
   })
   return strs

@@ -112,7 +112,7 @@ export default {
       this.$emit('update:visible', false)
     },
     handelConfirm() {
-      this.$refs.elForm.validate((valid) => {
+      this.$refs.elForm.validate(valid => {
         if (!valid) return
         this.$emit('confirm', { ...this.formData })
         this.close()

@@ -3,16 +3,33 @@
     <div class="left-board">
       <div class="logo-wrapper">
         <div class="logo">
+<<<<<<< HEAD
           <img :src="logo" alt="logo" /> Form Generator
           <span class="github" @click="openLink('https://github.com/JakHuang/form-generator')" target="_blank">
             <img src="https://github.githubassets.com/pinned-octocat.svg" alt=""/>
           </span>
+=======
+          <img
+            :src="logo"
+            alt="logo"
+          > Form Generator
+          <a
+            class="github"
+            href="https://github.com/JakHuang/form-generator"
+            target="_blank"
+          >
+            <img
+              src="https://github.githubassets.com/pinned-octocat.svg"
+              alt
+            >
+          </a>
+>>>>>>> 3f66d8b... feat: 样式修改,添加开关控制未选中组件的边框
         </div>
       </div>
       <el-scrollbar class="left-scrollbar">
         <div class="components-list">
           <div class="components-title">
-            <svg-icon icon-class="component" /> 输入型组件
+            <svg-icon icon-class="component" />输入型组件
           </div>
           <draggable
             class="components-draggable"
@@ -36,7 +53,7 @@
             </div>
           </draggable>
           <div class="components-title">
-            <svg-icon icon-class="component" /> 选择型组件
+            <svg-icon icon-class="component" />选择型组件
           </div>
           <draggable
             class="components-draggable"
@@ -93,7 +110,7 @@
                 :key="element.renderKey"
                 :span="element.span"
                 class="drawing-item"
-                :class="activeId == element.formId ? 'activeFromItem' : ''"
+                :class="{'activeFromItem' : activeId == element.formId, 'unfocus-bordered': formConf.unFocusedComponentBorder }"
                 @click.native="activeFormItem(element.formId)"
               >
                 <el-form-item
@@ -225,7 +242,7 @@ export default {
   computed: {
     activeData() {
       return (
-        this.drawingList.find((item) => item.formId === this.activeId)
+        this.drawingList.find(item => item.formId === this.activeId)
         || emptyActiveData
       )
     }
@@ -236,7 +253,9 @@ export default {
         this.activeData.placeholder === undefined
         || !this.activeData.tag
         || oldActiveId !== this.activeId
-      ) { return }
+      ) {
+        return
+      }
       this.activeData.placeholder = this.activeData.placeholder.replace(oldVal, '') + val
     },
     activeId: {
@@ -248,7 +267,7 @@ export default {
   },
   mounted() {
     const clipboard = new ClipboardJS('#copyNode', {
-      text: (trigger) => {
+      text: trigger => {
         const codeStr = this.generateCode()
         this.$notify({
           title: '成功',

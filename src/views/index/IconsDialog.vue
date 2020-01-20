@@ -36,7 +36,7 @@
 <script>
 import iconList from '@/utils/icon.json'
 
-const originList = iconList.map((name) => `el-icon-${name}`)
+const originList = iconList.map(name => `el-icon-${name}`)
 
 export default {
   inheritAttrs: false,
@@ -51,7 +51,7 @@ export default {
   watch: {
     key(val) {
       if (val) {
-        this.iconList = originList.filter((name) => name.indexOf(val) > -1)
+        this.iconList = originList.filter(name => name.indexOf(val) > -1)
       } else {
         this.iconList = originList
       }
