@@ -1,16 +1,16 @@
 import Vue from 'vue'
-import load from "@/utils/loadScript"
+import load from '@/utils/loadScript'
 
-let $previewApp = document.getElementById('previewApp'),
-  childAttrs = {
-    file: '',
-    dialog: ` width="600px" class="dialog-width" v-if="visible" :visible.sync="visible" :modal-append-to-body="false" `
-  }
+const $previewApp = document.getElementById('previewApp')
+const childAttrs = {
+  file: '',
+  dialog: ' width="600px" class="dialog-width" v-if="visible" :visible.sync="visible" :modal-append-to-body="false" '
+}
 
 window.addEventListener('message', init, false)
 
 function loadScriptQueue(list, cb) {
-  let first = list.shift()
+  const first = list.shift()
   if (list.length === 0) {
     load(first, cb)
   } else {
@@ -21,8 +21,8 @@ function loadScriptQueue(list, cb) {
 }
 
 function buildLinks(links) {
-  var strs = ''
-  links.forEach(url => {
+  let strs = ''
+  links.forEach((url) => {
     strs += `<link href="${url}" rel="stylesheet">`
   })
   return strs
@@ -30,9 +30,9 @@ function buildLinks(links) {
 
 function init(event) {
   if (event.data.type === 'refreshFrame') {
-    let code = event.data.data,
-      attrs = childAttrs[code.generateConf.type],
-      links = ''
+    const code = event.data.data
+    const attrs = childAttrs[code.generateConf.type]
+    let links = ''
 
     if (Array.isArray(code.links) && code.links.length > 0) {
       links = buildLinks(code.links)
@@ -51,17 +51,17 @@ function init(event) {
 }
 
 function newVue(attrs, main, html) {
-  main = eval("(" + main + ")")
+  main = eval(`(${main})`)
   main.template = `<div>${html}</div>`
   new Vue({
-    template: `<div><child ${attrs}/></div>`,
+    components: {
+      child: main
+    },
     data() {
       return {
         visible: true
       }
     },
-    components: {
-      child: main
-    }
+    template: `<div><child ${attrs}/></div>`
   }).$mount('#app')
 }

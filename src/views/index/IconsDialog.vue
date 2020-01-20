@@ -1,24 +1,42 @@
 <template>
   <div class="icon-dialog">
-    <el-dialog v-bind="$attrs" v-on="$listeners" @open="onOpen" @close="onClose" width="980px"
-      :modal-append-to-body="false">
+    <el-dialog
+      v-bind="$attrs"
+      width="980px"
+      :modal-append-to-body="false"
+      v-on="$listeners"
+      @open="onOpen"
+      @close="onClose"
+    >
       <div slot="title">
         选择图标
-        <el-input size="mini" :style="{width: '260px'}" v-model="key" placeholder="请输入图标名称"
-          prefix-icon='el-icon-search' clearable></el-input>
+        <el-input
+          v-model="key"
+          size="mini"
+          :style="{width: '260px'}"
+          placeholder="请输入图标名称"
+          prefix-icon="el-icon-search"
+          clearable
+        />
       </div>
       <ul class="icon-ul">
-        <li :class="active===icon?'active-item':''" v-for="icon in iconList" :key="icon" @click="onSelect(icon)">
-          <i :class="icon"></i>
-          <div>{{icon}}</div>
+        <li
+          v-for="icon in iconList"
+          :key="icon"
+          :class="active===icon?'active-item':''"
+          @click="onSelect(icon)"
+        >
+          <i :class="icon" />
+          <div>{{ icon }}</div>
         </li>
       </ul>
     </el-dialog>
   </div>
 </template>
 <script>
-import iconList from "@/utils/icon.json"
-const originList = iconList.map(name => "el-icon-" + name)
+import iconList from '@/utils/icon.json'
+
+const originList = iconList.map((name) => `el-icon-${name}`)
 
 export default {
   inheritAttrs: false,
@@ -32,8 +50,8 @@ export default {
   },
   watch: {
     key(val) {
-      if(val) {
-        this.iconList = originList.filter(name => name.indexOf(val) > -1)
+      if (val) {
+        this.iconList = originList.filter((name) => name.indexOf(val) > -1)
       } else {
         this.iconList = originList
       }
@@ -47,8 +65,8 @@ export default {
     onClose() {},
     onSelect(icon) {
       this.active = icon
-      this.$emit("select", icon)
-      this.$emit("update:visible", false)
+      this.$emit('select', icon)
+      this.$emit('update:visible', false)
     }
   }
 }
