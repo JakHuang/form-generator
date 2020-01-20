@@ -1,6 +1,6 @@
 <template>
   <div>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 export default {
   mounted() {
     // 取消开始的loading动画
-    var preLoader = document.querySelector('#pre-loader')
+    const preLoader = document.querySelector('#pre-loader')
     preLoader.style.display = 'none'
   }
 }

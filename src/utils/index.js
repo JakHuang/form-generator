@@ -1,4 +1,4 @@
-export function makeMap (str, expectsLowerCase) {
+export function makeMap(str, expectsLowerCase) {
   const map = Object.create(null)
   const list = str.split(',')
   for (let i = 0; i < list.length; i++) {
@@ -15,14 +15,15 @@ export function makeMap (str, expectsLowerCase) {
  * @param {number} num 缩进次数
  * @param {number} len 【可选】缩进单位，空格数
  */
-export function indent(str, num, len = 2){
-  if(num === 0) return str
-  let isLeft = num < 0, result = [], reg, spaces = ''
+export function indent(str, num, len = 2) {
+  if (num === 0) return str
+  const isLeft = num < 0; const result = []; let reg; let
+    spaces = ''
   if (isLeft) {
     num = -1 * num
-    reg = new RegExp('(^\\s{0,'+ num * len +'})', 'g')
+    reg = new RegExp(`(^\\s{0,${num * len}})`, 'g')
   } else {
-    for(let i = 0; i < num * len; i++) spaces += ' '
+    for (let i = 0; i < num * len; i++) spaces += ' '
   }
 
   str.split('\n').forEach(line => {
@@ -34,7 +35,7 @@ export function indent(str, num, len = 2){
 
 // 首字母大小
 export function titleCase(str) {
-  return str.replace(/( |^)[a-z]/g, L => L.toUpperCase());
+  return str.replace(/( |^)[a-z]/g, L => L.toUpperCase())
 }
 
 // 下划转驼峰
@@ -46,67 +47,67 @@ export function isNumberStr(str) {
   return /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g.test(str)
 }
 
-export let exportDefault = 'export default '
+export const exportDefault = 'export default '
 
-export let beautifierConf = {
+export const beautifierConf = {
   html: {
-    "indent_size": "2",
-    "indent_char": " ",
-    "max_preserve_newlines": "-1",
-    "preserve_newlines": false,
-    "keep_array_indentation": false,
-    "break_chained_methods": false,
-    "indent_scripts": "separate",
-    "brace_style": "end-expand",
-    "space_before_conditional": true,
-    "unescape_strings": false,
-    "jslint_happy": false,
-    "end_with_newline": true,
-    "wrap_line_length": "110",
-    "indent_inner_html": true,
-    "comma_first": false,
-    "e4x": true,
-    "indent_empty_lines": true
+    indent_size: '2',
+    indent_char: ' ',
+    max_preserve_newlines: '-1',
+    preserve_newlines: false,
+    keep_array_indentation: false,
+    break_chained_methods: false,
+    indent_scripts: 'separate',
+    brace_style: 'end-expand',
+    space_before_conditional: true,
+    unescape_strings: false,
+    jslint_happy: false,
+    end_with_newline: true,
+    wrap_line_length: '110',
+    indent_inner_html: true,
+    comma_first: false,
+    e4x: true,
+    indent_empty_lines: true
   },
   js: {
-    "indent_size": "2",
-    "indent_char": " ",
-    "max_preserve_newlines": "-1",
-    "preserve_newlines": false,
-    "keep_array_indentation": false,
-    "break_chained_methods": false,
-    "indent_scripts": "normal",
-    "brace_style": "end-expand",
-    "space_before_conditional": true,
-    "unescape_strings": false,
-    "jslint_happy": true,
-    "end_with_newline": true,
-    "wrap_line_length": "110",
-    "indent_inner_html": true,
-    "comma_first": false,
-    "e4x": true,
-    "indent_empty_lines": true
+    indent_size: '2',
+    indent_char: ' ',
+    max_preserve_newlines: '-1',
+    preserve_newlines: false,
+    keep_array_indentation: false,
+    break_chained_methods: false,
+    indent_scripts: 'normal',
+    brace_style: 'end-expand',
+    space_before_conditional: true,
+    unescape_strings: false,
+    jslint_happy: true,
+    end_with_newline: true,
+    wrap_line_length: '110',
+    indent_inner_html: true,
+    comma_first: false,
+    e4x: true,
+    indent_empty_lines: true
   }
 }
 
 function stringify(obj) {
-  return JSON.stringify(obj, function (key, val) {
+  return JSON.stringify(obj, (key, val) => {
     if (typeof val === 'function') {
-      return val + ''
+      return `${val}`
     }
     return val
   })
 }
 
 function parse(str) {
-  JSON.parse(str, function (k, v) {
+  JSON.parse(str, (k, v) => {
     if (v.indexOf && v.indexOf('function') > -1) {
-      return eval("(" + v + ")")
+      return eval(`(${v})`)
     }
     return v
   })
 }
 
-export function jsonClone(obj){
+export function jsonClone(obj) {
   return parse(stringify(obj))
 }

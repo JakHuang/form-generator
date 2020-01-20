@@ -1,45 +1,102 @@
 <template>
   <div>
-    <el-drawer v-bind="$attrs" v-on="$listeners" @opened="onOpen" @close="onClose">
+    <el-drawer
+      v-bind="$attrs"
+      v-on="$listeners"
+      @opened="onOpen"
+      @close="onClose"
+    >
       <div style="height:100%">
         <el-row style="height:100%;overflow:auto">
-          <el-col :md="24" :lg="12" class="left-editor">
-            <div class="setting" title="资源引用" @click="showResource">
-              <el-badge :is-dot="resources.length" class="item">
-                <i class="el-icon-setting"></i>
+          <el-col
+            :md="24"
+            :lg="12"
+            class="left-editor"
+          >
+            <div
+              class="setting"
+              title="资源引用"
+              @click="showResource"
+            >
+              <el-badge
+                :is-dot="resources.length"
+                class="item"
+              >
+                <i class="el-icon-setting" />
               </el-badge>
             </div>
-            <el-tabs v-model="activeTab" type="card" class="editor-tabs">
+            <el-tabs
+              v-model="activeTab"
+              type="card"
+              class="editor-tabs"
+            >
               <el-tab-pane name="html">
                 <span slot="label">
-                  <i class="el-icon-edit" v-if="activeTab==='html'"></i>
-                  <i class="el-icon-document" v-else></i>
+                  <i
+                    v-if="activeTab==='html'"
+                    class="el-icon-edit"
+                  />
+                  <i
+                    v-else
+                    class="el-icon-document"
+                  />
                   template
                 </span>
               </el-tab-pane>
               <el-tab-pane name="js">
                 <span slot="label">
-                  <i class="el-icon-edit" v-if="activeTab==='js'"></i>
-                  <i class="el-icon-document" v-else></i>
+                  <i
+                    v-if="activeTab==='js'"
+                    class="el-icon-edit"
+                  />
+                  <i
+                    v-else
+                    class="el-icon-document"
+                  />
                   script
                 </span>
               </el-tab-pane>
               <el-tab-pane name="css">
                 <span slot="label">
-                  <i class="el-icon-edit" v-if="activeTab==='css'"></i>
-                  <i class="el-icon-document" v-else></i>
+                  <i
+                    v-if="activeTab==='css'"
+                    class="el-icon-edit"
+                  />
+                  <i
+                    v-else
+                    class="el-icon-document"
+                  />
                   css
                 </span>
               </el-tab-pane>
             </el-tabs>
-            <div id="editorHtml" class="tab-editor" v-show="activeTab==='html'" />
-            <div id="editorJs" class="tab-editor" v-show="activeTab==='js'" />
-            <div id="editorCss" class="tab-editor" v-show="activeTab==='css'" />
+            <div
+              v-show="activeTab==='html'"
+              id="editorHtml"
+              class="tab-editor"
+            />
+            <div
+              v-show="activeTab==='js'"
+              id="editorJs"
+              class="tab-editor"
+            />
+            <div
+              v-show="activeTab==='css'"
+              id="editorCss"
+              class="tab-editor"
+            />
           </el-col>
-          <el-col :md="24" :lg="12" class="right-preview">
+          <el-col
+            :md="24"
+            :lg="12"
+            class="right-preview"
+          >
             <div class="action-bar">
-              <span class="bar-btn" @click="runCode">
-                <i class="el-icon-refresh"></i>
+              <span
+                class="bar-btn"
+                @click="runCode"
+              >
+                <i class="el-icon-refresh" />
                 刷新
               </span>
               <span class="bar-btn" @click="promptFileName('writeFile')">
@@ -50,58 +107,80 @@
                 <i class="el-icon-download"></i>
                 导出vue文件
               </span>
-              <span ref="copyBtn" class="bar-btn copy-btn">
-                <i class="el-icon-document-copy"></i>
+              <span
+                ref="copyBtn"
+                class="bar-btn copy-btn"
+              >
+                <i class="el-icon-document-copy" />
                 复制代码
               </span>
-              <span class="bar-btn delete-btn" @click="$emit('update:visible', false)">
-                <i class="el-icon-circle-close"></i>
+              <span
+                class="bar-btn delete-btn"
+                @click="$emit('update:visible', false)"
+              >
+                <i class="el-icon-circle-close" />
                 关闭
               </span>
             </div>
-            <iframe v-show="isIframeLoaded" ref='previewPage' class="result-wrapper" frameborder="0" @load="iframeLoad"
-              src="preview.html"></iframe>
-            <div v-show="!isIframeLoaded" v-loading="true" class="result-wrapper"></div>
+            <iframe
+              v-show="isIframeLoaded"
+              ref="previewPage"
+              class="result-wrapper"
+              frameborder="0"
+              src="preview.html"
+              @load="iframeLoad"
+            />
+            <div
+              v-show="!isIframeLoaded"
+              v-loading="true"
+              class="result-wrapper"
+            />
           </el-col>
         </el-row>
       </div>
     </el-drawer>
-    <resource-dialog :visible.sync="resourceVisible" @save="setResource" :originResource="resources"/>
+    <resource-dialog
+      :visible.sync="resourceVisible"
+      :origin-resource="resources"
+      @save="setResource"
+    />
   </div>
 </template>
 <script>
-import monaco from "monaco"
-import { makeUpHtml, vueTemplate, vueScript, cssStyle } from "@/components/generator/html"
-import { makeUpJs } from "@/components/generator/js"
-import { makeUpCss } from "@/components/generator/css"
-import { exportDefault, beautifierConf, titleCase } from "@/utils/index"
-import { parse } from "@babel/parser"
-import beautifier from "beautifier"
-import ClipboardJS from "clipboard"
-import { saveAs } from "file-saver"
-import ResourceDialog from "./ResourceDialog"
+import monaco from 'monaco'
+import { parse } from '@babel/parser'
+import beautifier from 'beautifier'
+import ClipboardJS from 'clipboard'
+import { saveAs } from 'file-saver'
+import {
+  makeUpHtml, vueTemplate, vueScript, cssStyle
+} from '@/components/generator/html'
+import { makeUpJs } from '@/components/generator/js'
+import { makeUpCss } from '@/components/generator/css'
+import { exportDefault, beautifierConf, titleCase } from '@/utils/index'
+import ResourceDialog from './ResourceDialog'
 
-var editorObj = {
-    html: null,
-    js: null,
-    css: null
-  },
-  mode = {
-    html: "html",
-    js: "javascript",
-    css: "css"
-  }
+const editorObj = {
+  html: null,
+  js: null,
+  css: null
+}
+const mode = {
+  html: 'html',
+  js: 'javascript',
+  css: 'css'
+}
 
 export default {
-  components: {ResourceDialog},
-  props: ["formData", "generateConf"],
+  components: { ResourceDialog },
+  props: ['formData', 'generateConf'],
   data() {
     return {
-      activeTab: "html",
-      htmlCode: "",
-      jsCode: "",
-      cssCode: "",
-      codeFrame: "",
+      activeTab: 'html',
+      htmlCode: '',
+      jsCode: '',
+      cssCode: '',
+      codeFrame: '',
       isIframeLoaded: false,
       resourceVisible: false,
       scripts: [],
@@ -116,13 +195,13 @@ export default {
   watch: {},
   created() {},
   mounted() {
-    new ClipboardJS(".copy-btn", {
-      text: trigger => {
-        var codeStr = this.generateCode()
+    const a = new ClipboardJS('.copy-btn', {
+      text: (trigger) => {
+        const codeStr = this.generateCode()
         this.$notify({
-          title: "成功",
-          message: "代码已复制到剪切板，可粘贴。",
-          type: "success"
+          title: '成功',
+          message: '代码已复制到剪切板，可粘贴。',
+          type: 'success'
         })
         return codeStr
       }
@@ -131,7 +210,7 @@ export default {
   methods: {
     onOpen() {
       setTimeout(() => {
-        let { type } = this.generateConf
+        const { type } = this.generateConf
         this.htmlCode = makeUpHtml(this.formData, type)
         this.htmlCode = beautifier.html(this.htmlCode, beautifierConf.html)
         this.jsCode = makeUpJs(this.formData, type)
@@ -139,9 +218,9 @@ export default {
         this.cssCode = makeUpCss(this.formData)
         this.cssCode = beautifier.css(this.cssCode, beautifierConf.html)
 
-        this.setEditorValue("editorHtml", "html", this.htmlCode)
-        this.setEditorValue("editorJs", "js", this.jsCode)
-        this.setEditorValue("editorCss", "css", this.cssCode)
+        this.setEditorValue('editorHtml', 'html', this.htmlCode)
+        this.setEditorValue('editorJs', 'js', this.jsCode)
+        this.setEditorValue('editorCss', 'css', this.cssCode)
         this.isIframeLoaded && this.runCode()
       })
     },
@@ -156,56 +235,56 @@ export default {
       } else {
         editorObj[type] = monaco.editor.create(document.getElementById(id), {
           value: codeStr,
-          theme: "vs-dark",
+          theme: 'vs-dark',
           language: mode[type],
           automaticLayout: true
         })
       }
     },
     runCode() {
-      let jsCodeStr = editorObj.js.getValue()
+      const jsCodeStr = editorObj.js.getValue()
       try {
-        const ast = parse(jsCodeStr, { sourceType: "module" })
+        const ast = parse(jsCodeStr, { sourceType: 'module' })
         const astBody = ast.program.body
         if (astBody.length > 1) {
           this.$confirm(
-            "js格式不能识别，仅支持修改export default的对象内容",
-            "提示",
+            'js格式不能识别，仅支持修改export default的对象内容',
+            '提示',
             {
-              type: "warning"
+              type: 'warning'
             }
           )
           return
         }
-        if (astBody[0].type === "ExportDefaultDeclaration") {
-          let postData = {
-            type: "refreshFrame",
+        if (astBody[0].type === 'ExportDefaultDeclaration') {
+          const postData = {
+            type: 'refreshFrame',
             data: {
               generateConf: this.generateConf,
               html: editorObj.html.getValue(),
-              js: jsCodeStr.replace(exportDefault, ""),
+              js: jsCodeStr.replace(exportDefault, ''),
               css: editorObj.css.getValue(),
               scripts: this.scripts,
               links: this.links
             }
           }
-          
+
           this.$refs.previewPage.contentWindow.postMessage(
             postData,
             location.origin
           )
         } else {
-          this.$message.error("请使用export default")
+          this.$message.error('请使用export default')
         }
       } catch (err) {
-        this.$message.error("js错误：" + err + "")
+        this.$message.error(`js错误：${err}`)
         console.error(err)
       }
     },
     generateCode() {
-      let html = vueTemplate(editorObj.html.getValue())
-      let script = vueScript(editorObj.js.getValue())
-      let css = cssStyle(editorObj.css.getValue())
+      const html = vueTemplate(editorObj.html.getValue())
+      const script = vueScript(editorObj.js.getValue())
+      const css = cssStyle(editorObj.css.getValue())
       return beautifier.html(html + script + css, beautifierConf.html)
     },
     promptFileName(method) {
@@ -213,7 +292,7 @@ export default {
       this.$prompt("文件名:", "导出文件", {
         inputValue: defalutName,
         closeOnClickModal: false,
-        inputPlaceholder: "请输入文件名"
+        inputPlaceholder: '请输入文件名'
       }).then(({ value }) => {
         if (!value) value = defalutName
         var codeStr = this.generateCode()
@@ -237,10 +316,11 @@ export default {
       this.resourceVisible = true
     },
     setResource(arr) {
-      var scripts = [], links = []
-      if(Array.isArray(arr)) {
-        arr.forEach(item => {
-          if(item.endsWith('.css')) {
+      const scripts = []; const
+        links = []
+      if (Array.isArray(arr)) {
+        arr.forEach((item) => {
+          if (item.endsWith('.css')) {
             links.push(item)
           } else {
             scripts.push(item)
