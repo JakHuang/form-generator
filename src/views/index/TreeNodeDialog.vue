@@ -133,7 +133,7 @@ export default {
       this.$emit('update:visible', false)
     },
     handelConfirm() {
-      this.$refs.elForm.validate((valid) => {
+      this.$refs.elForm.validate(valid => {
         if (!valid) return
         if (this.dataType === 'number') {
           this.formData.value = parseFloat(this.formData.value)

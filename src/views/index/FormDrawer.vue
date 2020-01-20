@@ -195,7 +195,7 @@ export default {
   created() {},
   mounted() {
     const a = new ClipboardJS('.copy-btn', {
-      text: (trigger) => {
+      text: trigger => {
         const codeStr = this.generateCode()
         this.$notify({
           title: '成功',
@@ -305,7 +305,7 @@ export default {
       const scripts = []; const
         links = []
       if (Array.isArray(arr)) {
-        arr.forEach((item) => {
+        arr.forEach(item => {
           if (item.endsWith('.css')) {
             links.push(item)
           } else {

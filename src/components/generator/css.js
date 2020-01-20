@@ -6,7 +6,7 @@ const styles = {
 export function makeUpCss(conf) {
   const cssList = []
   conf = JSON.parse(JSON.stringify(conf))
-  conf.fields.forEach((el) => {
+  conf.fields.forEach(el => {
     const css = styles[el.tag]
     css && cssList.indexOf(css) === -1 && cssList.push(css)
   })

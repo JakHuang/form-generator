@@ -167,7 +167,7 @@ $selectedColor: #f6f7ff;
 .drawing-item {
   position: relative;
   cursor: move;
-  &:not(.activeFromItem) > div:first-child  {
+  &.unfocus-bordered:not(.activeFromItem) > div:first-child  {
     border: 1px dashed #ccc;
   }
   .el-form-item{

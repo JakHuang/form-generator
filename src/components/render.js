@@ -20,7 +20,7 @@ const isAttr = makeMap(
 function vModel(self, dataObject, defaultValue) {
   dataObject.props.value = defaultValue
 
-  dataObject.on.input = (val) => {
+  dataObject.on.input = val => {
     self.$emit('input', val)
   }
 }
@@ -37,7 +37,7 @@ const componentChild = {
   'el-select': {
     options(h, conf, key) {
       const list = []
-      conf.options.forEach((item) => {
+      conf.options.forEach(item => {
         list.push(<el-option label={item.label} value={item.value} disabled={item.disabled}></el-option>)
       })
       return list
@@ -46,7 +46,7 @@ const componentChild = {
   'el-radio-group': {
     options(h, conf, key) {
       const list = []
-      conf.options.forEach((item) => {
+      conf.options.forEach(item => {
         if (conf.optionType === 'button') list.push(<el-radio-button label={item.value}>{item.label}</el-radio-button>)
         else list.push(<el-radio label={item.value} border={conf.border}>{item.label}</el-radio>)
       })
@@ -56,7 +56,7 @@ const componentChild = {
   'el-checkbox-group': {
     options(h, conf, key) {
       const list = []
-      conf.options.forEach((item) => {
+      conf.options.forEach(item => {
         if (conf.optionType === 'button') list.push(<el-checkbox-button label={item.value}>{item.label}</el-checkbox-button>)
         else list.push(<el-checkbox label={item.value} border={conf.border}>{item.label}</el-checkbox>)
       })
@@ -87,7 +87,7 @@ export default {
 
     const childObjs = componentChild[confClone.tag]
     if (childObjs) {
-      Object.keys(childObjs).forEach((key) => {
+      Object.keys(childObjs).forEach(key => {
         const childFunc = childObjs[key]
         if (confClone[key]) {
           children.push(childFunc(h, confClone, key))
@@ -95,7 +95,7 @@ export default {
       })
     }
 
-    Object.keys(confClone).forEach((key) => {
+    Object.keys(confClone).forEach(key => {
       const val = confClone[key]
       if (key === 'vModel') {
         vModel(this, dataObject, confClone.defaultValue)

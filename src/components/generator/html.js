@@ -289,7 +289,7 @@ function buildElUploadChild(conf) {
 export function makeUpHtml(conf, type) {
   const htmlList = []
   confGlobal = conf
-  conf.fields.forEach((el) => {
+  conf.fields.forEach(el => {
     if (!tags[el.tag]) return
     const tagDom = tags[el.tag](el)
     htmlList.push(buildFormItemTemplate(el, tagDom))

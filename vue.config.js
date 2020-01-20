@@ -35,7 +35,7 @@ module.exports = {
       minify
     }
   },
-  eslintConfig: {
+  devServer: {
     overlay: false
   },
   productionSourceMap: false,
