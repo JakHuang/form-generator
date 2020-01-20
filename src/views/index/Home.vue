@@ -4,12 +4,10 @@
       <div class="logo-wrapper">
         <div class="logo">
           <img
-            :src="logo"
-            alt="logo"
+            :src="logo" alt="logo"
           > Form Generator
           <a
-            class="github"
-            href="https://github.com/JakHuang/form-generator"
+            class="github" href="https://github.com/JakHuang/form-generator"
             target="_blank"
           >
             <img
@@ -34,9 +32,7 @@
             @end="onEnd"
           >
             <div
-              v-for="(element, index) in inputComponents"
-              :key="index"
-              class="components-item"
+              v-for="(element, index) in inputComponents" :key="index" class="components-item"
               @click="addComponent(element)"
             >
               <div class="components-body">
@@ -69,6 +65,9 @@
               </div>
             </div>
           </draggable>
+          <div class="components-title">
+            <svg-icon icon-class="component" />布局型组件
+          </div>
         </div>
       </el-scrollbar>
     </div>
@@ -124,9 +123,7 @@
               group="componentsGroup"
             >
               <el-col
-                v-for="(element, index) in drawingList"
-                :key="element.renderKey"
-                :span="element.span"
+                v-for="(element, index) in drawingList" :key="element.renderKey" :span="element.span"
                 class="drawing-item"
                 :class="{'activeFromItem' : activeId == element.formId, 'unfocus-bordered': formConf.unFocusedComponentBorder }"
                 @click.native="activeFormItem(element.formId)"
@@ -160,8 +157,7 @@
               </el-col>
             </draggable>
             <div
-              v-show="!drawingList.length"
-              class="empty-info"
+              v-show="!drawingList.length" class="empty-info"
             >
               从左侧拖入或点选组件进行表单设计
             </div>
@@ -171,9 +167,7 @@
     </div>
 
     <right-panel
-      :active-data="activeData"
-      :form-conf="formConf"
-      :show-field="!!drawingList.length"
+      :active-data="activeData" :form-conf="formConf" :show-field="!!drawingList.length"
     />
 
     <form-drawer
