@@ -12,7 +12,8 @@
       <el-scrollbar class="left-scrollbar">
         <div class="components-list">
           <div class="components-title">
-            <svg-icon icon-class="component" /> 输入型组件</div>
+            <svg-icon icon-class="component" /> 输入型组件
+          </div>
           <draggable class="components-draggable" :list="inputComponents"
             :group="{ name: 'componentsGroup', pull: 'clone', put: false }" :clone="cloneComponent"
             draggable=".components-item" :sort="false" @end="onEnd">
@@ -25,11 +26,26 @@
             </div>
           </draggable>
           <div class="components-title">
-            <svg-icon icon-class="component" /> 选择型组件</div>
+            <svg-icon icon-class="component" /> 选择型组件
+          </div>
           <draggable class="components-draggable" :list="selectComponents"
             :group="{ name: 'componentsGroup', pull: 'clone', put: false }" :clone="cloneComponent"
             draggable=".components-item" :sort="false" @end="onEnd">
             <div class="components-item" v-for="(element, index) in selectComponents" :key="index"
+              @click="addComponent(element)">
+              <div class="components-body">
+                <svg-icon :icon-class="element.tagIcon" />
+                {{ element.label }}
+              </div>
+            </div>
+          </draggable>
+          <div class="components-title">
+            <svg-icon icon-class="component" /> 布局型组件
+          </div>
+          <draggable class="components-draggable" :list="layoutComponents"
+            :group="{ name: 'componentsGroup', pull: 'clone', put: false }" :clone="cloneComponent"
+            draggable=".components-item" :sort="false" @end="onEnd">
+            <div class="components-item" v-for="(element, index) in layoutComponents" :key="index"
               @click="addComponent(element)">
               <div class="components-body">
                 <svg-icon :icon-class="element.tagIcon" />
@@ -53,20 +69,9 @@
           <el-form :size="formConf.size" :label-position="formConf.labelPosition"
             :disabled="formConf.disabled" :label-width="formConf.labelWidth+'px'">
             <draggable class="drawing-board" :list="drawingList" :animation="340" group="componentsGroup">
-              <el-col :span="element.span" v-for="(element, index) in drawingList" :key="element.renderKey"
-                class="drawing-item" :class="activeId==element.formId?'activeFromItem':''"
-                @click.native="activeFormItem(element.formId)">
-                <el-form-item :label-width="element.labelWidth?element.labelWidth +'px':null"
-                  :label="element.label" :required="element.required">
-                  <render :conf="element" @input="$set(element, 'defaultValue', $event)" />
-                </el-form-item>
-                <span class="drawing-item-copy" title="复制" @click.stop="drawingItemCopy(element)">
-                  <i class="el-icon-copy-document" />
-                </span>
-                <span class="drawing-item-delete" title="删除" @click.stop="drawingItemDelete(index)">
-                  <i class="el-icon-delete" />
-                </span>
-              </el-col>
+              <draggable-item v-for="(element, index) in drawingList" :key="element.renderKey"
+                :drawingList="drawingList" :element="element" :index="index" :activeId="activeId"
+                @activeItem="activeFormItem" @copyItem="drawingItemCopy" @deleteItem="drawingItemDelete"/>
             </draggable>
             <div class="empty-info" v-show="!drawingList.length">从左侧拖入或点选组件进行表单设计</div>
           </el-form>
@@ -91,6 +96,7 @@ import RightPanel from "./RightPanel"
 import {
   inputComponents,
   selectComponents,
+  layoutComponents,
   formConf
 } from "@/components/generator/config"
 import { saveAs } from "file-saver"
@@ -103,9 +109,10 @@ import drawingDefalut from "@/components/generator/drawingDefalut"
 import ClipboardJS from "clipboard"
 import logo from "@/assets/logo.png"
 import CodeTypeDialog from "./CodeTypeDialog"
+import DraggableItem from "./DraggableItem"
 
 var emptyActiveData = { style: {}, autosize: {} }
-var oldActiveId
+var oldActiveId, tempActiveData
 
 export default {
   components: {
@@ -113,7 +120,8 @@ export default {
     render,
     FormDrawer,
     RightPanel,
-    CodeTypeDialog
+    CodeTypeDialog,
+    DraggableItem
   },
   watch: {
     "activeData.label"(val, oldVal) {
@@ -128,12 +136,6 @@ export default {
     }
   },
   computed: {
-    activeData() {
-      return (
-        this.drawingList.find(item => item.formId == this.activeId) ||
-        emptyActiveData
-      )
-    }
   },
   mounted() {
     let clipboard = new ClipboardJS('#copyNode', {
@@ -158,6 +160,7 @@ export default {
       formConf: formConf,
       inputComponents: inputComponents,
       selectComponents: selectComponents,
+      layoutComponents: layoutComponents,
       labelWidth: 100,
       drawingList: drawingDefalut,
       drawingData: {},
@@ -166,34 +169,44 @@ export default {
       formData: {},
       dialogVisible: false,
       generateConf: null,
-      showFileName: false
+      showFileName: false,
+      activeData: drawingDefalut[0]
     }
   },
   methods: {
-    activeFormItem: function(formId) {
-      this.activeId = formId
+    activeFormItem(element) {
+      this.activeData = element
+      this.activeId = element.formId
     },
-    onEnd(obj) {
-      if (obj.from !== obj.to) this.activeId = this.idGlobal
+    onEnd(obj, a) {
+      if (obj.from !== obj.to) {
+        this.activeData = tempActiveData
+        this.activeId = this.idGlobal
+      }
     },
     addComponent(item) {
       var clone = this.cloneComponent(item)
       this.drawingList.push(clone)
-      this.activeId = this.idGlobal
+      this.activeFormItem(clone)
     },
     cloneComponent(origin) {
-      this.idGlobal = this.idGlobal + 1
       var clone = JSON.parse(JSON.stringify(origin))
+      clone.formId = ++this.idGlobal
+      clone.span = formConf.span
+      clone.renderKey = +new Date(), // 改变renderKey后可以实现强制更新组件
       delete clone.tagIcon
-      let obj = Object.assign(clone, {
-        formId: this.idGlobal,
-        vModel: "field" + this.idGlobal,
-        renderKey: +new Date(), // 改变renderKey后可以实现强制更新组件
-        span: formConf.span
-      })
-      clone.placeholder !== undefined &&
-        (obj.placeholder = clone.placeholder + clone.label)
-      return obj
+      if(!clone.layout) clone.layout = 'colFormItem'
+      if('colFormItem' === clone.layout) {
+        clone.vModel = `field${this.idGlobal}`
+        clone.placeholder !== undefined && (clone.placeholder = clone.placeholder + clone.label)
+        tempActiveData = clone
+      } else if('rowFormItem' === clone.layout) {
+        delete clone.label
+        clone.componentName = `row${this.idGlobal}`
+        clone.gutter = this.formConf.gutter
+        tempActiveData = clone
+      }
+      return tempActiveData
     },
     AssembleFromData() {
       this.formData = Object.assign(
@@ -214,7 +227,7 @@ export default {
     },
     execDownload(data) {
       let codeStr = this.generateCode(),
-          blob = new Blob([codeStr], { type: "text/plain;charset=utf-8" })
+        blob = new Blob([codeStr], { type: "text/plain;charset=utf-8" })
       saveAs(blob, data.fileName)
     },
     execCopy(data) {
@@ -227,19 +240,33 @@ export default {
         }
       )
     },
-    drawingItemCopy(item) {
+    drawingItemCopy(item, parent) {
       var clone = JSON.parse(JSON.stringify(item))
-      clone.formId = ++this.idGlobal
-      clone.vModel = "field" + this.idGlobal
-      this.drawingList.push(clone)
-      this.activeFormItem(clone.formId)
+      clone = this.createIdAndKey(clone)
+      parent.push(clone)
+      this.activeFormItem(clone)
     },
-    drawingItemDelete(index) {
-      this.drawingList.splice(index, 1)
+    createIdAndKey(item) {
+      item.formId = ++this.idGlobal
+      item.renderKey = +new Date()
+      if('colFormItem' === item.layout) {
+        item.vModel = `field${this.idGlobal}`
+      } else if('rowFormItem' === item.layout) {
+        item.componentName = `row${this.idGlobal}`
+      }
+      if(Array.isArray(item.children)) {
+        item.children = item.children.map(childItem => {
+          return this.createIdAndKey(childItem)
+        })
+      }
+      return item
+    },
+    drawingItemDelete(index, parent) {
+      parent.splice(index, 1)
       this.$nextTick(() => {
         var len = this.drawingList.length
         if (len) {
-          this.activeFormItem(this.drawingList[len - 1].formId)
+          this.activeFormItem(this.drawingList[len - 1])
         }
       })
     },
@@ -270,6 +297,6 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-@import "@/styles/homeScoped";
+<style lang="scss">
+@import "@/styles/home";
 </style>
