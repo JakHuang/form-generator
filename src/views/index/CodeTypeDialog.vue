@@ -1,26 +1,66 @@
 <template>
   <div>
-    <el-dialog v-bind="$attrs" v-on="$listeners" width="500px" @open="onOpen" @close="onClose"
-      :close-on-click-modal="false" :modal-append-to-body="false">
+    <el-dialog
+      v-bind="$attrs"
+      width="500px"
+      :close-on-click-modal="false"
+      :modal-append-to-body="false"
+      v-on="$listeners"
+      @open="onOpen"
+      @close="onClose"
+    >
       <el-row :gutter="15">
-        <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="100px">
+        <el-form
+          ref="elForm"
+          :model="formData"
+          :rules="rules"
+          size="medium"
+          label-width="100px"
+        >
           <el-col :span="24">
-            <el-form-item label="生成类型" prop="type">
-              <el-radio-group v-model="formData.type" size="medium">
-                <el-radio-button v-for="(item, index) in typeOptions" :key="index" :label="item.value"
-                  :disabled="item.disabled">{{item.label}}</el-radio-button>
+            <el-form-item
+              label="生成类型"
+              prop="type"
+            >
+              <el-radio-group
+                v-model="formData.type"
+                size="medium"
+              >
+                <el-radio-button
+                  v-for="(item, index) in typeOptions"
+                  :key="index"
+                  :label="item.value"
+                  :disabled="item.disabled"
+                >
+                  {{ item.label }}
+                </el-radio-button>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="文件名" prop="fileName" v-if="showFileName">
-              <el-input v-model="formData.fileName" placeholder="请输入文件名" clearable></el-input>
+            <el-form-item
+              v-if="showFileName"
+              label="文件名"
+              prop="fileName"
+            >
+              <el-input
+                v-model="formData.fileName"
+                placeholder="请输入文件名"
+                clearable
+              />
             </el-form-item>
           </el-col>
         </el-form>
       </el-row>
 
       <div slot="footer">
-        <el-button @click="close">取消</el-button>
-        <el-button type="primary" @click="handelConfirm">确定</el-button>
+        <el-button @click="close">
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="handelConfirm"
+        >
+          确定
+        </el-button>
       </div>
     </el-dialog>
   </div>
@@ -33,7 +73,7 @@ export default {
     return {
       formData: {
         fileName: undefined,
-        type: 'file',
+        type: 'file'
       },
       rules: {
         fileName: [{
@@ -45,15 +85,15 @@ export default {
           required: true,
           message: '生成类型不能为空',
           trigger: 'change'
-        }],
+        }]
       },
       typeOptions: [{
-        "label": "页面",
-        "value": 'file'
+        label: '页面',
+        value: 'file'
       }, {
-        "label": "弹窗",
-        "value": 'dialog'
-      }],
+        label: '弹窗',
+        value: 'dialog'
+      }]
     }
   },
   computed: {
@@ -62,7 +102,7 @@ export default {
   mounted() {},
   methods: {
     onOpen() {
-      if(this.showFileName) {
+      if (this.showFileName) {
         this.formData.fileName = `${+new Date()}.vue`
       }
     },
@@ -73,8 +113,8 @@ export default {
     },
     handelConfirm() {
       this.$refs.elForm.validate(valid => {
-        if(!valid) return
-        this.$emit('confirm', Object.assign({}, this.formData))
+        if (!valid) return
+        this.$emit('confirm', { ...this.formData })
         this.close()
       })
     }

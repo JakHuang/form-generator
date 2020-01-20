@@ -3,22 +3,38 @@
     <div class="left-board">
       <div class="logo-wrapper">
         <div class="logo">
-          <img :src="logo" alt="logo" /> Form Generator
-          <a class="github" href="https://github.com/JakHuang/form-generator" target="_blank">
-            <img src="https://github.githubassets.com/pinned-octocat.svg" alt=""/>
+          <img
+            :src="logo" alt="logo"
+          > Form Generator
+          <a
+            class="github" href="https://github.com/JakHuang/form-generator"
+            target="_blank"
+          >
+            <img
+              src="https://github.githubassets.com/pinned-octocat.svg"
+              alt
+            >
           </a>
         </div>
       </div>
       <el-scrollbar class="left-scrollbar">
         <div class="components-list">
           <div class="components-title">
-            <svg-icon icon-class="component" /> 输入型组件
+            <svg-icon icon-class="component" />输入型组件
           </div>
-          <draggable class="components-draggable" :list="inputComponents"
-            :group="{ name: 'componentsGroup', pull: 'clone', put: false }" :clone="cloneComponent"
-            draggable=".components-item" :sort="false" @end="onEnd">
-            <div class="components-item" v-for="(element, index) in inputComponents" :key="index"
-              @click="addComponent(element)">
+          <draggable
+            class="components-draggable"
+            :list="inputComponents"
+            :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
+            :clone="cloneComponent"
+            draggable=".components-item"
+            :sort="false"
+            @end="onEnd"
+          >
+            <div
+              v-for="(element, index) in inputComponents" :key="index" class="components-item"
+              @click="addComponent(element)"
+            >
               <div class="components-body">
                 <svg-icon :icon-class="element.tagIcon" />
                 {{ element.label }}
@@ -26,13 +42,23 @@
             </div>
           </draggable>
           <div class="components-title">
-            <svg-icon icon-class="component" /> 选择型组件
+            <svg-icon icon-class="component" />选择型组件
           </div>
-          <draggable class="components-draggable" :list="selectComponents"
-            :group="{ name: 'componentsGroup', pull: 'clone', put: false }" :clone="cloneComponent"
-            draggable=".components-item" :sort="false" @end="onEnd">
-            <div class="components-item" v-for="(element, index) in selectComponents" :key="index"
-              @click="addComponent(element)">
+          <draggable
+            class="components-draggable"
+            :list="selectComponents"
+            :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
+            :clone="cloneComponent"
+            draggable=".components-item"
+            :sort="false"
+            @end="onEnd"
+          >
+            <div
+              v-for="(element, index) in selectComponents"
+              :key="index"
+              class="components-item"
+              @click="addComponent(element)"
+            >
               <div class="components-body">
                 <svg-icon :icon-class="element.tagIcon" />
                 {{ element.label }}
@@ -59,60 +85,113 @@
 
     <div class="center-board">
       <div class="action-bar">
-        <el-button icon="el-icon-video-play" type="text" @click="run">运行</el-button>
-        <el-button icon="el-icon-download" type="text" @click="download">导出vue文件</el-button>
-        <el-button class="copy-btn-main" icon="el-icon-document-copy" type="text" @click="copy">复制代码</el-button>
-        <el-button class="delete-btn" icon="el-icon-delete" type="text" @click="empty">清空</el-button>
+        <el-button
+          icon="el-icon-video-play"
+          type="text"
+          @click="run"
+        >
+          运行
+        </el-button>
+        <el-button
+          icon="el-icon-download"
+          type="text"
+          @click="download"
+        >
+          导出vue文件
+        </el-button>
+        <el-button
+          class="copy-btn-main"
+          icon="el-icon-document-copy"
+          type="text"
+          @click="copy"
+        >
+          复制代码
+        </el-button>
+        <el-button
+          class="delete-btn"
+          icon="el-icon-delete"
+          type="text"
+          @click="empty"
+        >
+          清空
+        </el-button>
       </div>
       <el-scrollbar class="center-scrollbar">
         <el-row class="center-board-row" :gutter="formConf.gutter">
-          <el-form :size="formConf.size" :label-position="formConf.labelPosition"
-            :disabled="formConf.disabled" :label-width="formConf.labelWidth+'px'">
+          <el-form
+            :size="formConf.size"
+            :label-position="formConf.labelPosition"
+            :disabled="formConf.disabled"
+            :label-width="formConf.labelWidth + 'px'"
+          >
             <draggable class="drawing-board" :list="drawingList" :animation="340" group="componentsGroup">
-              <draggable-item v-for="(element, index) in drawingList" :key="element.renderKey"
-                :drawingList="drawingList" :element="element" :index="index" :activeId="activeId"
-                @activeItem="activeFormItem" @copyItem="drawingItemCopy" @deleteItem="drawingItemDelete"/>
+              <draggable-item
+                v-for="(element, index) in drawingList" :key="element.renderKey"
+                :drawingList="drawingList"
+                :element="element"
+                :index="index"
+                :activeId="activeId"
+                :formConf="formConf"
+                @activeItem="activeFormItem"
+                @copyItem="drawingItemCopy"
+                @deleteItem="drawingItemDelete"/>
             </draggable>
-            <div class="empty-info" v-show="!drawingList.length">从左侧拖入或点选组件进行表单设计</div>
+            <div v-show="!drawingList.length" class="empty-info">
+              从左侧拖入或点选组件进行表单设计
+            </div>
           </el-form>
         </el-row>
       </el-scrollbar>
     </div>
 
-    <right-panel :activeData="activeData" :formConf="formConf" :show-field="!!drawingList.length">
-    </right-panel>
+    <right-panel
+      :active-data="activeData" :form-conf="formConf" :show-field="!!drawingList.length"
+    />
 
-    <form-drawer :visible.sync="drawerVisible" :formData="formData" size="100%" :generateConf="generateConf"/>
-    <code-type-dialog :visible.sync="dialogVisible" title="选择生成类型" @confirm="generate" :showFileName="showFileName"/>
-    <input type="hidden" id="copyNode">
+    <form-drawer
+      :visible.sync="drawerVisible"
+      :form-data="formData"
+      size="100%"
+      :generate-conf="generateConf"
+    />
+    <code-type-dialog
+      :visible.sync="dialogVisible"
+      title="选择生成类型"
+      :show-file-name="showFileName"
+      @confirm="generate"
+    />
+    <input
+      id="copyNode"
+      type="hidden"
+    >
   </div>
 </template>
 
 <script>
-import draggable from "vuedraggable"
-import render from "@/components/render"
-import FormDrawer from "./FormDrawer"
-import RightPanel from "./RightPanel"
+import draggable from 'vuedraggable'
+import { saveAs } from 'file-saver'
+import beautifier from 'beautifier'
+import ClipboardJS from 'clipboard'
+import render from '@/components/render'
+import FormDrawer from './FormDrawer'
+import RightPanel from './RightPanel'
 import {
   inputComponents,
   selectComponents,
   layoutComponents,
   formConf
 } from "@/components/generator/config"
-import { saveAs } from "file-saver"
 import { exportDefault, beautifierConf, isNumberStr, titleCase } from "@/utils/index"
-import beautifier from "beautifier"
 import { makeUpHtml, vueTemplate, vueScript, cssStyle } from "@/components/generator/html"
 import { makeUpJs } from "@/components/generator/js"
 import { makeUpCss } from "@/components/generator/css"
 import drawingDefalut from "@/components/generator/drawingDefalut"
-import ClipboardJS from "clipboard"
 import logo from "@/assets/logo.png"
 import CodeTypeDialog from "./CodeTypeDialog"
 import DraggableItem from "./DraggableItem"
 
-var emptyActiveData = { style: {}, autosize: {} }
-var oldActiveId, tempActiveData
+let emptyActiveData = { style: {}, autosize: {} }
+let oldActiveId, tempActiveData
 
 export default {
   components: {
@@ -123,10 +202,42 @@ export default {
     CodeTypeDialog,
     DraggableItem
   },
+  data() {
+    return {
+      logo,
+      idGlobal: 100,
+      formConf,
+      inputComponents,
+      selectComponents,
+      labelWidth: 100,
+      drawingList: drawingDefalut,
+      drawingData: {},
+      activeId: drawingDefalut[0].formId,
+      drawerVisible: false,
+      formData: {},
+      dialogVisible: false,
+      generateConf: null,
+      showFileName: false
+    }
+  },
+  computed: {
+    activeData() {
+      return (
+        this.drawingList.find(item => item.formId === this.activeId)
+        || emptyActiveData
+      )
+    }
+  },
   watch: {
-    "activeData.label"(val, oldVal) {
-      if (this.activeData.placeholder === undefined || !this.activeData.tag || oldActiveId !== this.activeId) return
-      this.activeData.placeholder = this.activeData.placeholder.replace(oldVal, "") + val
+    'activeData.label': function (val, oldVal) {
+      if (
+        this.activeData.placeholder === undefined
+        || !this.activeData.tag
+        || oldActiveId !== this.activeId
+      ) {
+        return
+      }
+      this.activeData.placeholder = this.activeData.placeholder.replace(oldVal, '') + val
     },
     activeId: {
       handler(val) {
@@ -138,18 +249,18 @@ export default {
   computed: {
   },
   mounted() {
-    let clipboard = new ClipboardJS('#copyNode', {
+    const clipboard = new ClipboardJS('#copyNode', {
       text: trigger => {
-        var codeStr = this.generateCode()
+        const codeStr = this.generateCode()
         this.$notify({
-          title: "成功",
-          message: "代码已复制到剪切板，可粘贴。",
-          type: "success"
+          title: '成功',
+          message: '代码已复制到剪切板，可粘贴。',
+          type: 'success'
         })
         return codeStr
       }
     })
-    clipboard.on('error', function(e) {
+    clipboard.on('error', function (e) {
       this.$message.error('代码复制失败')
     })
   },
@@ -185,7 +296,7 @@ export default {
       }
     },
     addComponent(item) {
-      var clone = this.cloneComponent(item)
+      const clone = this.cloneComponent(item)
       this.drawingList.push(clone)
       this.activeFormItem(clone)
     },
@@ -209,15 +320,13 @@ export default {
       return tempActiveData
     },
     AssembleFromData() {
-      this.formData = Object.assign(
-        {
-          fields: JSON.parse(JSON.stringify(this.drawingList))
-        },
-        this.formConf
-      )
+      this.formData = {
+        fields: JSON.parse(JSON.stringify(this.drawingList)),
+        ...this.formConf
+      }
     },
     generate(data) {
-      let func = this['exec' + titleCase(this.operationType)]
+      const func = this[`exec${titleCase(this.operationType)}`]
       this.generateConf = data
       func && func(data)
     },
@@ -226,15 +335,15 @@ export default {
       this.drawerVisible = true
     },
     execDownload(data) {
-      let codeStr = this.generateCode(),
-        blob = new Blob([codeStr], { type: "text/plain;charset=utf-8" })
+      const codeStr = this.generateCode()
+      const blob = new Blob([codeStr], { type: 'text/plain;charset=utf-8' })
       saveAs(blob, data.fileName)
     },
     execCopy(data) {
       document.getElementById('copyNode').click()
     },
     empty() {
-      this.$confirm("确定要清空所有组件吗？", "提示", { type: "warning" }).then(
+      this.$confirm('确定要清空所有组件吗？', '提示', { type: 'warning' }).then(
         () => {
           this.drawingList = []
         }
@@ -264,18 +373,18 @@ export default {
     drawingItemDelete(index, parent) {
       parent.splice(index, 1)
       this.$nextTick(() => {
-        var len = this.drawingList.length
+        const len = this.drawingList.length
         if (len) {
           this.activeFormItem(this.drawingList[len - 1])
         }
       })
     },
     generateCode() {
-      let { type } = this.generateConf
+      const { type } = this.generateConf
       this.AssembleFromData()
-      let script =vueScript(makeUpJs(this.formData, type))
-      let html = vueTemplate(makeUpHtml(this.formData, type))
-      let css = cssStyle(makeUpCss(this.formData))
+      const script = vueScript(makeUpJs(this.formData, type))
+      const html = vueTemplate(makeUpHtml(this.formData, type))
+      const css = cssStyle(makeUpCss(this.formData))
       return beautifier.html(html + script + css, beautifierConf.html)
     },
     download() {
@@ -297,6 +406,6 @@ export default {
 }
 </script>
 
-<style lang="scss">
-@import "@/styles/home";
+<style lang='scss'>
+@import '@/styles/home';
 </style>

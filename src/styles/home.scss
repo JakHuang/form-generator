@@ -184,6 +184,9 @@ $lighterBlue: #409EFF;
 .drawing-item{
   position: relative;
   cursor: move;
+  &.unfocus-bordered:not(.activeFromItem) > div:first-child  {
+    border: 1px dashed #ccc;
+  }
   .el-form-item{
     padding: 12px 10px;
   }

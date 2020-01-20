@@ -21,29 +21,32 @@ module.exports = {
     : '/',
   pages: {
     index: {
-      entry: "src/views/index/main.js",
-      template: "public/index.html",
-      filename: "index.html",
-      chunks: ["chunk-vendors", "chunk-common", "index"],
-      minify: minify
+      entry: 'src/views/index/main.js',
+      template: 'public/index.html',
+      filename: 'index.html',
+      chunks: ['chunk-vendors', 'chunk-common', 'index'],
+      minify
     },
     preview: {
-      entry: "src/views/preview/main.js",
-      template: "public/preview.html",
-      filename: "preview.html",
-      chunks: ["chunk-vendors", "chunk-common", "preview"],
-      minify: minify
+      entry: 'src/views/preview/main.js',
+      template: 'public/preview.html',
+      filename: 'preview.html',
+      chunks: ['chunk-vendors', 'chunk-common', 'preview'],
+      minify
     }
+  },
+  devServer: {
+    overlay: false
   },
   productionSourceMap: false,
   configureWebpack: {
     externals: {
-      'vue': 'Vue',
+      vue: 'Vue',
       'vue-router': 'VueRouter',
-      'axios': 'axios',
+      axios: 'axios',
       'element-ui': 'ELEMENT',
-      'monaco': 'monaco',
-      'beautifier': 'beautifier'
+      monaco: 'monaco',
+      beautifier: 'beautifier'
     }
   },
   chainWebpack(config) {

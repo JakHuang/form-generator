@@ -16,6 +16,7 @@ layouts = {
   colFormItem(h, element, index, parent) {
     let {activeItem} = this.$listeners,
       className = this.activeId == element.formId ? 'drawing-item active-from-item' : 'drawing-item'
+    if(this.formConf.unFocusedComponentBorder) className += ' unfocus-bordered'
     return (<el-col span={element.span} class={className}
       nativeOnClick={(event)=>{activeItem(element);event.stopPropagation()}} >
       <el-form-item label-width={element.labelWidth?element.labelWidth +'px':null}
@@ -64,7 +65,13 @@ import render from "@/components/render"
 import draggable from "vuedraggable"
 
 export default {
-  props: ['element', 'index', 'drawingList', 'activeId'],
+  props: [
+    'element',
+    'index',
+    'drawingList',
+    'activeId',
+    'formConf'
+  ],
   components: {
     render,
     draggable
