@@ -184,7 +184,7 @@ export default {
       isIframeLoaded: false,
       resourceVisible: false,
       scripts: [],
-      ltestinks: []
+      links: []
     }
   },
   computed: {
@@ -210,7 +210,7 @@ export default {
   },
   methods: {
     preventDefaultSave(e) {
-      if (e.key === 's' && e.metaKey) {
+      if (e.key === 's' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
       }
     },
