@@ -5,16 +5,18 @@ import render from '@/components/render'
 const components = {
   itemBtns(h, element, index, parent) {
     const { copyItem, deleteItem } = this.$listeners
-    return [<span class="drawing-item-copy" title="复制" onClick={event => {
-      copyItem(element, parent); event.stopPropagation()
-    }}>
+    return [
+      <span class="drawing-item-copy" title="复制" onClick={event => {
+        copyItem(element, parent); event.stopPropagation()
+      }}>
         <i class="el-icon-copy-document" />
       </span>,
       <span class="drawing-item-delete" title="删除" onClick={event => {
         deleteItem(index, parent); event.stopPropagation()
       }}>
         <i class="el-icon-delete" />
-      </span>]
+      </span>
+    ]
   }
 }
 const layouts = {
@@ -22,14 +24,16 @@ const layouts = {
     const { activeItem } = this.$listeners
     let className = this.activeId === element.formId ? 'drawing-item active-from-item' : 'drawing-item'
     if (this.formConf.unFocusedComponentBorder) className += ' unfocus-bordered'
-    return (<el-col span={element.span} class={className}
-      nativeOnClick={event => { activeItem(element); event.stopPropagation() }}>
-      <el-form-item label-width={element.labelWidth ? `${element.labelWidth}px` : null}
-        label={element.label} required={element.required}>
-        <render conf={element} onInput={event => { this.$set(element, 'defaultValue', event) }} />
-      </el-form-item>
-      {components.itemBtns.apply(this, arguments)}
-    </el-col>)
+    return (
+      <el-col span={element.span} class={className}
+        nativeOnClick={event => { activeItem(element); event.stopPropagation() }}>
+        <el-form-item label-width={element.labelWidth ? `${element.labelWidth}px` : null}
+          label={element.label} required={element.required}>
+          <render conf={element} onInput={event => { this.$set(element, 'defaultValue', event) }} />
+        </el-form-item>
+        {components.itemBtns.apply(this, arguments)}
+      </el-col>
+    )
   },
   rowFormItem(h, element, index, parent) {
     const { activeItem } = this.$listeners
