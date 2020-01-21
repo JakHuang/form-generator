@@ -19,14 +19,9 @@ const components = {
 }
 const layouts = {
   colFormItem(h, element, index, parent) {
-<<<<<<< HEAD
-    let {activeItem} = this.$listeners,
-      className = this.activeId == element.formId ? 'drawing-item active-from-item' : 'drawing-item'
-=======
     const { activeItem } = this.$listeners
     let className = this.activeId === element.formId ? 'drawing-item active-from-item' : 'drawing-item'
     if (this.formConf.unFocusedComponentBorder) className += ' unfocus-bordered'
->>>>>>> 432760c... 引入新的eslint规则后，代码整理
     return (<el-col span={element.span} class={className}
       nativeOnClick={event => { activeItem(element); event.stopPropagation() }}>
       <el-form-item label-width={element.labelWidth ? `${element.labelWidth}px` : null}
@@ -71,16 +66,10 @@ function layoutIsNotFound() {
 }
 
 export default {
-<<<<<<< HEAD
-  props: ['element', 'index', 'drawingList', 'activeId'],
-=======
->>>>>>> 432760c... 引入新的eslint规则后，代码整理
   components: {
     render,
     draggable
   },
-<<<<<<< HEAD
-=======
   props: [
     'element',
     'index',
@@ -88,7 +77,6 @@ export default {
     'activeId',
     'formConf'
   ],
->>>>>>> 432760c... 引入新的eslint规则后，代码整理
   render(h) {
     const layout = layouts[this.element.layout]
 

@@ -925,66 +925,6 @@ export default {
       dialogVisible: false,
       iconsVisible: false,
       currentIconModel: null,
-<<<<<<< HEAD
-      dateTypeOptions: [{
-        "label": "日(date)",
-        "value": "date"
-      }, {
-        "label": "周(week)",
-        "value": "week"
-      }, {
-        "label": "月(month)",
-        "value": "month"
-      }, {
-        "label": "年(year)",
-        "value": "year"
-      }, {
-        "label": "日期时间(datetime)",
-        "value": "datetime"
-      }],
-      dateRangeTypeOptions: [{
-        "label": "日期范围(daterange)",
-        "value": "daterange"
-      }, {
-        "label": "月范围(monthrange)",
-        "value": "monthrange"
-      }, {
-        "label": "日期时间范围(datetimerange)",
-        "value": "datetimerange"
-      }],
-      colorFormatOptions: [{
-        label: 'hex',
-        value: 'hex'
-      },{
-        label: 'rgb',
-        value: 'rgb'
-      },{
-        label: 'rgba',
-        value: 'rgba'
-      },{
-        label: 'hsv',
-        value: 'hsv'
-      },{
-        label: 'hsl',
-        value: "hsl"
-      }],
-      justifyOptions: [{
-        "label": "start",
-        "value": "start"
-      }, {
-        "label": "end",
-        "value": "end"
-      }, {
-        "label": "center",
-        "value": "center"
-      }, {
-        "label": "space-around",
-        "value": "space-around"
-      }, {
-        "label": "space-between",
-        "value": "space-between"
-      }]
-=======
       dateTypeOptions: [
         {
           label: '日(date)',
@@ -1065,7 +1005,6 @@ export default {
           value: 'space-between'
         }
       ]
->>>>>>> 432760c... 引入新的eslint规则后，代码整理
     }
   },
   computed: {
