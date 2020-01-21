@@ -131,14 +131,11 @@
               clearable
             />
           </el-form-item>
-          <el-form-item
-            v-if="activeData.vModel!==undefined"
-            label="默认值"
-          >
+          <el-form-item v-if="activeData.vModel!==undefined" label="默认值">
             <el-input
-              :value="activeData.defaultValue"
+              :value="setDefaultValue(activeData.defaultValue)"
               placeholder="请输入默认值"
-              @input="setDefaultValue"
+              @input="onDefaultValueInput"
             />
           </el-form-item>
           <el-form-item
@@ -330,9 +327,9 @@
             label="开启值"
           >
             <el-input
-              :value="activeData['active-value']"
+              :value="setDefaultValue(activeData['active-value'])"
               placeholder="请输入开启值"
-              @input="setSwitchValue($event, 'active-value')"
+              @input="onSwitchValueInput($event, 'active-value')"
             />
           </el-form-item>
           <el-form-item
@@ -340,9 +337,9 @@
             label="关闭值"
           >
             <el-input
-              :value="activeData['inactive-value']"
+              :value="setDefaultValue(activeData['inactive-value'])"
               placeholder="请输入关闭值"
-              @input="setSwitchValue($event, 'inactive-value')"
+              @input="onSwitchValueInput($event, 'inactive-value')"
             />
           </el-form-item>
           <el-form-item
@@ -1104,7 +1101,19 @@ export default {
     setOptionValue(item, val) {
       item.value = isNumberStr(val) ? +val : val
     },
-    setDefaultValue(str) {
+    setDefaultValue(val) {
+      if (Array.isArray(val)) {
+        return val.join(',')
+      }
+      if (['string', 'number'].indexOf(val) > -1) {
+        return val
+      }
+      if (typeof val === 'boolean') {
+        return `${val}`
+      }
+      return val
+    },
+    onDefaultValueInput(str) {
       if (isArray(this.activeData.defaultValue)) {
         // 数组
         this.$set(
@@ -1113,6 +1122,7 @@ export default {
           str.split(',').map(val => (isNumberStr(val) ? +val : val))
         )
       } else if (['true', 'false'].indexOf(str) > -1) {
+        console.log(str, 1129)
         // 布尔
         this.$set(this.activeData, 'defaultValue', JSON.parse(str))
       } else {
@@ -1124,7 +1134,7 @@ export default {
         )
       }
     },
-    setSwitchValue(val, name) {
+    onSwitchValueInput(val, name) {
       if (['true', 'false'].indexOf(val) > -1) {
         this.$set(this.activeData, name, JSON.parse(val))
       } else {
