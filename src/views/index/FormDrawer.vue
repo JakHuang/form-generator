@@ -183,7 +183,7 @@ export default {
       isIframeLoaded: false,
       resourceVisible: false,
       scripts: [],
-      links: []
+      ltestinks: []
     }
   },
   computed: {
@@ -194,6 +194,7 @@ export default {
   watch: {},
   created() {},
   mounted() {
+    window.addEventListener('keydown', this.preventDefaultSave)
     const a = new ClipboardJS('.copy-btn', {
       text: trigger => {
         const codeStr = this.generateCode()
@@ -207,6 +208,11 @@ export default {
     })
   },
   methods: {
+    preventDefaultSave(e) {
+      if (e.key === 's' && e.metaKey) {
+        e.preventDefault()
+      }
+    },
     onOpen() {
       setTimeout(() => {
         const { type } = this.generateConf
@@ -239,6 +245,11 @@ export default {
           automaticLayout: true
         })
       }
+      editorObj[type].onKeyDown(e => {
+        if (e.keyCode === 49 && (e.metaKey || e.ctrlKey)) {
+          this.runCode()
+        }
+      })
     },
     runCode() {
       const jsCodeStr = editorObj.js.getValue()
