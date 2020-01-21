@@ -36,5 +36,8 @@ Form Generator Plugin
 详见 [**迭代计划**](https://github.com/JakHuang/form-generator/projects/2)  
 欢迎提交PR
 
+## PR鸣谢
+- [IWANABETHATGUY](https://github.com/IWANABETHATGUY)
+
 ## 开源协议
 [MIT](https://opensource.org/licenses/MIT)

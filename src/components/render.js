@@ -57,18 +57,26 @@ const componentChild = {
     options(h, conf, key) {
       const list = []
       conf.options.forEach(item => {
-        if (conf.optionType === 'button') list.push(<el-checkbox-button label={item.value}>{item.label}</el-checkbox-button>)
-        else list.push(<el-checkbox label={item.value} border={conf.border}>{item.label}</el-checkbox>)
+        if (conf.optionType === 'button') {
+          list.push(<el-checkbox-button label={item.value}>{item.label}</el-checkbox-button>)
+        } else {
+          list.push(<el-checkbox label={item.value} border={conf.border}>{item.label}</el-checkbox>)
+        }
       })
       return list
     }
   },
   'el-upload': {
-    'list-type': function (h, conf, key) {
+    'list-type': (h, conf, key) => {
       const list = []
-      if (conf['list-type'] === 'picture-card') list.push(<i class="el-icon-plus"></i>)
-      else list.push(<el-button size="small" type="primary" icon="el-icon-upload">{conf.buttonText}</el-button>)
-      if (conf.showTip) list.push(<div slot="tip" class="el-upload__tip">只能上传不超过 {conf.fileSize}{conf.sizeUnit} 的{conf.accept}文件</div>)
+      if (conf['list-type'] === 'picture-card') {
+        list.push(<i class="el-icon-plus"></i>)
+      } else {
+        list.push(<el-button size="small" type="primary" icon="el-icon-upload">{conf.buttonText}</el-button>)
+      }
+      if (conf.showTip) {
+        list.push(<div slot="tip" class="el-upload__tip">只能上传不超过 {conf.fileSize}{conf.sizeUnit} 的{conf.accept}文件</div>)
+      }
       return list
     }
   }

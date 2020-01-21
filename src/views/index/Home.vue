@@ -3,17 +3,9 @@
     <div class="left-board">
       <div class="logo-wrapper">
         <div class="logo">
-          <img
-            :src="logo" alt="logo"
-          > Form Generator
-          <a
-            class="github" href="https://github.com/JakHuang/form-generator"
-            target="_blank"
-          >
-            <img
-              src="https://github.githubassets.com/pinned-octocat.svg"
-              alt
-            >
+          <img :src="logo" alt="logo"> Form Generator
+          <a class="github" href="https://github.com/JakHuang/form-generator" target="_blank">
+            <img src="https://github.githubassets.com/pinned-octocat.svg" alt>
           </a>
         </div>
       </div>
@@ -65,9 +57,24 @@
               </div>
             </div>
           </draggable>
-          <!-- <div class="components-title">
-            <svg-icon icon-class="component" />布局型组件
-          </div> -->
+          <div class="components-title">
+            <svg-icon icon-class="component" /> 布局型组件
+          </div>
+          <draggable
+            class="components-draggable" :list="layoutComponents"
+            :group="{ name: 'componentsGroup', pull: 'clone', put: false }" :clone="cloneComponent"
+            draggable=".components-item" :sort="false" @end="onEnd"
+          >
+            <div
+              v-for="(element, index) in layoutComponents" :key="index" class="components-item"
+              @click="addComponent(element)"
+            >
+              <div class="components-body">
+                <svg-icon :icon-class="element.tagIcon" />
+                {{ element.label }}
+              </div>
+            </div>
+          </draggable>
         </div>
       </el-scrollbar>
     </div>
@@ -106,10 +113,7 @@
         </el-button>
       </div>
       <el-scrollbar class="center-scrollbar">
-        <el-row
-          class="center-board-row"
-          :gutter="formConf.gutter"
-        >
+        <el-row class="center-board-row" :gutter="formConf.gutter">
           <el-form
             :size="formConf.size"
             :label-position="formConf.labelPosition"
@@ -122,43 +126,20 @@
               :animation="340"
               group="componentsGroup"
             >
-              <el-col
-                v-for="(element, index) in drawingList" :key="element.renderKey" :span="element.span"
-                class="drawing-item"
-                :class="{'activeFromItem' : activeId == element.formId, 'unfocus-bordered': formConf.unFocusedComponentBorder }"
-                @click.native="activeFormItem(element.formId)"
-              >
-                <el-form-item
-                  :label-width="
-                    element.labelWidth ? element.labelWidth + 'px' : null
-                  "
-                  :label="element.label"
-                  :required="element.required"
-                >
-                  <render
-                    :conf="element"
-                    @input="$set(element, 'defaultValue', $event)"
-                  />
-                </el-form-item>
-                <span
-                  class="drawing-item-copy"
-                  title="复制"
-                  @click.stop="drawingItemCopy(element)"
-                >
-                  <i class="el-icon-copy-document" />
-                </span>
-                <span
-                  class="drawing-item-delete"
-                  title="删除"
-                  @click.stop="drawingItemDelete(index)"
-                >
-                  <i class="el-icon-delete" />
-                </span>
-              </el-col>
+              <draggable-item
+                v-for="(element, index) in drawingList"
+                :key="element.renderKey"
+                :drawing-list="drawingList"
+                :element="element"
+                :index="index"
+                :active-id="activeId"
+                :form-conf="formConf"
+                @activeItem="activeFormItem"
+                @copyItem="drawingItemCopy"
+                @deleteItem="drawingItemDelete"
+              />
             </draggable>
-            <div
-              v-show="!drawingList.length" class="empty-info"
-            >
+            <div v-show="!drawingList.length" class="empty-info">
               从左侧拖入或点选组件进行表单设计
             </div>
           </el-form>
@@ -167,7 +148,9 @@
     </div>
 
     <right-panel
-      :active-data="activeData" :form-conf="formConf" :show-field="!!drawingList.length"
+      :active-data="activeData"
+      :form-conf="formConf"
+      :show-field="!!drawingList.length"
     />
 
     <form-drawer
@@ -182,10 +165,7 @@
       :show-file-name="showFileName"
       @confirm="generate"
     />
-    <input
-      id="copyNode"
-      type="hidden"
-    >
+    <input id="copyNode" type="hidden">
   </div>
 </template>
 
@@ -200,28 +180,25 @@ import RightPanel from './RightPanel'
 import {
   inputComponents,
   selectComponents,
+  layoutComponents,
   formConf
 } from '@/components/generator/config'
 import {
-  exportDefault,
-  beautifierConf,
-  isNumberStr,
-  titleCase
+  exportDefault, beautifierConf, isNumberStr, titleCase
 } from '@/utils/index'
 import {
-  makeUpHtml,
-  vueTemplate,
-  vueScript,
-  cssStyle
+  makeUpHtml, vueTemplate, vueScript, cssStyle
 } from '@/components/generator/html'
 import { makeUpJs } from '@/components/generator/js'
 import { makeUpCss } from '@/components/generator/css'
 import drawingDefalut from '@/components/generator/drawingDefalut'
 import logo from '@/assets/logo.png'
 import CodeTypeDialog from './CodeTypeDialog'
+import DraggableItem from './DraggableItem'
 
 const emptyActiveData = { style: {}, autosize: {} }
 let oldActiveId
+let tempActiveData
 
 export default {
   components: {
@@ -229,7 +206,8 @@ export default {
     render,
     FormDrawer,
     RightPanel,
-    CodeTypeDialog
+    CodeTypeDialog,
+    DraggableItem
   },
   data() {
     return {
@@ -238,6 +216,7 @@ export default {
       formConf,
       inputComponents,
       selectComponents,
+      layoutComponents,
       labelWidth: 100,
       drawingList: drawingDefalut,
       drawingData: {},
@@ -246,19 +225,14 @@ export default {
       formData: {},
       dialogVisible: false,
       generateConf: null,
-      showFileName: false
+      showFileName: false,
+      activeData: drawingDefalut[0]
     }
   },
   computed: {
-    activeData() {
-      return (
-        this.drawingList.find(item => item.formId === this.activeId)
-        || emptyActiveData
-      )
-    }
   },
   watch: {
-    'activeData.label': function (val, oldVal) {
+    'activeData.label': (val, oldVal) => {
       if (
         this.activeData.placeholder === undefined
         || !this.activeData.tag
@@ -287,35 +261,44 @@ export default {
         return codeStr
       }
     })
-    clipboard.on('error', function (e) {
+    clipboard.on('error', e => {
       this.$message.error('代码复制失败')
     })
   },
   methods: {
-    activeFormItem(formId) {
-      this.activeId = formId
+    activeFormItem(element) {
+      this.activeData = element
+      this.activeId = element.formId
     },
-    onEnd(obj) {
-      if (obj.from !== obj.to) this.activeId = this.idGlobal
+    onEnd(obj, a) {
+      if (obj.from !== obj.to) {
+        this.activeData = tempActiveData
+        this.activeId = this.idGlobal
+      }
     },
     addComponent(item) {
       const clone = this.cloneComponent(item)
       this.drawingList.push(clone)
-      this.activeId = this.idGlobal
+      this.activeFormItem(clone)
     },
     cloneComponent(origin) {
-      this.idGlobal += 1
       const clone = JSON.parse(JSON.stringify(origin))
+      clone.formId = ++this.idGlobal
+      clone.span = formConf.span
+      clone.renderKey = +new Date() // 改变renderKey后可以实现强制更新组件
       delete clone.tagIcon
-      const obj = Object.assign(clone, {
-        formId: this.idGlobal,
-        vModel: `field${this.idGlobal}`,
-        renderKey: +new Date(), // 改变renderKey后可以实现强制更新组件
-        span: formConf.span
-      })
-      clone.placeholder !== undefined
-        && (obj.placeholder = clone.placeholder + clone.label)
-      return obj
+      if (!clone.layout) clone.layout = 'colFormItem'
+      if (clone.layout === 'colFormItem') {
+        clone.vModel = `field${this.idGlobal}`
+        clone.placeholder !== undefined && (clone.placeholder += clone.label)
+        tempActiveData = clone
+      } else if (clone.layout === 'rowFormItem') {
+        delete clone.label
+        clone.componentName = `row${this.idGlobal}`
+        clone.gutter = this.formConf.gutter
+        tempActiveData = clone
+      }
+      return tempActiveData
     },
     AssembleFromData() {
       this.formData = {
@@ -347,19 +330,31 @@ export default {
         }
       )
     },
-    drawingItemCopy(item) {
-      const clone = JSON.parse(JSON.stringify(item))
-      clone.formId = ++this.idGlobal
-      clone.vModel = `field${this.idGlobal}`
-      this.drawingList.push(clone)
-      this.activeFormItem(clone.formId)
+    drawingItemCopy(item, parent) {
+      let clone = JSON.parse(JSON.stringify(item))
+      clone = this.createIdAndKey(clone)
+      parent.push(clone)
+      this.activeFormItem(clone)
     },
-    drawingItemDelete(index) {
-      this.drawingList.splice(index, 1)
+    createIdAndKey(item) {
+      item.formId = ++this.idGlobal
+      item.renderKey = +new Date()
+      if (item.layout === 'colFormItem') {
+        item.vModel = `field${this.idGlobal}`
+      } else if (item.layout === 'rowFormItem') {
+        item.componentName = `row${this.idGlobal}`
+      }
+      if (Array.isArray(item.children)) {
+        item.children = item.children.map(childItem => this.createIdAndKey(childItem))
+      }
+      return item
+    },
+    drawingItemDelete(index, parent) {
+      parent.splice(index, 1)
       this.$nextTick(() => {
         const len = this.drawingList.length
         if (len) {
-          this.activeFormItem(this.drawingList[len - 1].formId)
+          this.activeFormItem(this.drawingList[len - 1])
         }
       })
     },
@@ -390,6 +385,6 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-@import '@/styles/homeScoped';
+<style lang='scss'>
+@import '@/styles/home';
 </style>

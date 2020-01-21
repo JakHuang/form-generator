@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { trigger } from './config'
 
 let confGlobal
@@ -62,7 +63,7 @@ function buildFromBtns(conf, type) {
 
 function buildFormItemTemplate(element, child) {
   let labelWidth = ''
-  if (element.labelWidth && element.labelWidth != confGlobal.labelWidth) {
+  if (element.labelWidth && element.labelWidth !== confGlobal.labelWidth) {
     labelWidth = `label-width="${element.labelWidth}px"`
   }
   const required = !trigger[element.tag] && element.required ? 'required' : ''
@@ -75,7 +76,7 @@ function buildFormItemTemplate(element, child) {
 }
 
 const tags = {
-  'el-input': function (el) {
+  'el-input': el => {
     const {
       disabled, vModel, clearable, placeholder, width
     } = attrBuilder(el)
@@ -86,13 +87,15 @@ const tags = {
     const suffixIcon = el['suffix-icon'] ? `suffix-icon='${el['suffix-icon']}'` : ''
     const showPassword = el['show-password'] ? 'show-password' : ''
     const type = el.type ? `type="${el.type}"` : ''
-    const autosize = el.autosize && el.autosize.minRows ? `:autosize="{minRows: ${el.autosize.minRows}, maxRows: ${el.autosize.maxRows}}"` : ''
+    const autosize = el.autosize && el.autosize.minRows
+      ? `:autosize="{minRows: ${el.autosize.minRows}, maxRows: ${el.autosize.maxRows}}"`
+      : ''
     let child = buildElInputChild(el)
 
     if (child) child = `\n${child}\n` // 换行
     return `<${el.tag} ${vModel} ${type} ${placeholder} ${maxlength} ${showWordLimit} ${readonly} ${disabled} ${clearable} ${prefixIcon} ${suffixIcon} ${showPassword} ${autosize} ${width}>${child}</${el.tag}>`
   },
-  'el-input-number': function (el) {
+  'el-input-number': el => {
     const { disabled, vModel, placeholder } = attrBuilder(el)
     const controlsPosition = el['controls-position'] ? `controls-position=${el['controls-position']}` : ''
     const min = el.min ? `:min='${el.min}'` : ''
@@ -103,7 +106,7 @@ const tags = {
 
     return `<${el.tag} ${vModel} ${placeholder} ${step} ${stepStrictly} ${precision} ${controlsPosition} ${min} ${max} ${disabled}></${el.tag}>`
   },
-  'el-select': function (el) {
+  'el-select': el => {
     const {
       disabled, vModel, clearable, placeholder, width
     } = attrBuilder(el)
@@ -114,7 +117,7 @@ const tags = {
     if (child) child = `\n${child}\n` // 换行
     return `<${el.tag} ${vModel} ${placeholder} ${disabled} ${multiple} ${filterable} ${clearable} ${width}>${child}</${el.tag}>`
   },
-  'el-radio-group': function (el) {
+  'el-radio-group': el => {
     const { disabled, vModel } = attrBuilder(el)
     const size = `size="${el.size}"`
     let child = buildElRadioGroupChild(el)
@@ -122,7 +125,7 @@ const tags = {
     if (child) child = `\n${child}\n` // 换行
     return `<${el.tag} ${vModel} ${size} ${disabled}>${child}</${el.tag}>`
   },
-  'el-checkbox-group': function (el) {
+  'el-checkbox-group': el => {
     const { disabled, vModel } = attrBuilder(el)
     const size = `size="${el.size}"`
     const min = el.min ? `:min="${el.min}"` : ''
@@ -132,7 +135,7 @@ const tags = {
     if (child) child = `\n${child}\n` // 换行
     return `<${el.tag} ${vModel} ${min} ${max} ${size} ${disabled}>${child}</${el.tag}>`
   },
-  'el-switch': function (el) {
+  'el-switch': el => {
     const { disabled, vModel } = attrBuilder(el)
     const activeText = el['active-text'] ? `active-text="${el['active-text']}"` : ''
     const inactiveText = el['inactive-text'] ? `inactive-text="${el['inactive-text']}"` : ''
@@ -143,7 +146,7 @@ const tags = {
 
     return `<${el.tag} ${vModel} ${activeText} ${inactiveText} ${activeColor} ${inactiveColor} ${activeValue} ${inactiveValue} ${disabled}></${el.tag}>`
   },
-  'el-cascader': function (el) {
+  'el-cascader': el => {
     const {
       disabled, vModel, clearable, placeholder, width
     } = attrBuilder(el)
@@ -155,7 +158,7 @@ const tags = {
 
     return `<${el.tag} ${vModel} ${options} ${props} ${width} ${showAllLevels} ${placeholder} ${separator} ${filterable} ${clearable} ${disabled}></${el.tag}>`
   },
-  'el-slider': function (el) {
+  'el-slider': el => {
     const { disabled, vModel } = attrBuilder(el)
     const min = el.min ? `:min='${el.min}'` : ''
     const max = el.max ? `:max='${el.max}'` : ''
@@ -165,7 +168,7 @@ const tags = {
 
     return `<${el.tag} ${min} ${max} ${step} ${vModel} ${range} ${showStops} ${disabled}></${el.tag}>`
   },
-  'el-time-picker': function (el) {
+  'el-time-picker': el => {
     const {
       disabled, vModel, clearable, placeholder, width
     } = attrBuilder(el)
@@ -179,7 +182,7 @@ const tags = {
 
     return `<${el.tag} ${vModel} ${isRange} ${format} ${valueFormat} ${pickerOptions} ${width} ${placeholder} ${startPlaceholder} ${endPlaceholder} ${rangeSeparator} ${clearable} ${disabled}></${el.tag}>`
   },
-  'el-date-picker': function (el) {
+  'el-date-picker': el => {
     const {
       disabled, vModel, clearable, placeholder, width
     } = attrBuilder(el)
@@ -193,7 +196,7 @@ const tags = {
 
     return `<${el.tag} ${type} ${vModel} ${format} ${valueFormat} ${width} ${placeholder} ${startPlaceholder} ${endPlaceholder} ${rangeSeparator} ${clearable} ${readonly} ${disabled}></${el.tag}>`
   },
-  'el-rate': function (el) {
+  'el-rate': el => {
     const { disabled, vModel } = attrBuilder(el)
     const max = el.max ? `:max='${el.max}'` : ''
     const allowHalf = el['allow-half'] ? 'allow-half' : ''
@@ -202,7 +205,7 @@ const tags = {
 
     return `<${el.tag} ${vModel} ${allowHalf} ${showText} ${showScore} ${disabled}></${el.tag}>`
   },
-  'el-color-picker': function (el) {
+  'el-color-picker': el => {
     const { disabled, vModel } = attrBuilder(el)
     const size = `size="${el.size}"`
     const showAlpha = el['show-alpha'] ? 'show-alpha' : ''
@@ -210,7 +213,8 @@ const tags = {
 
     return `<${el.tag} ${vModel} ${size} ${showAlpha} ${colorFormat} ${disabled}></${el.tag}>`
   },
-  'el-upload': function (el) {
+  // eslint-disable-next-line func-names
+  'el-upload': el => {
     const disabled = el.disabled ? ':disabled=\'true\'' : ''
     const action = el.action ? `:action="${el.vModel}Action"` : ''
     const multiple = el.multiple ? 'multiple' : ''
