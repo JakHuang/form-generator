@@ -3,11 +3,7 @@ module.exports = {
   env: {
     node: true
   },
-  extends: [
-    'plugin:vue/recommended',
-    'eslint:recommended',
-    'airbnb-base'
-  ],
+  extends: ['plugin:vue/recommended', 'eslint:recommended', 'airbnb-base'],
   rules: {
     'linebreak-style': 0,
     'no-console': 'off',
@@ -24,8 +20,9 @@ module.exports = {
     'no-use-before-define': 0,
     'no-param-reassign': 0,
     'arrow-parens': [2, 'as-needed'],
-    "vue/max-attributes-per-line": 0,
-    'max-len': [1,
+    'vue/max-attributes-per-line': 0,
+    'max-len': [
+      1,
       {
         code: 120
       }
@@ -38,5 +35,8 @@ module.exports = {
   },
   parserOptions: {
     parser: 'babel-eslint'
+  },
+  globals: {
+    location: false
   }
-}
+};
