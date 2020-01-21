@@ -386,6 +386,7 @@ export const layoutComponents = [
     justify: 'start',
     align: 'top',
     label: '行容器',
+    layoutTree: true,
     children: [],
     document: 'https://element.eleme.cn/#/zh-CN/component/layout'
   }

@@ -232,7 +232,8 @@ export default {
   computed: {
   },
   watch: {
-    'activeData.label': (val, oldVal) => {
+    // eslint-disable-next-line func-names
+    'activeData.label': function (val, oldVal) {
       if (
         this.activeData.placeholder === undefined
         || !this.activeData.tag
@@ -286,7 +287,7 @@ export default {
       clone.formId = ++this.idGlobal
       clone.span = formConf.span
       clone.renderKey = +new Date() // 改变renderKey后可以实现强制更新组件
-      delete clone.tagIcon
+      // delete clone.tagIcon
       if (!clone.layout) clone.layout = 'colFormItem'
       if (clone.layout === 'colFormItem') {
         clone.vModel = `field${this.idGlobal}`

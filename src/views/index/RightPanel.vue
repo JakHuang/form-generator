@@ -73,7 +73,7 @@
               v-model="activeData.span"
               :max="24"
               :min="1"
-              :marks="{12:12}"
+              :marks="{12:''}"
               @change="spanChange"
             />
           </el-form-item>
@@ -771,6 +771,24 @@
             <el-switch v-model="activeData.required" />
           </el-form-item>
 
+          <template v-if="activeData.layoutTree">
+            <el-divider>布局结构树</el-divider>
+            <el-tree
+              :data="[activeData]"
+              :props="layoutTreeProps"
+              node-key="renderKey"
+              default-expand-all
+              draggable
+            >
+              <span slot-scope="{ node, data }">
+                <span class="node-label">
+                  <svg-icon class="node-icon" :icon-class="data.tagIcon" />
+                  {{ node.label }}
+                </span>
+              </span>
+            </el-tree>
+          </template>
+
           <template v-if="activeData.layout === 'colFormItem'">
             <el-divider>正则校验</el-divider>
             <div
@@ -1007,7 +1025,12 @@ export default {
           label: 'space-between',
           value: 'space-between'
         }
-      ]
+      ],
+      layoutTreeProps: {
+        label(data, node) {
+          return data.componentName || `${data.label}: ${data.vModel}`
+        }
+      }
     }
   },
   computed: {
@@ -1222,5 +1245,11 @@ export default {
   line-height: 26px;
   color: #fff;
   font-size: 18px;
+}
+.node-label{
+  font-size: 14px;
+}
+.node-icon{
+  color: #bebfc3;
 }
 </style>
