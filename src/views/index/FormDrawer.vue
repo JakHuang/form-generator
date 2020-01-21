@@ -1,122 +1,56 @@
 <template>
   <div>
-    <el-drawer
-      v-bind="$attrs"
-      v-on="$listeners"
-      @opened="onOpen"
-      @close="onClose"
-    >
+    <el-drawer v-bind="$attrs" v-on="$listeners" @opened="onOpen" @close="onClose">
       <div style="height:100%">
         <el-row style="height:100%;overflow:auto">
-          <el-col
-            :md="24"
-            :lg="12"
-            class="left-editor"
-          >
-            <div
-              class="setting"
-              title="资源引用"
-              @click="showResource"
-            >
-              <el-badge
-                :is-dot="resources.length"
-                class="item"
-              >
+          <el-col :md="24" :lg="12" class="left-editor">
+            <div class="setting" title="资源引用" @click="showResource">
+              <el-badge :is-dot="!!resources.length" class="item">
                 <i class="el-icon-setting" />
               </el-badge>
             </div>
-            <el-tabs
-              v-model="activeTab"
-              type="card"
-              class="editor-tabs"
-            >
+            <el-tabs v-model="activeTab" type="card" class="editor-tabs">
               <el-tab-pane name="html">
                 <span slot="label">
-                  <i
-                    v-if="activeTab==='html'"
-                    class="el-icon-edit"
-                  />
-                  <i
-                    v-else
-                    class="el-icon-document"
-                  />
+                  <i v-if="activeTab==='html'" class="el-icon-edit" />
+                  <i v-else class="el-icon-document" />
                   template
                 </span>
               </el-tab-pane>
               <el-tab-pane name="js">
                 <span slot="label">
-                  <i
-                    v-if="activeTab==='js'"
-                    class="el-icon-edit"
-                  />
-                  <i
-                    v-else
-                    class="el-icon-document"
-                  />
+                  <i v-if="activeTab==='js'" class="el-icon-edit" />
+                  <i v-else class="el-icon-document" />
                   script
                 </span>
               </el-tab-pane>
               <el-tab-pane name="css">
                 <span slot="label">
-                  <i
-                    v-if="activeTab==='css'"
-                    class="el-icon-edit"
-                  />
-                  <i
-                    v-else
-                    class="el-icon-document"
-                  />
+                  <i v-if="activeTab==='css'" class="el-icon-edit" />
+                  <i v-else class="el-icon-document" />
                   css
                 </span>
               </el-tab-pane>
             </el-tabs>
-            <div
-              v-show="activeTab==='html'"
-              id="editorHtml"
-              class="tab-editor"
-            />
-            <div
-              v-show="activeTab==='js'"
-              id="editorJs"
-              class="tab-editor"
-            />
-            <div
-              v-show="activeTab==='css'"
-              id="editorCss"
-              class="tab-editor"
-            />
+            <div v-show="activeTab==='html'" id="editorHtml" class="tab-editor" />
+            <div v-show="activeTab==='js'" id="editorJs" class="tab-editor" />
+            <div v-show="activeTab==='css'" id="editorCss" class="tab-editor" />
           </el-col>
-          <el-col
-            :md="24"
-            :lg="12"
-            class="right-preview"
-          >
+          <el-col :md="24" :lg="12" class="right-preview">
             <div class="action-bar">
-              <span
-                class="bar-btn"
-                @click="runCode"
-              >
+              <span class="bar-btn" @click="runCode">
                 <i class="el-icon-refresh" />
                 刷新
               </span>
-              <span
-                class="bar-btn"
-                @click="exportFile"
-              >
+              <span class="bar-btn" @click="exportFile">
                 <i class="el-icon-download" />
                 导出vue文件
               </span>
-              <span
-                ref="copyBtn"
-                class="bar-btn copy-btn"
-              >
+              <span ref="copyBtn" class="bar-btn copy-btn">
                 <i class="el-icon-document-copy" />
                 复制代码
               </span>
-              <span
-                class="bar-btn delete-btn"
-                @click="$emit('update:visible', false)"
-              >
+              <span class="bar-btn delete-btn" @click="$emit('update:visible', false)">
                 <i class="el-icon-circle-close" />
                 关闭
               </span>
@@ -129,11 +63,7 @@
               src="preview.html"
               @load="iframeLoad"
             />
-            <div
-              v-show="!isIframeLoaded"
-              v-loading="true"
-              class="result-wrapper"
-            />
+            <div v-show="!isIframeLoaded" v-loading="true" class="result-wrapper" />
           </el-col>
         </el-row>
       </div>
@@ -401,12 +331,7 @@ export default {
     }
   }
 }
-</style>
-<style lang="scss">
-.el-drawer__header {
-  display: none;
-}
-.ace_scrollbar-h {
+::v-deep .el-drawer__header {
   display: none;
 }
 </style>
