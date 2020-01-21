@@ -208,6 +208,9 @@ export default {
       }
     })
   },
+  beforeDestroy() {
+    window.removeEventListener('keydown', this.preventDefaultSave)
+  },
   methods: {
     preventDefaultSave(e) {
       if (e.key === 's' && (e.metaKey || e.ctrlKey)) {
