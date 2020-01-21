@@ -115,7 +115,7 @@ export default {
   },
   computed: {},
   watch: {
-    'formData.value': function (val) {
+    'formData.value': val => {
       this.dataType = isNumberStr(val) ? 'number' : 'string'
     }
   },

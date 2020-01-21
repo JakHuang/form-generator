@@ -20,7 +20,7 @@ export function indent(str, num, len = 2) {
   const isLeft = num < 0; const result = []; let reg; let
     spaces = ''
   if (isLeft) {
-    num = -1 * num
+    num *= -1
     reg = new RegExp(`(^\\s{0,${num * len}})`, 'g')
   } else {
     for (let i = 0; i < num * len; i++) spaces += ' '
@@ -40,7 +40,7 @@ export function titleCase(str) {
 
 // 下划转驼峰
 export function camelCase(str) {
-  return str.replace(/-[a-z]/g, str => str.substr(-1).toUpperCase())
+  return str.replace(/-[a-z]/g, str1 => str1.substr(-1).toUpperCase())
 }
 
 export function isNumberStr(str) {
