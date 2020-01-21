@@ -16,8 +16,12 @@ const inheritAttrs = {
 
 export function makeUpJs(conf, type) {
   confGlobal = conf = JSON.parse(JSON.stringify(conf))
-  const dataList = []; const ruleList = []; const optionsList = []; let props = ''; const methodList = mixinMethod(type); let
-    uploadVar = ''
+  const dataList = []
+  const ruleList = []
+  const optionsList = []
+  let props = ''
+  const methodList = mixinMethod(type)
+  let uploadVar = ''
 
   conf.fields.forEach(el => {
     dataList.push(buildData(el))
@@ -46,7 +50,16 @@ export function makeUpJs(conf, type) {
     }
   })
 
-  const script = buildexport(conf, type, dataList.join('\n'), ruleList.join('\n'), optionsList.join('\n'), uploadVar, props, methodList.join('\n'))
+  const script = buildexport(
+    conf,
+    type,
+    dataList.join('\n'),
+    ruleList.join('\n'),
+    optionsList.join('\n'),
+    uploadVar,
+    props,
+    methodList.join('\n')
+  )
   confGlobal = null
   return script
 }
@@ -114,7 +127,9 @@ function buildRules(conf) {
     }
     if (conf.regList && isArray(conf.regList)) {
       conf.regList.forEach(item => {
-        if (item.pattern) rules.push(`{ pattern: ${eval(item.pattern)}, message: '${item.message}', trigger: '${trigger[conf.tag]}' }`)
+        if (item.pattern) {
+          rules.push(`{ pattern: ${eval(item.pattern)}, message: '${item.message}', trigger: '${trigger[conf.tag]}' }`)
+        }
       })
     }
     return `${conf.vModel}: [${rules.join(',')}],`

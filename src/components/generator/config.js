@@ -375,20 +375,20 @@ export const selectComponents = [
     multiple: false,
     regList: [],
     document: 'https://element.eleme.cn/#/zh-CN/component/upload'
-  },
+  }
 ]
 
-export let layoutComponents = [
+export const layoutComponents = [
   {
     layout: 'rowFormItem',
     tagIcon: 'row',
     type: 'default',
     justify: 'start',
     align: 'top',
-    label: "行容器",
+    label: '行容器',
     children: [],
     document: 'https://element.eleme.cn/#/zh-CN/component/layout'
-  },
+  }
 ]
 
 // 组件rule的触发方式，无触发方式的组件不生成rule
