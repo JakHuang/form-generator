@@ -38,14 +38,19 @@ const layouts = {
   rowFormItem(h, element, index, parent) {
     const { activeItem } = this.$listeners
     const className = this.activeId === element.formId ? 'drawing-row-item active-from-item' : 'drawing-row-item'
+    let child = renderChildren.apply(this, arguments)
+    if (element.type === 'flex') {
+      child = <el-row type={element.type} justify={element.justify} align={element.align}>
+              {child}
+            </el-row>
+    }
     return (
       <el-col span={element.span}>
-        <el-row class={className} nativeOnClick={event => { activeItem(element); event.stopPropagation() }}>
+        <el-row gutter={element.gutter} class={className}
+          nativeOnClick={event => { activeItem(element); event.stopPropagation() }}>
           <span class="component-name">{element.componentName}</span>
           <draggable list={element.children} animation={340} group="componentsGroup" class="drag-wrapper">
-            <el-row type={element.type} justify={element.justify} align={element.align} gutter={element.gutter}>
-              {renderChildren.apply(this, arguments)}
-            </el-row>
+            {child}
           </draggable>
           {components.itemBtns.apply(this, arguments)}
         </el-row>

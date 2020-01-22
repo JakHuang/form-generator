@@ -1,6 +1,7 @@
 export default [
   {
     layout: 'colFormItem',
+    tagIcon: 'input',
     label: '手机号',
     vModel: 'mobile',
     formId: 6,

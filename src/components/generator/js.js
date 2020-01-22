@@ -19,35 +19,12 @@ export function makeUpJs(conf, type) {
   const dataList = []
   const ruleList = []
   const optionsList = []
-  let props = ''
+  const propsList = []
   const methodList = mixinMethod(type)
-  let uploadVar = ''
+  const uploadVarList = []
 
   conf.fields.forEach(el => {
-    dataList.push(buildData(el))
-    ruleList.push(buildRules(el))
-
-    if (el.options && el.options.length) {
-      optionsList.push(buildOptions(el))
-      if (el.dataType === 'dynamic') {
-        const model = `${el.vModel}Options`
-        const options = titleCase(model)
-        methodList.push(buildOptionMethod(`get${options}`, model))
-      }
-    }
-
-    if (el.props && el.props.props) {
-      props = buildProps(el)
-    }
-
-    if (el.action && el.tag === 'el-upload') {
-      uploadVar = `${el.vModel}Action: '${el.action}',
-      ${el.vModel}fileList: [],`
-      methodList.push(buildBeforeUpload(el))
-      if (!el['auto-upload']) {
-        methodList.push(buildSubmitUpload(el))
-      }
-    }
+    buildAttributes(el, dataList, ruleList, optionsList, methodList, propsList, uploadVarList)
   })
 
   const script = buildexport(
@@ -56,12 +33,47 @@ export function makeUpJs(conf, type) {
     dataList.join('\n'),
     ruleList.join('\n'),
     optionsList.join('\n'),
-    uploadVar,
-    props,
+    uploadVarList.join('\n'),
+    propsList.join('\n'),
     methodList.join('\n')
   )
   confGlobal = null
   return script
+}
+
+function buildAttributes(el, dataList, ruleList, optionsList, methodList, propsList, uploadVarList) {
+  buildData(el, dataList)
+  buildRules(el, ruleList)
+
+  if (el.options && el.options.length) {
+    buildOptions(el, optionsList)
+    if (el.dataType === 'dynamic') {
+      const model = `${el.vModel}Options`
+      const options = titleCase(model)
+      buildOptionMethod(`get${options}`, model, methodList)
+    }
+  }
+
+  if (el.props && el.props.props) {
+    buildProps(el, propsList)
+  }
+
+  if (el.action && el.tag === 'el-upload') {
+    uploadVarList.push(
+      `${el.vModel}Action: '${el.action}',
+      ${el.vModel}fileList: [],`
+    )
+    methodList.push(buildBeforeUpload(el))
+    if (!el['auto-upload']) {
+      methodList.push(buildSubmitUpload(el))
+    }
+  }
+
+  if (el.children) {
+    el.children.forEach(el2 => {
+      buildAttributes(el2, dataList, ruleList, optionsList, methodList, propsList, uploadVarList)
+    })
+  }
 }
 
 function mixinMethod(type) {
@@ -105,18 +117,19 @@ function mixinMethod(type) {
   return list
 }
 
-function buildData(conf) {
+function buildData(conf, dataList) {
+  if (conf.vModel === undefined) return
   let defaultValue
   if (typeof (conf.defaultValue) === 'string' && !conf.multiple) {
     defaultValue = `'${conf.defaultValue}'`
   } else {
     defaultValue = `${JSON.stringify(conf.defaultValue)}`
   }
-
-  return `${conf.vModel}: ${defaultValue},`
+  dataList.push(`${conf.vModel}: ${defaultValue},`)
 }
 
-function buildRules(conf) {
+function buildRules(conf, ruleList) {
+  if (conf.vModel === undefined) return
   const rules = []
   if (trigger[conf.tag]) {
     if (conf.required) {
@@ -132,25 +145,25 @@ function buildRules(conf) {
         }
       })
     }
-    return `${conf.vModel}: [${rules.join(',')}],`
+    ruleList.push(`${conf.vModel}: [${rules.join(',')}],`)
   }
-  return ''
 }
 
-function buildOptions(conf) {
+function buildOptions(conf, optionsList) {
+  if (conf.vModel === undefined) return
   if (conf.dataType === 'dynamic') { conf.options = [] }
   const str = `${conf.vModel}Options: ${JSON.stringify(conf.options)},`
-  return str
+  optionsList.push(str)
 }
 
-function buildProps(conf) {
+function buildProps(conf, propsList) {
   if (conf.dataType === 'dynamic') {
     conf.valueKey !== 'value' && (conf.props.props.value = conf.valueKey)
     conf.labelKey !== 'label' && (conf.props.props.label = conf.labelKey)
     conf.childrenKey !== 'children' && (conf.props.props.children = conf.childrenKey)
   }
   const str = `${conf.vModel}Props: ${JSON.stringify(conf.props.props)},`
-  return str
+  propsList.push(str)
 }
 
 function buildBeforeUpload(conf) {
@@ -170,7 +183,7 @@ function buildBeforeUpload(conf) {
     }`
     returnList.push('isAccept')
   }
-  const str = `beforeUpload(file) {
+  const str = `${conf.vModel}BeforeUpload(file) {
     ${rightSizeCode}
     ${acceptCode}
     return ${returnList.join('&&')}
@@ -185,12 +198,12 @@ function buildSubmitUpload(conf) {
   return str
 }
 
-function buildOptionMethod(methodName, model) {
+function buildOptionMethod(methodName, model, methodList) {
   const str = `${methodName}() {
     // TODO 发起请求获取数据
     this.${model}
   },`
-  return str
+  methodList.push(str)
 }
 
 function buildexport(conf, type, data, rules, selectOptions, uploadVar, props, methods) {
