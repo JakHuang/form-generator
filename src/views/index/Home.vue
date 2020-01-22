@@ -301,7 +301,7 @@ export default {
       }
       return tempActiveData
     },
-    AssembleFromData() {
+    AssembleFormData() {
       this.formData = {
         fields: JSON.parse(JSON.stringify(this.drawingList)),
         ...this.formConf
@@ -313,7 +313,7 @@ export default {
       func && func(data)
     },
     execRun(data) {
-      this.AssembleFromData()
+      this.AssembleFormData()
       this.drawerVisible = true
     },
     execDownload(data) {
@@ -361,7 +361,7 @@ export default {
     },
     generateCode() {
       const { type } = this.generateConf
-      this.AssembleFromData()
+      this.AssembleFormData()
       const script = vueScript(makeUpJs(this.formData, type))
       const html = vueTemplate(makeUpHtml(this.formData, type))
       const css = cssStyle(makeUpCss(this.formData))
