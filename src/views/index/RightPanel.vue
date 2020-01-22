@@ -60,10 +60,7 @@
               placeholder="请输入占位提示"
             />
           </el-form-item>
-          <el-form-item
-            v-if="activeData.span!==undefined"
-            label="表单栅格"
-          >
+          <el-form-item v-if="activeData.span!==undefined" label="表单栅格">
             <el-slider
               v-model="activeData.span"
               :max="24"
@@ -72,10 +69,7 @@
               @change="spanChange"
             />
           </el-form-item>
-          <el-form-item
-            v-if="activeData.gutter!==undefined"
-            label="栅格间隔"
-          >
+          <el-form-item v-if="activeData.layout==='rowFormItem'" label="栅格间隔">
             <el-input-number
               v-model="activeData.gutter"
               :min="0"

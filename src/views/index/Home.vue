@@ -63,11 +63,21 @@
 
     <div class="center-board">
       <div class="action-bar">
-        <el-button icon="el-icon-document-add" type="text" @click="writeFile">新建文件</el-button>
-        <el-button icon="el-icon-video-play" type="text" @click="run">运行</el-button>
-        <el-button icon="el-icon-download" type="text" @click="download">导出vue文件</el-button>
-        <el-button class="copy-btn-main" icon="el-icon-document-copy" type="text" @click="copy">复制代码</el-button>
-        <el-button class="delete-btn" icon="el-icon-delete" type="text" @click="empty">清空</el-button>
+        <el-button icon="el-icon-document-add" type="text" @click="writeFile">
+          新建文件
+        </el-button>
+        <el-button icon="el-icon-video-play" type="text" @click="run">
+          运行
+        </el-button>
+        <el-button icon="el-icon-download" type="text" @click="download">
+          导出vue文件
+        </el-button>
+        <el-button class="copy-btn-main" icon="el-icon-document-copy" type="text" @click="copy">
+          复制代码
+        </el-button>
+        <el-button class="delete-btn" icon="el-icon-delete" type="text" @click="empty">
+          清空
+        </el-button>
       </div>
       <el-scrollbar class="center-scrollbar">
         <el-row class="center-board-row" :gutter="formConf.gutter">
@@ -77,12 +87,7 @@
             :disabled="formConf.disabled"
             :label-width="formConf.labelWidth + 'px'"
           >
-            <draggable
-              class="drawing-board"
-              :list="drawingList"
-              :animation="340"
-              group="componentsGroup"
-            >
+            <draggable class="drawing-board" :list="drawingList" :animation="340" group="componentsGroup">
               <draggable-item
                 v-for="(element, index) in drawingList"
                 :key="element.renderKey"
@@ -248,7 +253,6 @@ export default {
       clone.formId = ++this.idGlobal
       clone.span = formConf.span
       clone.renderKey = +new Date() // 改变renderKey后可以实现强制更新组件
-      // delete clone.tagIcon
       if (!clone.layout) clone.layout = 'colFormItem'
       if (clone.layout === 'colFormItem') {
         clone.vModel = `field${this.idGlobal}`

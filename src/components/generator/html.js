@@ -2,6 +2,7 @@
 import { trigger } from './config'
 
 let confGlobal
+let someSpanIsNot24
 
 export function dialogWrapper(str) {
   return `<el-dialog v-bind="$attrs" v-on="$listeners" @open="onOpen" @close="onClose" title="Dialog Titile">
@@ -39,40 +40,70 @@ function buildFormTemplate(conf, child, type) {
     labelPosition = `label-position="${conf.labelPosition}"`
   }
   const disabled = conf.disabled ? `:disabled="${conf.disabled}"` : ''
-  const str = `<el-row :gutter="${conf.gutter}">
-  <el-form ref="${conf.formRef}" :model="${conf.formModel}" :rules="${conf.formRules}" size="${conf.size}" ${disabled} label-width="${conf.labelWidth}px" ${labelPosition}>
-    ${child}
-    ${buildFromBtns(conf, type)}
-  </el-form>
-</el-row>`
+  let str = `<el-form ref="${conf.formRef}" :model="${conf.formModel}" :rules="${conf.formRules}" size="${conf.size}" ${disabled} label-width="${conf.labelWidth}px" ${labelPosition}>
+      ${child}
+      ${buildFromBtns(conf, type)}
+    </el-form>`
+  if (someSpanIsNot24) {
+    str = `<el-row :gutter="${conf.gutter}">
+        ${str}
+      </el-row>`
+  }
   return str
 }
 
 function buildFromBtns(conf, type) {
   let str = ''
   if (conf.formBtns && type === 'file') {
-    str = `<el-col :span="24">
-        <el-form-item size="large">
+    str = `<el-form-item size="large">
           <el-button type="primary" @click="submitForm">提交</el-button>
           <el-button @click="resetForm">重置</el-button>
-        </el-form-item>
-      </el-col>`
+        </el-form-item>`
+    if (someSpanIsNot24) {
+      str = `<el-col :span="24">
+          ${str}
+        </el-col>`
+    }
   }
   return str
 }
 
-function buildFormItemTemplate(element, child) {
-  let labelWidth = ''
-  if (element.labelWidth && element.labelWidth !== confGlobal.labelWidth) {
-    labelWidth = `label-width="${element.labelWidth}px"`
+// span不为24的用el-col包裹
+function colWrapper(element, str) {
+  if (element.span !== 24) {
+    return `<el-col :span="${element.span}">
+      ${str}
+    </el-col>`
   }
-  const required = !trigger[element.tag] && element.required ? 'required' : ''
-  const str = `<el-col :span="${element.span}">
-  <el-form-item ${labelWidth} label="${element.label}" prop="${element.vModel}" ${required}>
-    ${child}
-  </el-form-item>
-</el-col>`
   return str
+}
+
+const layouts = {
+  colFormItem(element) {
+    let labelWidth = ''
+    if (element.labelWidth && element.labelWidth !== confGlobal.labelWidth) {
+      labelWidth = `label-width="${element.labelWidth}px"`
+    }
+    const required = !trigger[element.tag] && element.required ? 'required' : ''
+    const tagDom = tags[element.tag] ? tags[element.tag](element) : null
+    let str = `<el-form-item ${labelWidth} label="${element.label}" prop="${element.vModel}" ${required}>
+        ${tagDom}
+      </el-form-item>`
+    str = colWrapper(element, str)
+    return str
+  },
+  rowFormItem(element) {
+    const type = element.type === 'default' ? '' : `type="${element.type}"`
+    const justify = element.type === 'default' ? '' : `justify="${element.justify}"`
+    const align = element.type === 'default' ? '' : `align="${element.align}"`
+    const gutter = element.gutter ? `gutter="${element.gutter}"` : ''
+    const children = element.children.map(el => layouts[el.layout](el))
+    let str = `<el-row ${type} ${justify} ${align} ${gutter}>
+      ${children.join('\n')}
+    </el-row>`
+    str = colWrapper(element, str)
+    return str
+  }
 }
 
 const tags = {
@@ -213,7 +244,6 @@ const tags = {
 
     return `<${el.tag} ${vModel} ${size} ${showAlpha} ${colorFormat} ${disabled}></${el.tag}>`
   },
-  // eslint-disable-next-line func-names
   'el-upload': el => {
     const disabled = el.disabled ? ':disabled=\'true\'' : ''
     const action = el.action ? `:action="${el.vModel}Action"` : ''
@@ -222,7 +252,7 @@ const tags = {
     const accept = el.accept ? `accept="${el.accept}"` : ''
     const name = el.name !== 'file' ? `name="${el.name}"` : ''
     const autoUpload = el['auto-upload'] === false ? ':auto-upload="false"' : ''
-    const beforeUpload = ':before-upload="beforeUpload"'
+    const beforeUpload = `:before-upload="${el.vModel}BeforeUpload"`
     const fileList = `:file-list="${el.vModel}fileList"`
     const ref = `ref="${el.vModel}"`
     let child = buildElUploadChild(el)
@@ -293,10 +323,9 @@ function buildElUploadChild(conf) {
 export function makeUpHtml(conf, type) {
   const htmlList = []
   confGlobal = conf
+  someSpanIsNot24 = conf.fields.some(item => item.span !== 24)
   conf.fields.forEach(el => {
-    if (!tags[el.tag]) return
-    const tagDom = tags[el.tag](el)
-    htmlList.push(buildFormItemTemplate(el, tagDom))
+    htmlList.push(layouts[el.layout](el))
   })
   const htmlStr = htmlList.join('\n')
 

@@ -37,7 +37,7 @@
             <div v-show="activeTab==='css'" id="editorCss" class="tab-editor" />
           </el-col>
           <el-col :md="24" :lg="12" class="right-preview">
-            <div class="action-bar">
+            <div class="action-bar" :style="{'text-align': 'left'}">
               <span class="bar-btn" @click="runCode">
                 <i class="el-icon-refresh" />
                 刷新
