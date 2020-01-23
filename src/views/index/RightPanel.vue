@@ -1,3 +1,4 @@
+
 <template>
   <div class="right-board">
     <el-tabs v-model="currentTab" class="center-tabs">
@@ -5,8 +6,8 @@
       <el-tab-pane label="表单属性" name="form" />
     </el-tabs>
     <div class="field-box">
-      <span class="document-link" target="_blank" @click="openLink(documentLink)" title="查看组件文档">
-        <i class="el-icon-link"></i>
+      <span class="document-link" target="_blank" title="查看组件文档" @click="openLink(documentLink)">
+        <i class="el-icon-link" />
       </span>
       <el-scrollbar class="right-scrollbar">
         <!-- 组件属性 -->
@@ -903,11 +904,11 @@
 </template>
 
 <script>
-import TreeNodeDialog from "@/views/index/TreeNodeDialog"
-import { isNumberStr } from "@/utils/index"
-import { isArray } from "util"
+import { isArray } from 'util'
+import TreeNodeDialog from '@/views/index/TreeNodeDialog'
+import { isNumberStr } from '@/utils/index'
 import { mixins } from '@/utils/mixins'
-import IconsDialog from "./IconsDialog"
+import IconsDialog from './IconsDialog'
 
 const dateTimeFormat = {
   date: 'yyyy-MM-dd',
@@ -926,7 +927,7 @@ export default {
     IconsDialog
   },
   mixins: [mixins],
-  props: ["showField", "activeData", "formConf"],
+  props: ['showField', 'activeData', 'formConf'],
   data() {
     return {
       currentTab: 'field',

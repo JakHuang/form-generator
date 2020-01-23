@@ -1,4 +1,4 @@
-export var mixins = {
+export const mixins = {
   methods: {
     openLink(link) {
       window.parent.postMessage({

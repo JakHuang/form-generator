@@ -3,22 +3,30 @@
     <div class="left-board">
       <div class="logo-wrapper">
         <div class="logo">
-          <img :src="logo" alt="logo" /> Form Generator
-          <span class="github" @click="openLink('https://github.com/JakHuang/form-generator')" target="_blank">
-            <img src="https://github.githubassets.com/pinned-octocat.svg" alt=""/>
+          <img :src="logo" alt="logo"> Form Generator
+          <span class="github" @click="openLink('https://github.com/JakHuang/form-generator')">
+            <img src="https://github.githubassets.com/pinned-octocat.svg" alt>
           </span>
         </div>
       </div>
       <el-scrollbar class="left-scrollbar">
         <div class="components-list">
           <div class="components-title">
-            <svg-icon icon-class="component" /> 输入型组件
+            <svg-icon icon-class="component" />输入型组件
           </div>
-          <draggable class="components-draggable" :list="inputComponents"
-            :group="{ name: 'componentsGroup', pull: 'clone', put: false }" :clone="cloneComponent"
-            draggable=".components-item" :sort="false" @end="onEnd">
-            <div class="components-item" v-for="(element, index) in inputComponents" :key="index"
-              @click="addComponent(element)">
+          <draggable
+            class="components-draggable"
+            :list="inputComponents"
+            :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
+            :clone="cloneComponent"
+            draggable=".components-item"
+            :sort="false"
+            @end="onEnd"
+          >
+            <div
+              v-for="(element, index) in inputComponents" :key="index" class="components-item"
+              @click="addComponent(element)"
+            >
               <div class="components-body">
                 <svg-icon :icon-class="element.tagIcon" />
                 {{ element.label }}
@@ -26,13 +34,23 @@
             </div>
           </draggable>
           <div class="components-title">
-            <svg-icon icon-class="component" /> 选择型组件
+            <svg-icon icon-class="component" />选择型组件
           </div>
-          <draggable class="components-draggable" :list="selectComponents"
-            :group="{ name: 'componentsGroup', pull: 'clone', put: false }" :clone="cloneComponent"
-            draggable=".components-item" :sort="false" @end="onEnd">
-            <div class="components-item" v-for="(element, index) in selectComponents" :key="index"
-              @click="addComponent(element)">
+          <draggable
+            class="components-draggable"
+            :list="selectComponents"
+            :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
+            :clone="cloneComponent"
+            draggable=".components-item"
+            :sort="false"
+            @end="onEnd"
+          >
+            <div
+              v-for="(element, index) in selectComponents"
+              :key="index"
+              class="components-item"
+              @click="addComponent(element)"
+            >
               <div class="components-body">
                 <svg-icon :icon-class="element.tagIcon" />
                 {{ element.label }}
@@ -282,15 +300,15 @@ export default {
       this.drawerVisible = true
     },
     execDownload(data) {
-      let codeStr = this.generateCode(),
-        blob = new Blob([codeStr], { type: "text/plain;charset=utf-8" })
+      const codeStr = this.generateCode()
+      const blob = new Blob([codeStr], { type: 'text/plain;charset=utf-8' })
       saveAs(blob, data.fileName)
     },
     execCopy(data) {
       document.getElementById('copyNode').click()
     },
     execWriteFile(data) {
-      let codeStr = this.generateCode()
+      const codeStr = this.generateCode()
       window.parent.postMessage({
         cmd: 'writeFile',
         data: {
