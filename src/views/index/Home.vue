@@ -374,8 +374,17 @@ export default {
         }
       })
       this.activeData = newTag
-      const index = this.drawingList.findIndex(item => item.formId === this.activeId)
-      this.drawingList.splice(index, 1, newTag)
+      this.updateDrawingList(newTag, this.drawingList)
+    },
+    updateDrawingList(newTag, list) {
+      const index = list.findIndex(item => item.formId === this.activeId)
+      if (index > -1) {
+        list.splice(index, 1, newTag)
+      } else {
+        list.forEach(item => {
+          if (Array.isArray(item.children)) this.updateDrawingList(newTag, item.children)
+        })
+      }
     }
   }
 }
