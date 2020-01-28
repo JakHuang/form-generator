@@ -20,6 +20,7 @@ export default [
     readonly: false,
     disabled: false,
     required: true,
+    changeTag: true,
     regList: [{
       pattern: '/^1(3|4|5|7|8|9)\\d{9}$/',
       message: '手机号格式错误'

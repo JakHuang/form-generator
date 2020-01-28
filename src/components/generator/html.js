@@ -70,7 +70,7 @@ function buildFromBtns(conf, type) {
 
 // span不为24的用el-col包裹
 function colWrapper(element, str) {
-  if (element.span !== 24) {
+  if (someSpanIsNot24 || element.span !== 24) {
     return `<el-col :span="${element.span}">
       ${str}
     </el-col>`

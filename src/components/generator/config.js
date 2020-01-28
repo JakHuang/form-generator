@@ -32,6 +32,7 @@ export const inputComponents = [
     disabled: false,
     required: true,
     regList: [],
+    changeTag: true,
     document: 'https://element.eleme.cn/#/zh-CN/component/input'
   },
   {
@@ -54,6 +55,7 @@ export const inputComponents = [
     disabled: false,
     required: true,
     regList: [],
+    changeTag: true,
     document: 'https://element.eleme.cn/#/zh-CN/component/input'
   },
   {
@@ -77,6 +79,7 @@ export const inputComponents = [
     disabled: false,
     required: true,
     regList: [],
+    changeTag: true,
     document: 'https://element.eleme.cn/#/zh-CN/component/input'
   },
   {
@@ -96,6 +99,7 @@ export const inputComponents = [
     disabled: false,
     required: true,
     regList: [],
+    changeTag: true,
     document: 'https://element.eleme.cn/#/zh-CN/component/input-number'
   }
 ]
@@ -123,6 +127,7 @@ export const selectComponents = [
       value: 2
     }],
     regList: [],
+    changeTag: true,
     document: 'https://element.eleme.cn/#/zh-CN/component/select'
   },
   {
@@ -160,6 +165,7 @@ export const selectComponents = [
     childrenKey: 'children',
     separator: '/',
     regList: [],
+    changeTag: true,
     document: 'https://element.eleme.cn/#/zh-CN/component/cascader'
   },
   {
@@ -183,6 +189,7 @@ export const selectComponents = [
       value: 2
     }],
     regList: [],
+    changeTag: true,
     document: 'https://element.eleme.cn/#/zh-CN/component/radio'
   },
   {
@@ -206,6 +213,7 @@ export const selectComponents = [
       value: 2
     }],
     regList: [],
+    changeTag: true,
     document: 'https://element.eleme.cn/#/zh-CN/component/checkbox'
   },
   {
@@ -225,6 +233,7 @@ export const selectComponents = [
     'active-value': true,
     'inactive-value': false,
     regList: [],
+    changeTag: true,
     document: 'https://element.eleme.cn/#/zh-CN/component/switch'
   },
   {
@@ -242,6 +251,7 @@ export const selectComponents = [
     'show-stops': false,
     range: false,
     regList: [],
+    changeTag: true,
     document: 'https://element.eleme.cn/#/zh-CN/component/slider'
   },
   {
@@ -262,12 +272,13 @@ export const selectComponents = [
     format: 'HH:mm:ss',
     'value-format': 'HH:mm:ss',
     regList: [],
+    changeTag: true,
     document: 'https://element.eleme.cn/#/zh-CN/component/time-picker'
   },
   {
     label: '时间范围',
     tag: 'el-time-picker',
-    tagIcon: 'time',
+    tagIcon: 'time-range',
     defaultValue: null,
     span: 24,
     labelWidth: null,
@@ -282,6 +293,7 @@ export const selectComponents = [
     format: 'HH:mm:ss',
     'value-format': 'HH:mm:ss',
     regList: [],
+    changeTag: true,
     document: 'https://element.eleme.cn/#/zh-CN/component/time-picker'
   },
   {
@@ -301,12 +313,13 @@ export const selectComponents = [
     'value-format': 'yyyy-MM-dd',
     readonly: false,
     regList: [],
+    changeTag: true,
     document: 'https://element.eleme.cn/#/zh-CN/component/date-picker'
   },
   {
     label: '日期范围',
     tag: 'el-date-picker',
-    tagIcon: 'date',
+    tagIcon: 'date-range',
     defaultValue: null,
     span: 24,
     labelWidth: null,
@@ -322,6 +335,7 @@ export const selectComponents = [
     'value-format': 'yyyy-MM-dd',
     readonly: false,
     regList: [],
+    changeTag: true,
     document: 'https://element.eleme.cn/#/zh-CN/component/date-picker'
   },
   {
@@ -339,6 +353,7 @@ export const selectComponents = [
     disabled: false,
     required: true,
     regList: [],
+    changeTag: true,
     document: 'https://element.eleme.cn/#/zh-CN/component/rate'
   },
   {
@@ -353,6 +368,7 @@ export const selectComponents = [
     required: true,
     size: 'medium',
     regList: [],
+    changeTag: true,
     document: 'https://element.eleme.cn/#/zh-CN/component/color-picker'
   },
   {
@@ -374,6 +390,7 @@ export const selectComponents = [
     'list-type': 'text',
     multiple: false,
     regList: [],
+    changeTag: true,
     document: 'https://element.eleme.cn/#/zh-CN/component/upload'
   }
 ]

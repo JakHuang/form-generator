@@ -128,6 +128,7 @@
       :active-data="activeData"
       :form-conf="formConf"
       :show-field="!!drawingList.length"
+      @tag-change="tagChange"
     />
 
     <form-drawer
@@ -357,6 +358,24 @@ export default {
       this.dialogVisible = true
       this.showFileName = false
       this.operationType = 'copy'
+    },
+    tagChange(newTag) {
+      newTag = this.cloneComponent(newTag)
+      newTag.vModel = this.activeData.vModel
+      newTag.formId = this.activeId
+      newTag.span = this.activeData.span
+      delete this.activeData.tag
+      delete this.activeData.tagIcon
+      delete this.activeData.document
+      Object.keys(newTag).forEach(key => {
+        if (this.activeData[key] !== undefined
+          && typeof this.activeData[key] === typeof newTag[key]) {
+          newTag[key] = this.activeData[key]
+        }
+      })
+      this.activeData = newTag
+      const index = this.drawingList.findIndex(item => item.formId === this.activeId)
+      this.drawingList.splice(index, 1, newTag)
     }
   }
 }
