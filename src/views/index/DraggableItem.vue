@@ -29,7 +29,9 @@ const layouts = {
         nativeOnClick={event => { activeItem(element); event.stopPropagation() }}>
         <el-form-item label-width={element.labelWidth ? `${element.labelWidth}px` : null}
           label={element.label} required={element.required}>
-          <render conf={element} onInput={event => { this.$set(element, 'defaultValue', event) }} />
+          <render key={element.renderKey} conf={element} onInput={ event => {
+            this.$set(element, 'defaultValue', event)
+          }} />
         </el-form-item>
         {components.itemBtns.apply(this, arguments)}
       </el-col>
