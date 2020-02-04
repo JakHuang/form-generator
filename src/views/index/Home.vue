@@ -161,10 +161,7 @@ import render from '@/components/render'
 import FormDrawer from './FormDrawer'
 import RightPanel from './RightPanel'
 import {
-  inputComponents,
-  selectComponents,
-  layoutComponents,
-  formConf
+  inputComponents, selectComponents, layoutComponents, formConf
 } from '@/components/generator/config'
 import {
   exportDefault, beautifierConf, isNumberStr, titleCase
@@ -179,10 +176,16 @@ import logo from '@/assets/logo.png'
 import CodeTypeDialog from './CodeTypeDialog'
 import DraggableItem from './DraggableItem'
 import { mixins } from '@/utils/mixins'
+import {
+  getDrawingList, saveDrawingList, getIdGlobal, saveIdGlobal, getFormConf
+} from '@/utils/db'
 
 const emptyActiveData = { style: {}, autosize: {} }
 let oldActiveId
 let tempActiveData
+const drawingListInDB = getDrawingList()
+const formConfInDB = getFormConf()
+const idGlobal = getIdGlobal()
 
 export default {
   components: {
@@ -197,7 +200,7 @@ export default {
   data() {
     return {
       logo,
-      idGlobal: 100,
+      idGlobal,
       formConf,
       inputComponents,
       selectComponents,
@@ -233,9 +236,32 @@ export default {
         oldActiveId = val
       },
       immediate: true
+    },
+    drawingList: {
+      handler(val) {
+        saveDrawingList(val)
+        if (val.length === 0) this.idGlobal = 100
+      },
+      deep: true
+    },
+    idGlobal: {
+      handler(val) {
+        saveIdGlobal(val)
+      },
+      immediate: true
     }
   },
   mounted() {
+    if (Array.isArray(drawingListInDB) && drawingListInDB.length > 0) {
+      this.drawingList = drawingListInDB
+    } else {
+      this.drawingList = drawingDefalut
+    }
+    this.activeFormItem(this.drawingList[0])
+    if (formConfInDB) {
+      this.formConf = formConfInDB
+    }
+
     const clipboard = new ClipboardJS('#copyNode', {
       text: trigger => {
         const codeStr = this.generateCode()
@@ -322,6 +348,7 @@ export default {
       this.$confirm('确定要清空所有组件吗？', '提示', { type: 'warning' }).then(
         () => {
           this.drawingList = []
+          this.idGlobal = 100
         }
       )
     },

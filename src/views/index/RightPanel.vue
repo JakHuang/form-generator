@@ -579,10 +579,9 @@ import { isNumberStr } from '@/utils/index'
 import { mixins } from '@/utils/mixins'
 import IconsDialog from './IconsDialog'
 import {
-  inputComponents,
-  selectComponents,
-  layoutComponents
+  inputComponents, selectComponents, layoutComponents
 } from '@/components/generator/config'
+import { saveFormConf } from '@/utils/db'
 
 const dateTimeFormat = {
   date: 'yyyy-MM-dd',
@@ -726,6 +725,14 @@ export default {
           options: selectComponents
         }
       ]
+    }
+  },
+  watch: {
+    formConf: {
+      handler(val) {
+        saveFormConf(val)
+      },
+      deep: true
     }
   },
   methods: {
