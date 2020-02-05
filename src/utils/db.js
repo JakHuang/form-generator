@@ -3,42 +3,63 @@ const DRAWING_ID = 'idGlobal'
 const TREE_NODE_ID = 'treeNodeId'
 const FORM_CONF = 'formConf'
 
+// 在vscode-plugin分支中替换localStorage.getItem
+function getStorageItem(key) {
+  window.parent.postMessage({
+    cmd: 'getStorageItem',
+    data: {
+      key
+    }
+  }, '*')
+}
+
+// 在vscode-plugin分支中替换localStorage.setItem
+function setStorageItem(key, val) {
+  window.parent.postMessage({
+    cmd: 'setStorageItem',
+    data: {
+      key,
+      val
+    }
+  }, '*')
+}
+
 export function getDrawingList() {
-  const str = localStorage.getItem(DRAWING_ITEMS)
+  const str = getStorageItem(DRAWING_ITEMS)
   if (str) return JSON.parse(str)
   return null
 }
 
 export function saveDrawingList(list) {
-  localStorage.setItem(DRAWING_ITEMS, JSON.stringify(list))
+  setStorageItem(DRAWING_ITEMS, JSON.stringify(list))
 }
 
 export function getIdGlobal() {
-  const str = localStorage.getItem(DRAWING_ID)
+  const str = getStorageItem(DRAWING_ID)
   if (str) return parseInt(str, 10)
   return 100
 }
 
 export function saveIdGlobal(id) {
-  localStorage.setItem(DRAWING_ID, `${id}`)
+  setStorageItem(DRAWING_ID, `${id}`)
 }
 
 export function getTreeNodeId() {
-  const str = localStorage.getItem(TREE_NODE_ID)
+  const str = getStorageItem(TREE_NODE_ID)
   if (str) return parseInt(str, 10)
   return 100
 }
 
 export function saveTreeNodeId(id) {
-  localStorage.setItem(TREE_NODE_ID, `${id}`)
+  setStorageItem(TREE_NODE_ID, `${id}`)
 }
 
 export function getFormConf() {
-  const str = localStorage.getItem(FORM_CONF)
+  const str = getStorageItem(FORM_CONF)
   if (str) return JSON.parse(str)
   return null
 }
 
 export function saveFormConf(obj) {
-  localStorage.setItem(FORM_CONF, JSON.stringify(obj))
+  setStorageItem(FORM_CONF, JSON.stringify(obj))
 }
