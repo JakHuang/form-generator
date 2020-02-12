@@ -183,9 +183,6 @@ import {
 const emptyActiveData = { style: {}, autosize: {} }
 let oldActiveId
 let tempActiveData
-const drawingListInDB = getDrawingList()
-const formConfInDB = getFormConf()
-const idGlobal = getIdGlobal()
 
 export default {
   components: {
@@ -200,7 +197,7 @@ export default {
   data() {
     return {
       logo,
-      idGlobal,
+      idGlobal: 100,
       formConf,
       inputComponents,
       selectComponents,
@@ -252,6 +249,9 @@ export default {
     }
   },
   mounted() {
+    const drawingListInDB = getDrawingList()
+    const formConfInDB = getFormConf()
+    const idGlobalInDB = getIdGlobal()
     if (Array.isArray(drawingListInDB) && drawingListInDB.length > 0) {
       this.drawingList = drawingListInDB
     } else {
@@ -260,6 +260,9 @@ export default {
     this.activeFormItem(this.drawingList[0])
     if (formConfInDB) {
       this.formConf = formConfInDB
+    }
+    if (idGlobalInDB) {
+      this.idGlobal = idGlobalInDB
     }
 
     const clipboard = new ClipboardJS('#copyNode', {

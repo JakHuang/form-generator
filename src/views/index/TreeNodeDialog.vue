@@ -74,15 +74,13 @@
 import { isNumberStr } from '@/utils/index'
 import { getTreeNodeId, saveTreeNodeId } from '@/utils/db'
 
-const id = getTreeNodeId()
-
 export default {
   components: {},
   inheritAttrs: false,
   props: [],
   data() {
     return {
-      id,
+      id: 100,
       formData: {
         label: undefined,
         value: undefined
@@ -127,7 +125,9 @@ export default {
     }
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.id = getTreeNodeId()
+  },
   methods: {
     onOpen() {
       this.formData = {

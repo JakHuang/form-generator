@@ -5,12 +5,8 @@ const FORM_CONF = 'formConf'
 
 // 在vscode-plugin分支中替换localStorage.getItem
 function getStorageItem(key) {
-  window.parent.postMessage({
-    cmd: 'getStorageItem',
-    data: {
-      key
-    }
-  }, '*')
+  if (window.$DB) return window.$DB[key]
+  return null
 }
 
 // 在vscode-plugin分支中替换localStorage.setItem

@@ -6,7 +6,14 @@ import '@/icons'
 
 Vue.config.productionTip = false
 
-new Vue({
-  router,
-  render: h => h(App)
-}).$mount('#app')
+window.addEventListener('message', init, false)
+
+function init(event) {
+  if (event.data.cmd === 'mountApp') {
+    window.$DB = event.data.data
+    new Vue({
+      router,
+      render: h => h(App)
+    }).$mount('#app')
+  }
+}
