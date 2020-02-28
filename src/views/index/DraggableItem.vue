@@ -24,11 +24,13 @@ const layouts = {
     const { activeItem } = this.$listeners
     let className = this.activeId === element.formId ? 'drawing-item active-from-item' : 'drawing-item'
     if (this.formConf.unFocusedComponentBorder) className += ' unfocus-bordered'
+    let labelWidth = element.labelWidth ? `${element.labelWidth}px` : null
+    if (element.showLabel === false) labelWidth = '0'
     return (
       <el-col span={element.span} class={className}
         nativeOnClick={event => { activeItem(element); event.stopPropagation() }}>
-        <el-form-item label-width={element.showLabel ? element.labelWidth ? `${element.labelWidth}px` : null : '0'}
-          label={element.showLabel ? element.label: ''} required={element.required}>
+        <el-form-item label-width={labelWidth}
+          label={element.showLabel ? element.label : ''} required={element.required}>
           <render key={element.renderKey} conf={element} onInput={ event => {
             this.$set(element, 'defaultValue', event)
           }} />

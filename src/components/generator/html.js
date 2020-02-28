@@ -85,7 +85,7 @@ const layouts = {
     if (element.labelWidth && element.labelWidth !== confGlobal.labelWidth) {
       labelWidth = `label-width="${element.labelWidth}px"`
     }
-    if(element.showLabel === false) {
+    if (element.showLabel === false) {
       labelWidth = 'label-width="0"'
       label = ''
     }
