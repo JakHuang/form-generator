@@ -370,6 +370,9 @@
             <el-color-picker v-model="activeData['inactive-color']" />
           </el-form-item>
 
+          <el-form-item v-if="activeData.showLabel !== undefined && activeData.labelWidth !== undefined" label="显示标签">
+            <el-switch v-model="activeData.showLabel" />
+          </el-form-item>
           <el-form-item v-if="activeData['allow-half'] !== undefined" label="允许半选">
             <el-switch v-model="activeData['allow-half']" />
           </el-form-item>
