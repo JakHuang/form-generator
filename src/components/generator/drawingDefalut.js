@@ -9,6 +9,8 @@ export default [
     placeholder: '请输入手机号',
     defaultValue: '',
     span: 24,
+    showLabel: true,
+    labelWidth: null,
     style: { width: '100%' },
     clearable: true,
     prepend: '',
@@ -24,6 +26,7 @@ export default [
     regList: [{
       pattern: '/^1(3|4|5|7|8|9)\\d{9}$/',
       message: '手机号格式错误'
-    }]
+    }],
+    document: 'https://element.eleme.cn/#/zh-CN/component/input'
   }
 ]
