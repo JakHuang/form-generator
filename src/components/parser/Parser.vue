@@ -17,15 +17,19 @@ function renderFrom(h) {
         rules={this[formConfCopy.formRules]}
       >
         {renderFormItem.call(this, h, drawingListCopy)}
-        <el-col>
-          <el-form-item size="large">
-            <el-button type="primary" onClick={this.submitForm}>提交</el-button>
-            <el-button onClick={this.resetForm}>重置</el-button>
-          </el-form-item>
-        </el-col>
+        {formConfCopy.formBtns && formBtns.call(this, h)}
       </el-form>
     </el-row>
   )
+}
+
+function formBtns(h) {
+  return <el-col>
+    <el-form-item size="large">
+      <el-button type="primary" onClick={this.submitForm}>提交</el-button>
+      <el-button onClick={this.resetForm}>重置</el-button>
+    </el-form-item>
+  </el-col>
 }
 
 function renderFormItem(h, elementList) {
@@ -77,25 +81,6 @@ const layouts = {
   }
 }
 
-// 构建表单校验规则
-function buildRules(data) {
-  data[this.formConf.formRules] = this.drawingList.reduce((prev, cur) => {
-    const required = { required: true, message: cur.placeholder }
-    if (Array.isArray(cur.defaultValue)) {
-      required.type = 'array'
-      required.message = `请至少选择一个${cur.label}`
-    }
-    required.message === undefined && (required.message = `${cur.label}不能为空`)
-    cur.regList.push(required)
-    prev[cur.vModel] = cur.regList.map(item => {
-      item.pattern && (item.pattern = eval(item.pattern))
-      item.trigger = trigger[cur.tag]
-      return item
-    })
-    return prev
-  }, {})
-}
-
 export default {
   components: {
     render
@@ -115,18 +100,43 @@ export default {
       formConfCopy: JSON.parse(JSON.stringify(this.formConf)),
       drawingListCopy: JSON.parse(JSON.stringify(this.drawingList))
     }
-
-    data[this.formConf.formModel] = this.drawingList.reduce((prev, cur) => {
-      prev[cur.vModel] = cur.defaultValue
-      return prev
-    }, {})
-
-    // 表单校验规则
-    buildRules.call(this, data)
+    this.initFormData(data, data.drawingListCopy, {})
+    this.buildRules(data, data.drawingListCopy, {})
     return data
   },
   methods: {
+    initFormData(data, componentList, initData) {
+      data[this.formConf.formModel] = componentList.reduce((prev, cur) => {
+        if (cur.vModel) prev[cur.vModel] = cur.defaultValue
+        if (cur.children) this.initFormData(data, cur.children, prev)
+        return prev
+      }, initData)
+    },
+    buildRules(data, componentList, initData) {
+      data[this.formConf.formRules] = componentList.reduce((prev, cur) => {
+        if (Array.isArray(cur.regList)) {
+          if (cur.required) {
+            const required = { required: cur.required, message: cur.placeholder }
+            if (Array.isArray(cur.defaultValue)) {
+              required.type = 'array'
+              required.message = `请至少选择一个${cur.label}`
+            }
+            required.message === undefined && (required.message = `${cur.label}不能为空`)
+            cur.regList.push(required)
+          }
+          prev[cur.vModel] = cur.regList.map(item => {
+            item.pattern && (item.pattern = eval(item.pattern))
+            item.trigger = trigger[cur.tag]
+            return item
+          })
+        }
+        if (cur.children) this.buildRules(data, cur.children, prev)
+        return prev
+      }, initData)
+    },
     resetForm() {
+      this.drawingListCopy = JSON.parse(JSON.stringify(this.drawingList))
+      this.initFormData(this, this.drawingListCopy, {})
       this.$refs[this.formConf.formRef].resetFields()
     },
     submitForm() {

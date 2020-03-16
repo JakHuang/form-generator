@@ -58,28 +58,46 @@ export default {
           document: 'https://element.eleme.cn/#/zh-CN/component/input'
         },
         {
-          label: '时间选择',
-          tag: 'el-time-picker',
-          tagIcon: 'time',
-          placeholder: '请选择时间选择',
-          defaultValue: null,
+          layout: 'rowFormItem',
+          tagIcon: 'row',
+          type: 'default',
+          justify: 'start',
+          align: 'top',
+          layoutTree: true,
+          children: [
+            {
+              label: '多选框组',
+              tag: 'el-checkbox-group',
+              tagIcon: 'checkbox',
+              defaultValue: [],
+              span: 24,
+              showLabel: true,
+              labelWidth: null,
+              style: {},
+              optionType: 'default',
+              border: false,
+              size: 'medium',
+              disabled: false,
+              required: true,
+              options: [
+                { label: '选项一', value: 1 },
+                { label: '选项二', value: 2 }
+              ],
+              regList: [],
+              changeTag: true,
+              document: 'https://element.eleme.cn/#/zh-CN/component/checkbox',
+              formId: 107,
+              renderKey: 1584200583696,
+              layout: 'colFormItem',
+              vModel: 'field107'
+            }
+          ],
+          document: 'https://element.eleme.cn/#/zh-CN/component/layout',
+          formId: 108,
           span: 24,
-          showLabel: true,
-          labelWidth: null,
-          style: { width: '100%' },
-          disabled: false,
-          clearable: true,
-          required: true,
-          'picker-options': { selectableRange: '00:00:00-23:59:59' },
-          format: 'HH:mm:ss',
-          'value-format': 'HH:mm:ss',
-          regList: [],
-          changeTag: true,
-          document: 'https://element.eleme.cn/#/zh-CN/component/time-picker',
-          formId: 101,
-          renderKey: 1584181245491,
-          layout: 'colFormItem',
-          vModel: 'field101'
+          renderKey: 1584203505593,
+          componentName: 'row108',
+          gutter: 15
         }
       ]
     }
