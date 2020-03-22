@@ -154,6 +154,7 @@
 
 <script>
 import draggable from 'vuedraggable'
+import { debounce } from 'throttle-debounce'
 import { saveAs } from 'file-saver'
 import beautifier from 'beautifier'
 import ClipboardJS from 'clipboard'
@@ -211,7 +212,9 @@ export default {
       dialogVisible: false,
       generateConf: null,
       showFileName: false,
-      activeData: drawingDefalut[0]
+      activeData: drawingDefalut[0],
+      saveDrawingListDebounce: debounce(340, saveDrawingList),
+      saveIdGlobalDebounce: debounce(340, saveIdGlobal)
     }
   },
   computed: {
@@ -236,14 +239,14 @@ export default {
     },
     drawingList: {
       handler(val) {
-        saveDrawingList(val)
+        this.saveDrawingListDebounce(val)
         if (val.length === 0) this.idGlobal = 100
       },
       deep: true
     },
     idGlobal: {
       handler(val) {
-        saveIdGlobal(val)
+        this.saveIdGlobalDebounce(val)
       },
       immediate: true
     }
