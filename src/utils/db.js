@@ -20,7 +20,6 @@ export function getDrawingList() {
 }
 
 export function saveDrawingList(list) {
-  console.log('saveDrawingList', list)
   localStorage.setItem(DRAWING_ITEMS, JSON.stringify(list))
 }
 
