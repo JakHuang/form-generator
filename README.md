@@ -59,5 +59,9 @@ npm run build
 ## PR鸣谢
 - [IWANABETHATGUY](https://github.com/IWANABETHATGUY)
 
+## 捐赠
+![image](https://ae01.alicdn.com/kf/Hde827e575a5543c0ad1cfc9af7f9a2aaJ.jpg)
+![image](https://ae01.alicdn.com/kf/H7f26a56593a04d14a9346c9a657663b9c.jpg)
+
 ## 开源协议
 [MIT](https://opensource.org/licenses/MIT)
