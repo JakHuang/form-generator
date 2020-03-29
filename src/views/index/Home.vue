@@ -11,70 +11,33 @@
       </div>
       <el-scrollbar class="left-scrollbar">
         <div class="components-list">
-          <div class="components-title">
-            <svg-icon icon-class="component" />输入型组件
-          </div>
-          <draggable
-            class="components-draggable"
-            :list="inputComponents"
-            :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
-            :clone="cloneComponent"
-            draggable=".components-item"
-            :sort="false"
-            @end="onEnd"
-          >
-            <div
-              v-for="(element, index) in inputComponents" :key="index" class="components-item"
-              @click="addComponent(element)"
-            >
-              <div class="components-body">
-                <svg-icon :icon-class="element.tagIcon" />
-                {{ element.label }}
-              </div>
+          <div v-for="(item, listIndex) in leftComponents" :key="listIndex">
+            <div class="components-title">
+              <svg-icon icon-class="component" />
+              {{ item.title }}
             </div>
-          </draggable>
-          <div class="components-title">
-            <svg-icon icon-class="component" />选择型组件
-          </div>
-          <draggable
-            class="components-draggable"
-            :list="selectComponents"
-            :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
-            :clone="cloneComponent"
-            draggable=".components-item"
-            :sort="false"
-            @end="onEnd"
-          >
-            <div
-              v-for="(element, index) in selectComponents"
-              :key="index"
-              class="components-item"
-              @click="addComponent(element)"
+            <draggable
+              class="components-draggable"
+              :list="item.list"
+              :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
+              :clone="cloneComponent"
+              draggable=".components-item"
+              :sort="false"
+              @end="onEnd"
             >
-              <div class="components-body">
-                <svg-icon :icon-class="element.tagIcon" />
-                {{ element.label }}
+              <div
+                v-for="(element, index) in item.list"
+                :key="index"
+                class="components-item"
+                @click="addComponent(element)"
+              >
+                <div class="components-body">
+                  <svg-icon :icon-class="element.tagIcon" />
+                  {{ element.label }}
+                </div>
               </div>
-            </div>
-          </draggable>
-          <div class="components-title">
-            <svg-icon icon-class="component" /> 布局型组件
+            </draggable>
           </div>
-          <draggable
-            class="components-draggable" :list="layoutComponents"
-            :group="{ name: 'componentsGroup', pull: 'clone', put: false }" :clone="cloneComponent"
-            draggable=".components-item" :sort="false" @end="onEnd"
-          >
-            <div
-              v-for="(element, index) in layoutComponents" :key="index" class="components-item"
-              @click="addComponent(element)"
-            >
-              <div class="components-body">
-                <svg-icon :icon-class="element.tagIcon" />
-                {{ element.label }}
-              </div>
-            </div>
-          </draggable>
         </div>
       </el-scrollbar>
     </div>
@@ -210,7 +173,21 @@ export default {
       showFileName: false,
       activeData: drawingDefalut[0],
       saveDrawingListDebounce: debounce(340, saveDrawingList),
-      saveIdGlobalDebounce: debounce(340, saveIdGlobal)
+      saveIdGlobalDebounce: debounce(340, saveIdGlobal),
+      leftComponents: [
+        {
+          title: '输入型组件',
+          list: inputComponents
+        },
+        {
+          title: '选择型组件',
+          list: selectComponents
+        },
+        {
+          title: '布局型组件',
+          list: layoutComponents
+        }
+      ]
     }
   },
   computed: {
