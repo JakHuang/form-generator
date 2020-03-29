@@ -11,7 +11,7 @@
           关闭
         </span>
       </div>
-      <div id="editorJson" :style="{height: '100%'}" />
+      <div id="editorJson" class="json-editor" />
     </el-drawer>
   </div>
 </template>
@@ -82,4 +82,8 @@ export default {
   display: none;
 }
 @include action-bar;
+
+.json-editor{
+  height: calc(100vh - 33px);
+}
 </style>
