@@ -60,8 +60,9 @@ npm run build
 - [IWANABETHATGUY](https://github.com/IWANABETHATGUY)
 
 ## 捐赠
-![image](https://ae01.alicdn.com/kf/Hde827e575a5543c0ad1cfc9af7f9a2aaJ.jpg)
-![image](https://ae01.alicdn.com/kf/H7f26a56593a04d14a9346c9a657663b9c.jpg)
+#### 如果您觉得本项目对您有帮助，可以请作者喝一杯咖啡, 让开源走的更远，感谢支持。  
+#### 也请您在捐赠后，加下qq群：976154366，私聊群主留个赞助链接。
+<img src="https://ae01.alicdn.com/kf/H50d81220a202490f961878f42ed1a636i.jpg">
 
 ## 开源协议
 [MIT](https://opensource.org/licenses/MIT)
