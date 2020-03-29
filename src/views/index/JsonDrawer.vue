@@ -84,6 +84,6 @@ export default {
 @include action-bar;
 
 .json-editor{
-  height: calc(100vh - 42px);
+  height: calc(100vh - 33px);
 }
 </style>
