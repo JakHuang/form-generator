@@ -134,7 +134,7 @@ function buildRules(conf, ruleList) {
   if (trigger[conf.tag]) {
     if (conf.required) {
       const type = isArray(conf.defaultValue) ? 'type: \'array\',' : ''
-      let message = isArray(conf.defaultValue) ? `请至少选择一个${conf.vModel}` : conf.placeholder
+      let message = isArray(conf.defaultValue) ? `请至少选择一个${conf.label}` : conf.placeholder
       if (message === undefined) message = `${conf.label}不能为空`
       rules.push(`{ required: true, ${type} message: '${message}', trigger: '${trigger[conf.tag]}' }`)
     }

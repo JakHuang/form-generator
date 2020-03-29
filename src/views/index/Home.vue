@@ -11,70 +11,33 @@
       </div>
       <el-scrollbar class="left-scrollbar">
         <div class="components-list">
-          <div class="components-title">
-            <svg-icon icon-class="component" />输入型组件
-          </div>
-          <draggable
-            class="components-draggable"
-            :list="inputComponents"
-            :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
-            :clone="cloneComponent"
-            draggable=".components-item"
-            :sort="false"
-            @end="onEnd"
-          >
-            <div
-              v-for="(element, index) in inputComponents" :key="index" class="components-item"
-              @click="addComponent(element)"
-            >
-              <div class="components-body">
-                <svg-icon :icon-class="element.tagIcon" />
-                {{ element.label }}
-              </div>
+          <div v-for="(item, listIndex) in leftComponents" :key="listIndex">
+            <div class="components-title">
+              <svg-icon icon-class="component" />
+              {{ item.title }}
             </div>
-          </draggable>
-          <div class="components-title">
-            <svg-icon icon-class="component" />选择型组件
-          </div>
-          <draggable
-            class="components-draggable"
-            :list="selectComponents"
-            :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
-            :clone="cloneComponent"
-            draggable=".components-item"
-            :sort="false"
-            @end="onEnd"
-          >
-            <div
-              v-for="(element, index) in selectComponents"
-              :key="index"
-              class="components-item"
-              @click="addComponent(element)"
+            <draggable
+              class="components-draggable"
+              :list="item.list"
+              :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
+              :clone="cloneComponent"
+              draggable=".components-item"
+              :sort="false"
+              @end="onEnd"
             >
-              <div class="components-body">
-                <svg-icon :icon-class="element.tagIcon" />
-                {{ element.label }}
+              <div
+                v-for="(element, index) in item.list"
+                :key="index"
+                class="components-item"
+                @click="addComponent(element)"
+              >
+                <div class="components-body">
+                  <svg-icon :icon-class="element.tagIcon" />
+                  {{ element.label }}
+                </div>
               </div>
-            </div>
-          </draggable>
-          <div class="components-title">
-            <svg-icon icon-class="component" /> 布局型组件
+            </draggable>
           </div>
-          <draggable
-            class="components-draggable" :list="layoutComponents"
-            :group="{ name: 'componentsGroup', pull: 'clone', put: false }" :clone="cloneComponent"
-            draggable=".components-item" :sort="false" @end="onEnd"
-          >
-            <div
-              v-for="(element, index) in layoutComponents" :key="index" class="components-item"
-              @click="addComponent(element)"
-            >
-              <div class="components-body">
-                <svg-icon :icon-class="element.tagIcon" />
-                {{ element.label }}
-              </div>
-            </div>
-          </draggable>
         </div>
       </el-scrollbar>
     </div>
@@ -83,6 +46,9 @@
       <div class="action-bar">
         <el-button icon="el-icon-video-play" type="text" @click="run">
           运行
+        </el-button>
+        <el-button icon="el-icon-view" type="text" @click="showJson">
+          查看json
         </el-button>
         <el-button icon="el-icon-download" type="text" @click="download">
           导出vue文件
@@ -137,6 +103,11 @@
       size="100%"
       :generate-conf="generateConf"
     />
+    <json-drawer
+      size="60%"
+      :visible.sync="jsonDrawerVisible"
+      :json-str="JSON.stringify(formData)"
+    />
     <code-type-dialog
       :visible.sync="dialogVisible"
       title="选择生成类型"
@@ -149,11 +120,13 @@
 
 <script>
 import draggable from 'vuedraggable'
+import { debounce } from 'throttle-debounce'
 import { saveAs } from 'file-saver'
 import beautifier from 'beautifier'
 import ClipboardJS from 'clipboard'
 import render from '@/components/render'
 import FormDrawer from './FormDrawer'
+import JsonDrawer from './JsonDrawer'
 import RightPanel from './RightPanel'
 import {
   inputComponents, selectComponents, layoutComponents, formConf
@@ -186,6 +159,7 @@ export default {
     draggable,
     render,
     FormDrawer,
+    JsonDrawer,
     RightPanel,
     CodeTypeDialog,
     DraggableItem
@@ -205,9 +179,26 @@ export default {
       drawerVisible: false,
       formData: {},
       dialogVisible: false,
+      jsonDrawerVisible: false,
       generateConf: null,
       showFileName: false,
-      activeData: drawingDefalut[0]
+      activeData: drawingDefalut[0],
+      saveDrawingListDebounce: debounce(340, saveDrawingList),
+      saveIdGlobalDebounce: debounce(340, saveIdGlobal),
+      leftComponents: [
+        {
+          title: '输入型组件',
+          list: inputComponents
+        },
+        {
+          title: '选择型组件',
+          list: selectComponents
+        },
+        {
+          title: '布局型组件',
+          list: layoutComponents
+        }
+      ]
     }
   },
   computed: {
@@ -232,14 +223,14 @@ export default {
     },
     drawingList: {
       handler(val) {
-        saveDrawingList(val)
+        this.saveDrawingListDebounce(val)
         if (val.length === 0) this.idGlobal = 100
       },
       deep: true
     },
     idGlobal: {
       handler(val) {
-        saveIdGlobal(val)
+        this.saveIdGlobalDebounce(val)
       },
       immediate: true
     }
@@ -370,6 +361,10 @@ export default {
       const html = vueTemplate(makeUpHtml(this.formData, type))
       const css = cssStyle(makeUpCss(this.formData))
       return beautifier.html(html + script + css, beautifierConf.html)
+    },
+    showJson() {
+      this.AssembleFormData()
+      this.jsonDrawerVisible = true
     },
     download() {
       this.dialogVisible = true
