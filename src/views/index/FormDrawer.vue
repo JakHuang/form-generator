@@ -125,7 +125,7 @@ export default {
   created() {},
   mounted() {
     window.addEventListener('keydown', this.preventDefaultSave)
-    const a = new ClipboardJS('.copy-btn', {
+    const clipboard = new ClipboardJS('.copy-btn', {
       text: trigger => {
         const codeStr = this.generateCode()
         this.$notify({
@@ -135,6 +135,9 @@ export default {
         })
         return codeStr
       }
+    })
+    clipboard.on('error', e => {
+      this.$message.error('代码复制失败')
     })
   },
   beforeDestroy() {
@@ -268,6 +271,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixin.scss';
 .tab-editor {
   position: absolute;
   top: 33px;
@@ -293,12 +297,6 @@ export default {
 }
 .right-preview {
   height: 100%;
-  .action-bar {
-    height: 33px;
-    background: #f2fafb;
-    padding: 0 15px;
-    box-sizing: border-box;
-  }
   .result-wrapper {
     height: calc(100vh - 33px);
     width: 100%;
@@ -306,31 +304,8 @@ export default {
     padding: 12px;
     box-sizing: border-box;
   }
-  .bar-btn {
-    display: inline-block;
-    padding: 0 6px;
-    line-height: 32px;
-    color: #8285f5;
-    cursor: pointer;
-    font-size: 14px;
-    user-select: none;
-    & i {
-      font-size: 20px;
-    }
-    &:hover {
-      color: #4348d4;
-    }
-  }
-  .bar-btn + .bar-btn {
-    margin-left: 8px;
-  }
-  .delete-btn {
-    color: #f56c6c;
-    &:hover {
-      color: #ea0b30;
-    }
-  }
 }
+@include action-bar;
 ::v-deep .el-drawer__header {
   display: none;
 }

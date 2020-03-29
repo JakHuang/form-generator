@@ -47,6 +47,9 @@
         <el-button icon="el-icon-video-play" type="text" @click="run">
           运行
         </el-button>
+        <el-button icon="el-icon-view" type="text" @click="showJson">
+          查看json
+        </el-button>
         <el-button icon="el-icon-download" type="text" @click="download">
           导出vue文件
         </el-button>
@@ -100,6 +103,11 @@
       size="100%"
       :generate-conf="generateConf"
     />
+    <json-drawer
+      size="60%"
+      :visible.sync="jsonDrawerVisible"
+      :json-str="JSON.stringify(formData)"
+    />
     <code-type-dialog
       :visible.sync="dialogVisible"
       title="选择生成类型"
@@ -118,6 +126,7 @@ import beautifier from 'beautifier'
 import ClipboardJS from 'clipboard'
 import render from '@/components/render'
 import FormDrawer from './FormDrawer'
+import JsonDrawer from './JsonDrawer'
 import RightPanel from './RightPanel'
 import {
   inputComponents, selectComponents, layoutComponents, formConf
@@ -150,6 +159,7 @@ export default {
     draggable,
     render,
     FormDrawer,
+    JsonDrawer,
     RightPanel,
     CodeTypeDialog,
     DraggableItem
@@ -169,6 +179,7 @@ export default {
       drawerVisible: false,
       formData: {},
       dialogVisible: false,
+      jsonDrawerVisible: false,
       generateConf: null,
       showFileName: false,
       activeData: drawingDefalut[0],
@@ -350,6 +361,10 @@ export default {
       const html = vueTemplate(makeUpHtml(this.formData, type))
       const css = cssStyle(makeUpCss(this.formData))
       return beautifier.html(html + script + css, beautifierConf.html)
+    },
+    showJson() {
+      this.AssembleFormData()
+      this.jsonDrawerVisible = true
     },
     download() {
       this.dialogVisible = true
