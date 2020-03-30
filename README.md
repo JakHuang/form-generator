@@ -31,7 +31,7 @@ Form Generator Plugin
 - [项目主要结构分析](https://github.com/JakHuang/form-generator/wiki/%E9%A1%B9%E7%9B%AE%E4%B8%BB%E8%A6%81%E7%BB%93%E6%9E%84%E5%88%86%E6%9E%90)
 
 ## 运行
-- 确保已经安装node.js 10+ 和 vue-cli 4.0+
+- 确保已经安装node.js 10+
 - 首次下载项目后，安装项目依赖：
 ```
 yarn
