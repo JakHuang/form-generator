@@ -1,3 +1,4 @@
+
 <template>
   <div class="container">
     <div class="left-board">
@@ -32,8 +33,8 @@
                 @click="addComponent(element)"
               >
                 <div class="components-body">
-                  <svg-icon :icon-class="element.tagIcon" />
-                  {{ element.label }}
+                  <svg-icon :icon-class="element.__config__.tagIcon" />
+                  {{ element.__config__.label }}
                 </div>
               </div>
             </draggable>
@@ -208,7 +209,7 @@ export default {
     'activeData.label': function (val, oldVal) {
       if (
         this.activeData.placeholder === undefined
-        || !this.activeData.tag
+        || !this.activeData.__config__.tag
         || oldActiveId !== this.activeId
       ) {
         return
@@ -264,9 +265,9 @@ export default {
   methods: {
     activeFormItem(element) {
       this.activeData = element
-      this.activeId = element.formId
+      this.activeId = element.__config__.formId
     },
-    onEnd(obj, a) {
+    onEnd(obj) {
       if (obj.from !== obj.to) {
         this.activeData = tempActiveData
         this.activeId = this.idGlobal
@@ -279,20 +280,18 @@ export default {
     },
     cloneComponent(origin) {
       const clone = JSON.parse(JSON.stringify(origin))
-      clone.formId = ++this.idGlobal
-      clone.span = formConf.span
-      clone.renderKey = +new Date() // 改变renderKey后可以实现强制更新组件
-      if (!clone.layout) clone.layout = 'colFormItem'
-      if (clone.layout === 'colFormItem') {
-        clone.vModel = `field${this.idGlobal}`
-        clone.placeholder !== undefined && (clone.placeholder += clone.label)
-        tempActiveData = clone
-      } else if (clone.layout === 'rowFormItem') {
-        delete clone.label
-        clone.componentName = `row${this.idGlobal}`
-        clone.gutter = this.formConf.gutter
-        tempActiveData = clone
+      const config = clone.__config__
+      config.formId = ++this.idGlobal
+      config.span = formConf.span
+      config.renderKey = +new Date() // 改变renderKey后可以实现强制更新组件
+      if (config.layout === 'colFormItem') {
+        clone.__vModel__ = `field${this.idGlobal}`
+        clone.placeholder !== undefined && (clone.placeholder += config.label)
+      } else if (config.layout === 'rowFormItem') {
+        config.componentName = `row${this.idGlobal}`
+        config.gutter = this.formConf.gutter
       }
+      tempActiveData = clone
       return tempActiveData
     },
     AssembleFormData() {
@@ -333,15 +332,16 @@ export default {
       this.activeFormItem(clone)
     },
     createIdAndKey(item) {
-      item.formId = ++this.idGlobal
-      item.renderKey = +new Date()
-      if (item.layout === 'colFormItem') {
-        item.vModel = `field${this.idGlobal}`
-      } else if (item.layout === 'rowFormItem') {
-        item.componentName = `row${this.idGlobal}`
+      const config = item.__config__
+      config.formId = ++this.idGlobal
+      config.renderKey = +new Date()
+      if (config.layout === 'colFormItem') {
+        item.__vModel__ = `field${this.idGlobal}`
+      } else if (config.layout === 'rowFormItem') {
+        config.componentName = `row${this.idGlobal}`
       }
-      if (Array.isArray(item.children)) {
-        item.children = item.children.map(childItem => this.createIdAndKey(childItem))
+      if (Array.isArray(config.children)) {
+        config.children = config.children.map(childItem => this.createIdAndKey(childItem))
       }
       return item
     },
@@ -383,28 +383,32 @@ export default {
     },
     tagChange(newTag) {
       newTag = this.cloneComponent(newTag)
-      newTag.vModel = this.activeData.vModel
-      newTag.formId = this.activeId
-      newTag.span = this.activeData.span
-      delete this.activeData.tag
-      delete this.activeData.tagIcon
-      delete this.activeData.document
+      const config = newTag.__config__
+      newTag.__vModel__ = this.activeData.__vModel__
+      config.formId = this.activeId
+      config.span = this.activeData.__config__.span
+      this.activeData.__config__.tag = config.tag
+      this.activeData.__config__.tagIcon = config.tagIcon
+      this.activeData.__config__.document = config.document
+      if (typeof this.activeData.__config__.defaultValue === typeof config.defaultValue) {
+        config.defaultValue = this.activeData.__config__.defaultValue
+      }
       Object.keys(newTag).forEach(key => {
-        if (this.activeData[key] !== undefined
-          && typeof this.activeData[key] === typeof newTag[key]) {
+        if (this.activeData[key] !== undefined) {
           newTag[key] = this.activeData[key]
         }
       })
+      console.log(newTag)
       this.activeData = newTag
       this.updateDrawingList(newTag, this.drawingList)
     },
     updateDrawingList(newTag, list) {
-      const index = list.findIndex(item => item.formId === this.activeId)
+      const index = list.findIndex(item => item.__config__.formId === this.activeId)
       if (index > -1) {
         list.splice(index, 1, newTag)
       } else {
         list.forEach(item => {
-          if (Array.isArray(item.children)) this.updateDrawingList(newTag, item.children)
+          if (Array.isArray(item.__config__.children)) this.updateDrawingList(newTag, item.__config__.children)
         })
       }
     }

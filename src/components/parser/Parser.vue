@@ -34,31 +34,34 @@ function formBtns(h) {
 
 function renderFormItem(h, elementList) {
   return elementList.map(element => {
-    const layout = layouts[element.layout]
+    const config = element.__config__
+    const layout = layouts[config.layout]
 
     if (layout) {
       return layout.call(this, h, element)
     }
-    throw new Error(`没有与${element.layout}匹配的layout`)
+    throw new Error(`没有与${config.layout}匹配的layout`)
   })
 }
 
 function renderChildren(h, element) {
-  if (!Array.isArray(element.children)) return null
-  return renderFormItem.call(this, h, element.children)
+  const config = element.__config__
+  if (!Array.isArray(config.children)) return null
+  return renderFormItem.call(this, h, config.children)
 }
 
 const layouts = {
   colFormItem(h, element) {
-    let labelWidth = element.labelWidth ? `${element.labelWidth}px` : null
-    if (element.showLabel === false) labelWidth = '0'
+    const config = element.__config__
+    let labelWidth = config.labelWidth ? `${config.labelWidth}px` : null
+    if (config.showLabel === false) labelWidth = '0'
     return (
-      <el-col span={element.span}>
-        <el-form-item label-width={labelWidth} prop={element.vModel}
-          label={element.showLabel ? element.label : ''}>
+      <el-col span={config.span}>
+        <el-form-item label-width={labelWidth} prop={element.__vModel__}
+          label={config.showLabel ? config.label : ''}>
           <render conf={element} onInput={ event => {
-            this.$set(element, 'defaultValue', event)
-            this.$set(this[this.formConf.formModel], element.vModel, event)
+            this.$set(config, 'defaultValue', event)
+            this.$set(this[this.formConf.formModel], element.__vModel__, event)
           }} />
         </el-form-item>
       </el-col>
@@ -107,30 +110,32 @@ export default {
   methods: {
     initFormData(data, componentList, initData) {
       data[this.formConf.formModel] = componentList.reduce((prev, cur) => {
-        if (cur.vModel) prev[cur.vModel] = cur.defaultValue
-        if (cur.children) this.initFormData(data, cur.children, prev)
+        const config = cur.__config__
+        if (cur.__vModel__) prev[cur.__vModel__] = config.defaultValue
+        if (config.children) this.initFormData(data, config.children, prev)
         return prev
       }, initData)
     },
     buildRules(data, componentList, initData) {
       data[this.formConf.formRules] = componentList.reduce((prev, cur) => {
-        if (Array.isArray(cur.regList)) {
-          if (cur.required) {
-            const required = { required: cur.required, message: cur.placeholder }
-            if (Array.isArray(cur.defaultValue)) {
+        const config = cur.__config__
+        if (Array.isArray(config.regList)) {
+          if (config.required) {
+            const required = { required: config.required, message: cur.placeholder }
+            if (Array.isArray(config.defaultValue)) {
               required.type = 'array'
-              required.message = `请至少选择一个${cur.label}`
+              required.message = `请至少选择一个${config.label}`
             }
-            required.message === undefined && (required.message = `${cur.label}不能为空`)
-            cur.regList.push(required)
+            required.message === undefined && (required.message = `${config.label}不能为空`)
+            config.regList.push(required)
           }
-          prev[cur.vModel] = cur.regList.map(item => {
+          prev[cur.__vModel__] = config.regList.map(item => {
             item.pattern && (item.pattern = eval(item.pattern))
-            item.trigger = trigger[cur.tag]
+            item.trigger = trigger[config.tag]
             return item
           })
         }
-        if (cur.children) this.buildRules(data, cur.children, prev)
+        if (config.children) this.buildRules(data, config.children, prev)
         return prev
       }, initData)
     },
