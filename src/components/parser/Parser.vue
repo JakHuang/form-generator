@@ -1,9 +1,8 @@
 <script>
-import render from '@/components/render.js'
-import { trigger } from '@/components/generator/config.js'
+import render from '@/components/render/render.js'
 
 function renderFrom(h) {
-  const { formConfCopy, drawingListCopy } = this
+  const { formConfCopy } = this
   return (
     <el-row gutter={formConfCopy.gutter}>
       <el-form
@@ -16,7 +15,7 @@ function renderFrom(h) {
         props={{ model: this[formConfCopy.formModel] }}
         rules={this[formConfCopy.formRules]}
       >
-        {renderFormItem.call(this, h, drawingListCopy)}
+        {renderFormItem.call(this, h, formConfCopy.fields)}
         {formConfCopy.formBtns && formBtns.call(this, h)}
       </el-form>
     </el-row>
@@ -33,50 +32,50 @@ function formBtns(h) {
 }
 
 function renderFormItem(h, elementList) {
-  return elementList.map(element => {
-    const config = element.__config__
+  return elementList.map(scheme => {
+    const config = scheme.__config__
     const layout = layouts[config.layout]
 
     if (layout) {
-      return layout.call(this, h, element)
+      return layout.call(this, h, scheme)
     }
     throw new Error(`没有与${config.layout}匹配的layout`)
   })
 }
 
-function renderChildren(h, element) {
-  const config = element.__config__
+function renderChildren(h, scheme) {
+  const config = scheme.__config__
   if (!Array.isArray(config.children)) return null
   return renderFormItem.call(this, h, config.children)
 }
 
 const layouts = {
-  colFormItem(h, element) {
-    const config = element.__config__
+  colFormItem(h, scheme) {
+    const config = scheme.__config__
     let labelWidth = config.labelWidth ? `${config.labelWidth}px` : null
     if (config.showLabel === false) labelWidth = '0'
     return (
       <el-col span={config.span}>
-        <el-form-item label-width={labelWidth} prop={element.__vModel__}
+        <el-form-item label-width={labelWidth} prop={scheme.__vModel__}
           label={config.showLabel ? config.label : ''}>
-          <render conf={element} onInput={ event => {
+          <render conf={scheme} onInput={ event => {
             this.$set(config, 'defaultValue', event)
-            this.$set(this[this.formConf.formModel], element.__vModel__, event)
+            this.$set(this[this.formConf.formModel], scheme.__vModel__, event)
           }} />
         </el-form-item>
       </el-col>
     )
   },
-  rowFormItem(h, element) {
+  rowFormItem(h, scheme) {
     let child = renderChildren.apply(this, arguments)
-    if (element.type === 'flex') {
-      child = <el-row type={element.type} justify={element.justify} align={element.align}>
+    if (scheme.type === 'flex') {
+      child = <el-row type={scheme.type} justify={scheme.justify} align={scheme.align}>
               {child}
             </el-row>
     }
     return (
-      <el-col span={element.span}>
-        <el-row gutter={element.gutter}>
+      <el-col span={scheme.span}>
+        <el-row gutter={scheme.gutter}>
           {child}
         </el-row>
       </el-col>
@@ -92,19 +91,14 @@ export default {
     formConf: {
       type: Object,
       required: true
-    },
-    drawingList: {
-      type: Array,
-      required: true
     }
   },
   data() {
     const data = {
-      formConfCopy: JSON.parse(JSON.stringify(this.formConf)),
-      drawingListCopy: JSON.parse(JSON.stringify(this.drawingList))
+      formConfCopy: JSON.parse(JSON.stringify(this.formConf))
     }
-    this.initFormData(data, data.drawingListCopy, {})
-    this.buildRules(data, data.drawingListCopy, {})
+    this.initFormData(data, data.formConfCopy.fields, {})
+    this.buildRules(data, data.formConfCopy.fields, {})
     return data
   },
   methods: {
@@ -131,7 +125,7 @@ export default {
           }
           prev[cur.__vModel__] = config.regList.map(item => {
             item.pattern && (item.pattern = eval(item.pattern))
-            item.trigger = trigger[config.tag]
+            item.trigger = config.ruleTrigger[config.tag]
             return item
           })
         }
@@ -140,15 +134,15 @@ export default {
       }, initData)
     },
     resetForm() {
-      this.drawingListCopy = JSON.parse(JSON.stringify(this.drawingList))
-      this.initFormData(this, this.drawingListCopy, {})
+      const fields = JSON.parse(JSON.stringify(this.formConfCopy.fields))
+      this.initFormData(this, fields, {})
       this.$refs[this.formConf.formRef].resetFields()
     },
     submitForm() {
       this.$refs[this.formConf.formRef].validate(valid => {
         if (!valid) return false
-        // TODO 提交表单
-        console.log('表单结果：', this[this.formConf.formModel])
+        // 触发sumit事件
+        this.$emit('submit', this[this.formConf.formModel])
         return true
       })
     }

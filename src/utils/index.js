@@ -1,14 +1,3 @@
-export function makeMap(str, expectsLowerCase) {
-  const map = Object.create(null)
-  const list = str.split(',')
-  for (let i = 0; i < list.length; i++) {
-    map[list[i]] = true
-  }
-  return expectsLowerCase
-    ? val => map[val.toLowerCase()]
-    : val => map[val]
-}
-
 /**
  * num 小于0，左缩进num*2个空格； 大于0，右缩进num*2个空格。
  * @param {string} str 代码

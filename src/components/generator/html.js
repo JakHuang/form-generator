@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { trigger } from './config'
+import ruleTrigger from './ruleTrigger'
 
 let confGlobal
 let someSpanIsNot24
@@ -90,7 +90,7 @@ const layouts = {
       labelWidth = 'label-width="0"'
       label = ''
     }
-    const required = !trigger[config.tag] && config.required ? 'required' : ''
+    const required = !ruleTrigger[config.tag] && config.required ? 'required' : ''
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null
     let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}" ${required}>
         ${tagDom}

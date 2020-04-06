@@ -125,7 +125,7 @@ import { debounce } from 'throttle-debounce'
 import { saveAs } from 'file-saver'
 import beautifier from 'beautifier'
 import ClipboardJS from 'clipboard'
-import render from '@/components/render'
+import render from '@/components/render/render'
 import FormDrawer from './FormDrawer'
 import JsonDrawer from './JsonDrawer'
 import RightPanel from './RightPanel'
@@ -206,7 +206,7 @@ export default {
   },
   watch: {
     // eslint-disable-next-line func-names
-    'activeData.label': function (val, oldVal) {
+    'activeData.__config__.label': function (val, oldVal) {
       if (
         this.activeData.placeholder === undefined
         || !this.activeData.__config__.tag

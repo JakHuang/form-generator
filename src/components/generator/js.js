@@ -1,6 +1,6 @@
 import { isArray } from 'util'
 import { exportDefault, titleCase } from '@/utils/index'
-import { trigger } from './config'
+import ruleTrigger from './ruleTrigger'
 
 const units = {
   KB: '1024',
@@ -148,18 +148,18 @@ function buildRules(scheme, ruleList) {
   const config = scheme.__config__
   if (scheme.__vModel__ === undefined) return
   const rules = []
-  if (trigger[config.tag]) {
+  if (ruleTrigger[config.tag]) {
     if (config.required) {
       const type = isArray(config.defaultValue) ? 'type: \'array\',' : ''
       let message = isArray(config.defaultValue) ? `请至少选择一个${config.label}` : scheme.placeholder
       if (message === undefined) message = `${config.label}不能为空`
-      rules.push(`{ required: true, ${type} message: '${message}', trigger: '${trigger[config.tag]}' }`)
+      rules.push(`{ required: true, ${type} message: '${message}', trigger: '${ruleTrigger[config.tag]}' }`)
     }
     if (config.regList && isArray(config.regList)) {
       config.regList.forEach(item => {
         if (item.pattern) {
           rules.push(
-            `{ pattern: ${eval(item.pattern)}, message: '${item.message}', trigger: '${trigger[config.tag]}' }`
+            `{ pattern: ${eval(item.pattern)}, message: '${item.message}', trigger: '${ruleTrigger[config.tag]}' }`
           )
         }
       })
