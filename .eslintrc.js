@@ -20,6 +20,7 @@ module.exports = {
     'import/prefer-default-export': 0,
     'no-use-before-define': 0,
     'no-param-reassign': 0,
+    'no-underscore-dangle': 0,
     'arrow-parens': [2, 'as-needed'],
     'vue/max-attributes-per-line': 0,
     'max-len': [

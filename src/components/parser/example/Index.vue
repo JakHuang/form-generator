@@ -1,7 +1,7 @@
 <template>
   <div class="test-from">
-    <parser :form-conf="formConf" :drawing-list="drawingList" />
-    <parser :form-conf="formConf" :drawing-list="drawingList" />
+    <parser :form-conf="formConf" @submit="sumbitForm1" />
+    <parser :form-conf="formConf" @submit="sumbitForm2" />
   </div>
 </template>
 
@@ -16,6 +16,87 @@ export default {
   data() {
     return {
       formConf: {
+        fields: [
+          {
+            __config__: {
+              label: '单行文本',
+              labelWidth: null,
+              showLabel: true,
+              changeTag: true,
+              tag: 'el-input',
+              tagIcon: 'input',
+              required: true,
+              layout: 'colFormItem',
+              span: 24,
+              document: 'https://element.eleme.cn/#/zh-CN/component/input',
+              regList: [
+                {
+                  pattern: '/^1(3|4|5|7|8|9)\\d{9}$/',
+                  message: '手机号格式错误'
+                }
+              ],
+              ruleTrigger: {
+                'el-input': 'blur',
+                'el-input-number': 'blur',
+                'el-select': 'change',
+                'el-radio-group': 'change',
+                'el-checkbox-group': 'change',
+                'el-cascader': 'change',
+                'el-time-picker': 'change',
+                'el-date-picker': 'change',
+                'el-rate': 'change'
+              }
+            },
+            __slot__: {
+              prepend: '',
+              append: ''
+            },
+            __vModel__: 'mobile',
+            placeholder: '请输入手机号',
+            style: {
+              width: '100%'
+            },
+            clearable: true,
+            'prefix-icon': 'el-icon-mobile',
+            'suffix-icon': '',
+            maxlength: 11,
+            'show-word-limit': true,
+            readonly: false,
+            disabled: false
+          },
+          {
+            __config__: {
+              label: '日期范围',
+              tag: 'el-date-picker',
+              tagIcon: 'date-range',
+              defaultValue: null,
+              span: 24,
+              showLabel: true,
+              labelWidth: null,
+              required: true,
+              layout: 'colFormItem',
+              regList: [],
+              changeTag: true,
+              document:
+                'https://element.eleme.cn/#/zh-CN/component/date-picker',
+              formId: 101,
+              renderKey: 1585980082729
+            },
+            style: {
+              width: '100%'
+            },
+            type: 'daterange',
+            'range-separator': '至',
+            'start-placeholder': '开始日期',
+            'end-placeholder': '结束日期',
+            disabled: false,
+            clearable: true,
+            format: 'yyyy-MM-dd',
+            'value-format': 'yyyy-MM-dd',
+            readonly: false,
+            __vModel__: 'field101'
+          }
+        ],
         formRef: 'elForm',
         formModel: 'formData',
         size: 'small',
@@ -25,88 +106,23 @@ export default {
         gutter: 15,
         disabled: false,
         span: 24,
-        formBtns: true
-      },
-      drawingList: [
-        {
-          layout: 'colFormItem',
-          tagIcon: 'input',
-          label: '手机号',
-          vModel: 'mobile',
-          formId: 6,
-          tag: 'el-input',
-          placeholder: '请输入手机号',
-          defaultValue: '',
-          span: 24,
-          showLabel: true,
-          labelWidth: null,
-          style: { width: '100%' },
-          clearable: true,
-          prepend: '',
-          append: '',
-          'prefix-icon': 'el-icon-mobile',
-          'suffix-icon': '',
-          maxlength: 11,
-          'show-word-limit': true,
-          readonly: false,
-          disabled: false,
-          required: true,
-          changeTag: true,
-          regList: [
-            { pattern: '/^1(3|4|5|7|8|9)\\d{9}$/', message: '手机号格式错误' }
-          ],
-          document: 'https://element.eleme.cn/#/zh-CN/component/input'
-        },
-        {
-          layout: 'rowFormItem',
-          tagIcon: 'row',
-          type: 'default',
-          justify: 'start',
-          align: 'top',
-          layoutTree: true,
-          children: [
-            {
-              label: '多选框组',
-              tag: 'el-checkbox-group',
-              tagIcon: 'checkbox',
-              defaultValue: [],
-              span: 24,
-              showLabel: true,
-              labelWidth: null,
-              style: {},
-              optionType: 'default',
-              border: false,
-              size: 'medium',
-              disabled: false,
-              required: true,
-              options: [
-                { label: '选项一', value: 1 },
-                { label: '选项二', value: 2 }
-              ],
-              regList: [],
-              changeTag: true,
-              document: 'https://element.eleme.cn/#/zh-CN/component/checkbox',
-              formId: 107,
-              renderKey: 1584200583696,
-              layout: 'colFormItem',
-              vModel: 'field107'
-            }
-          ],
-          document: 'https://element.eleme.cn/#/zh-CN/component/layout',
-          formId: 108,
-          span: 24,
-          renderKey: 1584203505593,
-          componentName: 'row108',
-          gutter: 15
-        }
-      ]
+        formBtns: true,
+        unFocusedComponentBorder: false
+      }
     }
   },
   computed: {},
   watch: {},
   created() {},
   mounted() {},
-  methods: {}
+  methods: {
+    sumbitForm1(data) {
+      console.log('sumbitForm1提交数据：', data)
+    },
+    sumbitForm2(data) {
+      console.log('sumbitForm2提交数据：', data)
+    }
+  }
 }
 </script>
 

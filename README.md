@@ -31,7 +31,7 @@ Form Generator Plugin
 - [项目主要结构分析](https://github.com/JakHuang/form-generator/wiki/%E9%A1%B9%E7%9B%AE%E4%B8%BB%E8%A6%81%E7%BB%93%E6%9E%84%E5%88%86%E6%9E%90)
 
 ## 运行
-- 确保已经安装node.js 10+ 和 vue-cli 4.0+
+- 确保已经安装node.js 10+
 - 首次下载项目后，安装项目依赖：
 ```
 yarn
@@ -58,6 +58,11 @@ npm run build
 
 ## PR鸣谢
 - [IWANABETHATGUY](https://github.com/IWANABETHATGUY)
+
+## 捐赠
+#### 如果您觉得本项目对您有帮助，可以请作者喝一杯咖啡, 让开源走的更远，感谢支持。  
+#### 也请您在捐赠后，加下qq群：976154366，私聊群主留个赞助链接。
+<img src="https://ae01.alicdn.com/kf/H50d81220a202490f961878f42ed1a636i.jpg">
 
 ## 开源协议
 [MIT](https://opensource.org/licenses/MIT)

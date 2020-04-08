@@ -2,9 +2,17 @@
   <div>
     <el-drawer v-bind="$attrs" v-on="$listeners" @opened="onOpen" @close="onClose">
       <div class="action-bar" :style="{'text-align': 'left'}">
+        <span class="bar-btn" @click="refresh">
+          <i class="el-icon-refresh" />
+          刷新
+        </span>
         <span ref="copyBtn" class="bar-btn copy-json-btn">
           <i class="el-icon-document-copy" />
           复制JSON
+        </span>
+        <span class="bar-btn" @click="exportJsonFile">
+          <i class="el-icon-download" />
+          导出JSON文件
         </span>
         <span class="bar-btn delete-btn" @click="$emit('update:visible', false)">
           <i class="el-icon-circle-close" />
@@ -21,6 +29,7 @@ import monaco from 'monaco'
 import beautifier from 'beautifier'
 import { beautifierConf } from '@/utils/index'
 import ClipboardJS from 'clipboard'
+import { saveAs } from 'file-saver'
 
 export default {
   components: {},
@@ -39,6 +48,7 @@ export default {
   watch: {},
   created() {},
   mounted() {
+    window.addEventListener('keydown', this.preventDefaultSave)
     const clipboard = new ClipboardJS('.copy-json-btn', {
       text: trigger => {
         this.$notify({
@@ -53,7 +63,15 @@ export default {
       this.$message.error('代码复制失败')
     })
   },
+  beforeDestroy() {
+    window.removeEventListener('keydown', this.preventDefaultSave)
+  },
   methods: {
+    preventDefaultSave(e) {
+      if (e.key === 's' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+      }
+    },
     onOpen() {
       this.beautifierJson = beautifier.js(this.jsonStr, beautifierConf.js)
       this.setEditorValue('editorJson', this.beautifierJson)
@@ -68,6 +86,35 @@ export default {
           theme: 'vs-dark',
           language: 'json',
           automaticLayout: true
+        })
+        // ctrl + s 刷新
+        this.jsonEditor.onKeyDown(e => {
+          if (e.keyCode === 49 && (e.metaKey || e.ctrlKey)) {
+            this.refresh()
+          }
+        })
+      }
+    },
+    exportJsonFile() {
+      this.$prompt('文件名:', '导出文件', {
+        inputValue: `${+new Date()}.json`,
+        closeOnClickModal: false,
+        inputPlaceholder: '请输入文件名'
+      }).then(({ value }) => {
+        if (!value) value = `${+new Date()}.json`
+        const codeStr = this.jsonEditor.getValue()
+        const blob = new Blob([codeStr], { type: 'text/plain;charset=utf-8' })
+        saveAs(blob, value)
+      })
+    },
+    refresh() {
+      try {
+        this.$emit('refresh', JSON.parse(this.jsonEditor.getValue()))
+      } catch (error) {
+        this.$notify({
+          title: '错误',
+          message: 'JSON格式错误，请检查',
+          type: 'error'
         })
       }
     }

@@ -181,6 +181,7 @@ export default {
           automaticLayout: true
         })
       }
+      // ctrl + s 刷新
       editorObj[type].onKeyDown(e => {
         if (e.keyCode === 49 && (e.metaKey || e.ctrlKey)) {
           this.runCode()

@@ -1,0 +1,15 @@
+{
+  "name": "form-gen-utils",
+  "version": "1.0.0",
+  "description": "表单设计器基础工具类",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://jakhuang.github.io/form-generator"
+  },
+  "author": "jakHuang",
+  "license": "MIT"
+}

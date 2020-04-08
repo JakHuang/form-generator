@@ -1,4 +1,13 @@
-import { makeMap } from '@/utils/index'
+export function makeMap(str, expectsLowerCase) {
+  const map = Object.create(null)
+  const list = str.split(',')
+  for (let i = 0; i < list.length; i++) {
+    map[list[i]] = true
+  }
+  return expectsLowerCase
+    ? val => map[val.toLowerCase()]
+    : val => map[val]
+}
 
 // 参考https://github.com/vuejs/vue/blob/v2.6.10/src/platforms/web/server/util.js
 const isAttr = makeMap(
@@ -28,16 +37,16 @@ function vModel(self, dataObject, defaultValue) {
 const componentChild = {
   'el-input': {
     prepend(h, conf, key) {
-      return <template slot="prepend">{conf[key]}</template>
+      return <template slot="prepend">{conf.__slot__[key]}</template>
     },
     append(h, conf, key) {
-      return <template slot="append">{conf[key]}</template>
+      return <template slot="append">{conf.__slot__[key]}</template>
     }
   },
   'el-select': {
     options(h, conf, key) {
       const list = []
-      conf.options.forEach(item => {
+      conf.__slot__.options.forEach(item => {
         list.push(<el-option label={item.label} value={item.value} disabled={item.disabled}></el-option>)
       })
       return list
@@ -46,9 +55,12 @@ const componentChild = {
   'el-radio-group': {
     options(h, conf, key) {
       const list = []
-      conf.options.forEach(item => {
-        if (conf.optionType === 'button') list.push(<el-radio-button label={item.value}>{item.label}</el-radio-button>)
-        else list.push(<el-radio label={item.value} border={conf.border}>{item.label}</el-radio>)
+      conf.__slot__.options.forEach(item => {
+        if (conf.__config__.optionType === 'button') {
+          list.push(<el-radio-button label={item.value}>{item.label}</el-radio-button>)
+        } else {
+          list.push(<el-radio label={item.value} border={conf.border}>{item.label}</el-radio>)
+        }
       })
       return list
     }
@@ -56,8 +68,8 @@ const componentChild = {
   'el-checkbox-group': {
     options(h, conf, key) {
       const list = []
-      conf.options.forEach(item => {
-        if (conf.optionType === 'button') {
+      conf.__slot__.options.forEach(item => {
+        if (conf.__config__.optionType === 'button') {
           list.push(<el-checkbox-button label={item.value}>{item.label}</el-checkbox-button>)
         } else {
           list.push(<el-checkbox label={item.value} border={conf.border}>{item.label}</el-checkbox>)
@@ -69,13 +81,16 @@ const componentChild = {
   'el-upload': {
     'list-type': (h, conf, key) => {
       const list = []
+      const config = conf.__config__
       if (conf['list-type'] === 'picture-card') {
         list.push(<i class="el-icon-plus"></i>)
       } else {
-        list.push(<el-button size="small" type="primary" icon="el-icon-upload">{conf.buttonText}</el-button>)
+        list.push(<el-button size="small" type="primary" icon="el-icon-upload">{config.buttonText}</el-button>)
       }
-      if (conf.showTip) {
-        list.push(<div slot="tip" class="el-upload__tip">只能上传不超过 {conf.fileSize}{conf.sizeUnit} 的{conf.accept}文件</div>)
+      if (config.showTip) {
+        list.push(
+          <div slot="tip" class="el-upload__tip">只能上传不超过 {config.fileSize}{config.sizeUnit} 的{conf.accept}文件</div>
+        )
       }
       return list
     }
@@ -93,11 +108,11 @@ export default {
     const confClone = JSON.parse(JSON.stringify(this.conf))
     const children = []
 
-    const childObjs = componentChild[confClone.tag]
+    const childObjs = componentChild[confClone.__config__.tag]
     if (childObjs) {
       Object.keys(childObjs).forEach(key => {
         const childFunc = childObjs[key]
-        if (confClone[key]) {
+        if (confClone.__slot__ && confClone.__slot__[key]) {
           children.push(childFunc(h, confClone, key))
         }
       })
@@ -105,17 +120,19 @@ export default {
 
     Object.keys(confClone).forEach(key => {
       const val = confClone[key]
-      if (key === 'vModel') {
-        vModel(this, dataObject, confClone.defaultValue)
+      if (key === '__vModel__') {
+        vModel(this, dataObject, confClone.__config__.defaultValue)
       } else if (dataObject[key]) {
-        dataObject[key] = val
+        dataObject[key] = { ...dataObject[key], ...val }
       } else if (!isAttr(key)) {
         dataObject.props[key] = val
       } else {
         dataObject.attrs[key] = val
       }
     })
-    return h(this.conf.tag, dataObject, children)
+    delete dataObject.props.__config__
+    delete dataObject.props.__slot__
+    return h(this.conf.__config__.tag, dataObject, children)
   },
   props: ['conf']
 }
