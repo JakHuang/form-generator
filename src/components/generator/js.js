@@ -53,7 +53,7 @@ function buildAttributes(scheme, dataList, ruleList, optionsList, methodList, pr
   buildRules(scheme, ruleList)
 
   // 特殊处理options属性
-  if ((scheme.options && scheme.options.length) || (slot && slot.options && slot.options.length)) {
+  if (scheme.options || (slot && slot.options && slot.options.length)) {
     buildOptions(scheme, optionsList)
     if (config.dataType === 'dynamic') {
       const model = `${scheme.__vModel__}Options`
