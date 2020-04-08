@@ -811,9 +811,9 @@ export default {
       if (Array.isArray(val)) {
         return val.join(',')
       }
-      if (['string', 'number'].indexOf(val) > -1) {
-        return val
-      }
+      // if (['string', 'number'].indexOf(typeof val) > -1) {
+      //   return val
+      // }
       if (typeof val === 'boolean') {
         return `${val}`
       }
