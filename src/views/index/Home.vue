@@ -108,6 +108,7 @@
       size="60%"
       :visible.sync="jsonDrawerVisible"
       :json-str="JSON.stringify(formData)"
+      @refresh="refreshJson"
     />
     <code-type-dialog
       :visible.sync="dialogVisible"
@@ -411,6 +412,12 @@ export default {
           if (Array.isArray(item.__config__.children)) this.updateDrawingList(newTag, item.__config__.children)
         })
       }
+    },
+    refreshJson(data) {
+      this.drawingList = JSON.parse(JSON.stringify(data.fields))
+      delete data.fields
+      this.formConf = data
+      console.log(this.drawingList, this.formConf)
     }
   }
 }
