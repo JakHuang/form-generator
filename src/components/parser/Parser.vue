@@ -1,8 +1,22 @@
 <script>
 import render from '@/components/render/render.js'
 
+const ruleTrigger = {
+  'el-input': 'blur',
+  'el-input-number': 'blur',
+  'el-select': 'change',
+  'el-radio-group': 'change',
+  'el-checkbox-group': 'change',
+  'el-cascader': 'change',
+  'el-time-picker': 'change',
+  'el-date-picker': 'change',
+  'el-rate': 'change'
+}
+
 function renderFrom(h) {
   const { formConfCopy } = this
+  console.log('formConfCopy', formConfCopy)
+
   return (
     <el-row gutter={formConfCopy.gutter}>
       <el-form
@@ -97,6 +111,7 @@ export default {
     const data = {
       formConfCopy: JSON.parse(JSON.stringify(this.formConf))
     }
+    console.log(104, data)
     this.initFormData(data, data.formConfCopy.fields, {})
     this.buildRules(data, data.formConfCopy.fields, {})
     return data
@@ -125,7 +140,7 @@ export default {
           }
           prev[cur.__vModel__] = config.regList.map(item => {
             item.pattern && (item.pattern = eval(item.pattern))
-            item.trigger = config.ruleTrigger[config.tag]
+            item.trigger = ruleTrigger && ruleTrigger[config.tag]
             return item
           })
         }

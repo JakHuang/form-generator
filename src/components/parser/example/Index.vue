@@ -34,18 +34,7 @@ export default {
                   pattern: '/^1(3|4|5|7|8|9)\\d{9}$/',
                   message: '手机号格式错误'
                 }
-              ],
-              ruleTrigger: {
-                'el-input': 'blur',
-                'el-input-number': 'blur',
-                'el-select': 'change',
-                'el-radio-group': 'change',
-                'el-checkbox-group': 'change',
-                'el-cascader': 'change',
-                'el-time-picker': 'change',
-                'el-date-picker': 'change',
-                'el-rate': 'change'
-              }
+              ]
             },
             __slot__: {
               prepend: '',
