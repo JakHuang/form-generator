@@ -1,8 +1,21 @@
 <script>
 import render from '@/components/render/render.js'
 
+const ruleTrigger = {
+  'el-input': 'blur',
+  'el-input-number': 'blur',
+  'el-select': 'change',
+  'el-radio-group': 'change',
+  'el-checkbox-group': 'change',
+  'el-cascader': 'change',
+  'el-time-picker': 'change',
+  'el-date-picker': 'change',
+  'el-rate': 'change'
+}
+
 function renderFrom(h) {
   const { formConfCopy } = this
+
   return (
     <el-row gutter={formConfCopy.gutter}>
       <el-form
@@ -95,23 +108,24 @@ export default {
   },
   data() {
     const data = {
-      formConfCopy: JSON.parse(JSON.stringify(this.formConf))
+      formConfCopy: JSON.parse(JSON.stringify(this.formConf)),
+      [this.formConf.formModel]: {},
+      [this.formConf.formRules]: {}
     }
-    this.initFormData(data, data.formConfCopy.fields, {})
-    this.buildRules(data, data.formConfCopy.fields, {})
+    this.initFormData(data.formConfCopy.fields, data[this.formConf.formModel])
+    this.buildRules(data.formConfCopy.fields, data[this.formConf.formRules])
     return data
   },
   methods: {
-    initFormData(data, componentList, initData) {
-      data[this.formConf.formModel] = componentList.reduce((prev, cur) => {
+    initFormData(componentList, formData) {
+      componentList.forEach(cur => {
         const config = cur.__config__
-        if (cur.__vModel__) prev[cur.__vModel__] = config.defaultValue
-        if (config.children) this.initFormData(data, config.children, prev)
-        return prev
-      }, initData)
+        if (cur.__vModel__) formData[cur.__vModel__] = config.defaultValue
+        if (config.children) this.initFormData(config.children, formData)
+      })
     },
-    buildRules(data, componentList, initData) {
-      data[this.formConf.formRules] = componentList.reduce((prev, cur) => {
+    buildRules(componentList, rules) {
+      componentList.forEach(cur => {
         const config = cur.__config__
         if (Array.isArray(config.regList)) {
           if (config.required) {
@@ -123,19 +137,17 @@ export default {
             required.message === undefined && (required.message = `${config.label}不能为空`)
             config.regList.push(required)
           }
-          prev[cur.__vModel__] = config.regList.map(item => {
+          rules[cur.__vModel__] = config.regList.map(item => {
             item.pattern && (item.pattern = eval(item.pattern))
-            item.trigger = config.ruleTrigger[config.tag]
+            item.trigger = ruleTrigger && ruleTrigger[config.tag]
             return item
           })
         }
-        if (config.children) this.buildRules(data, config.children, prev)
-        return prev
-      }, initData)
+        if (config.children) this.buildRules(config.children, rules)
+      })
     },
     resetForm() {
-      const fields = JSON.parse(JSON.stringify(this.formConfCopy.fields))
-      this.initFormData(this, fields, {})
+      this.formConfCopy = JSON.parse(JSON.stringify(this.formConf))
       this.$refs[this.formConf.formRef].resetFields()
     },
     submitForm() {

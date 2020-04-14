@@ -34,18 +34,7 @@ export default {
                   pattern: '/^1(3|4|5|7|8|9)\\d{9}$/',
                   message: '手机号格式错误'
                 }
-              ],
-              ruleTrigger: {
-                'el-input': 'blur',
-                'el-input-number': 'blur',
-                'el-select': 'change',
-                'el-radio-group': 'change',
-                'el-checkbox-group': 'change',
-                'el-cascader': 'change',
-                'el-time-picker': 'change',
-                'el-date-picker': 'change',
-                'el-rate': 'change'
-              }
+              ]
             },
             __slot__: {
               prepend: '',
@@ -95,6 +84,50 @@ export default {
             'value-format': 'yyyy-MM-dd',
             readonly: false,
             __vModel__: 'field101'
+          },
+          {
+            __config__: {
+              layout: 'rowFormItem',
+              tagIcon: 'row',
+              label: '行容器',
+              layoutTree: true,
+              children: [
+                {
+                  __config__: {
+                    label: '评分',
+                    tag: 'el-rate',
+                    tagIcon: 'rate',
+                    defaultValue: 0,
+                    span: 24,
+                    showLabel: true,
+                    labelWidth: null,
+                    layout: 'colFormItem',
+                    required: true,
+                    regList: [],
+                    changeTag: true,
+                    document: 'https://element.eleme.cn/#/zh-CN/component/rate',
+                    formId: 102,
+                    renderKey: 1586839671259
+                  },
+                  style: {},
+                  max: 5,
+                  'allow-half': false,
+                  'show-text': false,
+                  'show-score': false,
+                  disabled: false,
+                  __vModel__: 'field102'
+                }
+              ],
+              document: 'https://element.eleme.cn/#/zh-CN/component/layout',
+              formId: 101,
+              span: 24,
+              renderKey: 1586839668999,
+              componentName: 'row101',
+              gutter: 15
+            },
+            type: 'default',
+            justify: 'start',
+            align: 'top'
           }
         ],
         formRef: 'elForm',
