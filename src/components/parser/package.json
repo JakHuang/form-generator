@@ -1,6 +1,6 @@
 {
   "name": "form-gen-parser",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "表单json解析器",
   "main": "lib/form-gen-parser.umd.js",
   "directories": {
