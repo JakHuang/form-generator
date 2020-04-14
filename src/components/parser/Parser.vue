@@ -15,7 +15,6 @@ const ruleTrigger = {
 
 function renderFrom(h) {
   const { formConfCopy } = this
-  console.log('formConfCopy', formConfCopy)
 
   return (
     <el-row gutter={formConfCopy.gutter}>
@@ -109,24 +108,16 @@ export default {
   },
   data() {
     const data = {
-      formConfCopy: JSON.parse(JSON.stringify(this.formConf))
+      formConfCopy: JSON.parse(JSON.stringify(this.formConf)),
+      [this.formConf.formModel]: {},
+      [this.formConf.formRules]: {}
     }
-    console.log(104, data)
-    this.initFormData(data, data.formConfCopy.fields, {})
-    this.buildRules(data, data.formConfCopy.fields, {})
+    this.buildRules(data.formConfCopy.fields, data[this.formConf.formRules])
     return data
   },
   methods: {
-    initFormData(data, componentList, initData) {
-      data[this.formConf.formModel] = componentList.reduce((prev, cur) => {
-        const config = cur.__config__
-        if (cur.__vModel__) prev[cur.__vModel__] = config.defaultValue
-        if (config.children) this.initFormData(data, config.children, prev)
-        return prev
-      }, initData)
-    },
-    buildRules(data, componentList, initData) {
-      data[this.formConf.formRules] = componentList.reduce((prev, cur) => {
+    buildRules(componentList, rules) {
+      componentList.forEach(cur => {
         const config = cur.__config__
         if (Array.isArray(config.regList)) {
           if (config.required) {
@@ -138,15 +129,14 @@ export default {
             required.message === undefined && (required.message = `${config.label}不能为空`)
             config.regList.push(required)
           }
-          prev[cur.__vModel__] = config.regList.map(item => {
+          rules[cur.__vModel__] = config.regList.map(item => {
             item.pattern && (item.pattern = eval(item.pattern))
             item.trigger = ruleTrigger && ruleTrigger[config.tag]
             return item
           })
         }
-        if (config.children) this.buildRules(data, config.children, prev)
-        return prev
-      }, initData)
+        if (config.children) this.buildRules(config.children, rules)
+      })
     },
     resetForm() {
       const fields = JSON.parse(JSON.stringify(this.formConfCopy.fields))
