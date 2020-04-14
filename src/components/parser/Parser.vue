@@ -112,10 +112,18 @@ export default {
       [this.formConf.formModel]: {},
       [this.formConf.formRules]: {}
     }
+    this.initFormData(data.formConfCopy.fields, data[this.formConf.formModel])
     this.buildRules(data.formConfCopy.fields, data[this.formConf.formRules])
     return data
   },
   methods: {
+    initFormData(componentList, formData) {
+      componentList.forEach(cur => {
+        const config = cur.__config__
+        if (cur.__vModel__) formData[cur.__vModel__] = config.defaultValue
+        if (config.children) this.initFormData(config.children, formData)
+      })
+    },
     buildRules(componentList, rules) {
       componentList.forEach(cur => {
         const config = cur.__config__
@@ -139,8 +147,7 @@ export default {
       })
     },
     resetForm() {
-      const fields = JSON.parse(JSON.stringify(this.formConfCopy.fields))
-      this.initFormData(this, fields, {})
+      this.formConfCopy = JSON.parse(JSON.stringify(this.formConf))
       this.$refs[this.formConf.formRef].resetFields()
     },
     submitForm() {
