@@ -1,5 +1,5 @@
 <template>
-  <div class="test-from">
+  <div class="test-form">
     <parser :form-conf="formConf" @submit="sumbitForm1" />
     <parser :form-conf="formConf" @submit="sumbitForm2" />
   </div>
@@ -7,6 +7,9 @@
 
 <script>
 import Parser from '../Parser'
+
+// 若parser是通过安装npm方式集成到项目中的，使用此行引入
+// import Parser from 'form-gen-parser'
 
 export default {
   components: {
@@ -160,7 +163,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.test-from {
+.test-form {
   margin: 15px auto;
   width: 800px;
   padding: 15px;
