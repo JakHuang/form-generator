@@ -14,4 +14,4 @@ yarn add form-gen-parser
 > [查看在线示例](https://mrhj.gitee.io/form-generator/#/parser)  
 
 示例代码:  
-> src\components\parser\example\Index.vue
+> [src\components\parser\example\Index.vue](https://github.com/JakHuang/form-generator/blob/dev/src/components/parser/example/Index.vue)
