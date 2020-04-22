@@ -283,7 +283,7 @@ export default {
       const clone = JSON.parse(JSON.stringify(origin))
       const config = clone.__config__
       config.formId = ++this.idGlobal
-      config.span = formConf.span
+      config.span = this.formConf.span
       config.renderKey = +new Date() // 改变renderKey后可以实现强制更新组件
       if (config.layout === 'colFormItem') {
         clone.__vModel__ = `field${this.idGlobal}`
