@@ -124,7 +124,6 @@
 import draggable from 'vuedraggable'
 import { debounce } from 'throttle-debounce'
 import { saveAs } from 'file-saver'
-import beautifier from 'beautifier'
 import ClipboardJS from 'clipboard'
 import render from '@/components/render/render'
 import FormDrawer from './FormDrawer'
@@ -148,7 +147,9 @@ import DraggableItem from './DraggableItem'
 import {
   getDrawingList, saveDrawingList, getIdGlobal, saveIdGlobal, getFormConf
 } from '@/utils/db'
+import loadBeautifier from '@/utils/loadBeautifier'
 
+let beautifier
 const emptyActiveData = { style: {}, autosize: {} }
 let oldActiveId
 let tempActiveData
@@ -247,7 +248,9 @@ export default {
     if (formConfInDB) {
       this.formConf = formConfInDB
     }
-
+    loadBeautifier(btf => {
+      beautifier = btf
+    })
     const clipboard = new ClipboardJS('#copyNode', {
       text: trigger => {
         const codeStr = this.generateCode()

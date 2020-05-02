@@ -76,9 +76,7 @@
   </div>
 </template>
 <script>
-import monaco from 'monaco'
 import { parse } from '@babel/parser'
-import beautifier from 'beautifier'
 import ClipboardJS from 'clipboard'
 import { saveAs } from 'file-saver'
 import {
@@ -88,6 +86,8 @@ import { makeUpJs } from '@/components/generator/js'
 import { makeUpCss } from '@/components/generator/css'
 import { exportDefault, beautifierConf, titleCase } from '@/utils/index'
 import ResourceDialog from './ResourceDialog'
+import loadMonaco from '@/utils/loadMonaco'
+import loadBeautifier from '@/utils/loadBeautifier'
 
 const editorObj = {
   html: null,
@@ -99,6 +99,8 @@ const mode = {
   js: 'javascript',
   css: 'css'
 }
+let beautifier
+let monaco
 
 export default {
   components: { ResourceDialog },
@@ -113,7 +115,8 @@ export default {
       isIframeLoaded: false,
       resourceVisible: false,
       scripts: [],
-      links: []
+      links: [],
+      monaco: null
     }
   },
   computed: {
@@ -122,7 +125,8 @@ export default {
     }
   },
   watch: {},
-  created() {},
+  created() {
+  },
   mounted() {
     window.addEventListener('keydown', this.preventDefaultSave)
     const clipboard = new ClipboardJS('.copy-btn', {
@@ -150,25 +154,30 @@ export default {
       }
     },
     onOpen() {
-      setTimeout(() => {
-        const { type } = this.generateConf
-        this.htmlCode = makeUpHtml(this.formData, type)
+      const { type } = this.generateConf
+      this.htmlCode = makeUpHtml(this.formData, type)
+      this.jsCode = makeUpJs(this.formData, type)
+      this.cssCode = makeUpCss(this.formData)
+
+      loadBeautifier(btf => {
+        beautifier = btf
         this.htmlCode = beautifier.html(this.htmlCode, beautifierConf.html)
-        this.jsCode = makeUpJs(this.formData, type)
         this.jsCode = beautifier.js(this.jsCode, beautifierConf.js)
-        this.cssCode = makeUpCss(this.formData)
         this.cssCode = beautifier.css(this.cssCode, beautifierConf.html)
 
-        this.setEditorValue('editorHtml', 'html', this.htmlCode)
-        this.setEditorValue('editorJs', 'js', this.jsCode)
-        this.setEditorValue('editorCss', 'css', this.cssCode)
-        this.isIframeLoaded && this.runCode()
+        loadMonaco(val => {
+          monaco = val
+          this.setEditorValue('editorHtml', 'html', this.htmlCode)
+          this.setEditorValue('editorJs', 'js', this.jsCode)
+          this.setEditorValue('editorCss', 'css', this.cssCode)
+          this.isIframeLoaded && this.runCode()
+        })
       })
     },
     onClose() {},
     iframeLoad() {
       this.isIframeLoaded = true
-      this.jsCode && this.runCode()
+      monaco && this.jsCode && this.runCode()
     },
     setEditorValue(id, type, codeStr) {
       if (editorObj[type]) {

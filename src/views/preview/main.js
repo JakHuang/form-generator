@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import load from '@/utils/loadScript'
+import { loadScriptQueue } from '@/utils/loadScript'
 
 const $previewApp = document.getElementById('previewApp')
 const childAttrs = {
@@ -8,17 +8,6 @@ const childAttrs = {
 }
 
 window.addEventListener('message', init, false)
-
-function loadScriptQueue(list, cb) {
-  const first = list.shift()
-  if (list.length === 0) {
-    load(first, cb)
-  } else {
-    load(first, () => {
-      loadScriptQueue(list, cb)
-    })
-  }
-}
 
 function buildLinks(links) {
   let strs = ''
@@ -41,7 +30,7 @@ function init(event) {
     $previewApp.innerHTML = `${links}<style>${code.css}</style><div id="app"></div>`
 
     if (Array.isArray(code.scripts) && code.scripts.length > 0) {
-      loadScriptQueue(JSON.parse(JSON.stringify(code.scripts)), () => {
+      loadScriptQueue(code.scripts, () => {
         newVue(attrs, code.js, code.html)
       })
     } else {
