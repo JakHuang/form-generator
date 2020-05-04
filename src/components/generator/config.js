@@ -127,6 +127,24 @@ export const inputComponents = [
     precision: undefined,
     'controls-position': '',
     disabled: false
+  },
+  {
+    __config__: {
+      label: '编辑器',
+      showLabel: true,
+      changeTag: true,
+      labelWidth: null,
+      tag: 'tinymce',
+      tagIcon: 'rich-text',
+      defaultValue: undefined,
+      span: 24,
+      layout: 'colFormItem',
+      required: true,
+      regList: [],
+      document: 'http://tinymce.ax-z.cn'
+    },
+    height: 300, // 编辑器高度
+    branding: false // 隐藏右下角技术支持
   }
 ]
 
