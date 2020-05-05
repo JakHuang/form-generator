@@ -127,6 +127,16 @@
               </el-button>
             </el-input>
           </el-form-item>
+          <el-form-item
+            v-if="activeData['icon']!==undefined && activeData.__config__.tag === 'el-button'"
+            label="按钮图标"
+          >
+            <el-input v-model="activeData['icon']" placeholder="请输入按钮图标名称">
+              <el-button slot="append" icon="el-icon-thumb" @click="openIconsDialog('icon')">
+                选择
+              </el-button>
+            </el-input>
+          </el-form-item>
           <el-form-item v-if="activeData.__config__.tag === 'el-cascader'" label="选项分隔符">
             <el-input v-model="activeData.separator" placeholder="请输入选项分隔符" />
           </el-form-item>
@@ -246,6 +256,19 @@
                 picture-card
               </el-radio-button>
             </el-radio-group>
+          </el-form-item>
+          <el-form-item
+            v-if="activeData.type !== undefined && activeData.__config__.tag === 'el-button'"
+            label="按钮类型"
+          >
+            <el-select v-model="activeData.type" :style="{ width: '100%' }">
+              <el-option label="primary" value="primary" />
+              <el-option label="success" value="success" />
+              <el-option label="warning" value="warning" />
+              <el-option label="danger" value="danger" />
+              <el-option label="info" value="info" />
+              <el-option label="text" value="text" />
+            </el-select>
           </el-form-item>
           <el-form-item
             v-if="activeData.__config__.buttonText !== undefined"
@@ -417,7 +440,8 @@
             v-if="activeData.size !== undefined &&
               (activeData.__config__.optionType === 'button' ||
                 activeData.__config__.border ||
-                activeData.__config__.tag === 'el-color-picker')"
+                activeData.__config__.tag === 'el-color-picker' ||
+                activeData.__config__.tag === 'el-button')"
             label="选项尺寸"
           >
             <el-radio-group v-model="activeData.size">
