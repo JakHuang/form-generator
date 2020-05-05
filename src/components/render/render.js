@@ -6,68 +6,19 @@ function vModel(self, dataObject, defaultValue) {
   }
 }
 
-const componentChild = {
-  'el-input': {
-    prepend(h, conf, key) {
-      return <template slot="prepend">{conf.__slot__[key]}</template>
-    },
-    append(h, conf, key) {
-      return <template slot="append">{conf.__slot__[key]}</template>
-    }
-  },
-  'el-select': {
-    options(h, conf, key) {
-      const list = []
-      conf.__slot__.options.forEach(item => {
-        list.push(<el-option label={item.label} value={item.value} disabled={item.disabled}></el-option>)
-      })
-      return list
-    }
-  },
-  'el-radio-group': {
-    options(h, conf, key) {
-      const list = []
-      conf.__slot__.options.forEach(item => {
-        if (conf.__config__.optionType === 'button') {
-          list.push(<el-radio-button label={item.value}>{item.label}</el-radio-button>)
-        } else {
-          list.push(<el-radio label={item.value} border={conf.border}>{item.label}</el-radio>)
-        }
-      })
-      return list
-    }
-  },
-  'el-checkbox-group': {
-    options(h, conf, key) {
-      const list = []
-      conf.__slot__.options.forEach(item => {
-        if (conf.__config__.optionType === 'button') {
-          list.push(<el-checkbox-button label={item.value}>{item.label}</el-checkbox-button>)
-        } else {
-          list.push(<el-checkbox label={item.value} border={conf.border}>{item.label}</el-checkbox>)
-        }
-      })
-      return list
-    }
-  },
-  'el-upload': {
-    'list-type': (h, conf, key) => {
-      const list = []
-      const config = conf.__config__
-      if (conf['list-type'] === 'picture-card') {
-        list.push(<i class="el-icon-plus"></i>)
-      } else {
-        list.push(<el-button size="small" type="primary" icon="el-icon-upload">{config.buttonText}</el-button>)
-      }
-      if (config.showTip) {
-        list.push(
-          <div slot="tip" class="el-upload__tip">只能上传不超过 {config.fileSize}{config.sizeUnit} 的{conf.accept}文件</div>
-        )
-      }
-      return list
-    }
-  }
-}
+const componentChild = {}
+/**
+ * 将./slots中的文件挂载到对象componentChild上
+ * 文件名为key，对应JSON配置中的__config__.tag
+ * 文件内容为value，解析JSON配置中的__slot__
+ */
+const slotsFiles = require.context('./slots', true, /\.js$/)
+const keys = slotsFiles.keys() || []
+keys.forEach(key => {
+  const tag = key.replace(/^\.\/(.*)\.\w+$/, '$1')
+  const value = slotsFiles(key).default
+  componentChild[tag] = value
+})
 
 export default {
   render(h) {
