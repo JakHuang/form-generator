@@ -152,6 +152,9 @@
           <el-form-item v-if="isShowMax" label="最大值">
             <el-input-number v-model="activeData.max" placeholder="最大值" />
           </el-form-item>
+          <el-form-item v-if="activeData.height!==undefined" label="组件高度">
+            <el-input-number v-model="activeData.height" placeholder="高度" @input="changeRenderKey" />
+          </el-form-item>
           <el-form-item v-if="isShowStep" label="步长">
             <el-input-number v-model="activeData.step" placeholder="步数" />
           </el-form-item>
@@ -398,6 +401,9 @@
             && activeData.__config__.labelWidth !== undefined" label="显示标签"
           >
             <el-switch v-model="activeData.__config__.showLabel" />
+          </el-form-item>
+          <el-form-item v-if="activeData.branding !== undefined" label="品牌烙印">
+            <el-switch v-model="activeData.branding" @input="changeRenderKey" />
           </el-form-item>
           <el-form-item v-if="activeData['allow-half'] !== undefined" label="允许半选">
             <el-switch v-model="activeData['allow-half']" />
@@ -914,6 +920,9 @@ export default {
       let target = inputComponents.find(item => item.__config__.tagIcon === tagIcon)
       if (!target) target = selectComponents.find(item => item.__config__.tagIcon === tagIcon)
       this.$emit('tag-change', target)
+    },
+    changeRenderKey() {
+      this.activeData.__config__.renderKey = +new Date()
     }
   }
 }

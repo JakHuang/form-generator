@@ -402,7 +402,6 @@ export default {
           newTag[key] = this.activeData[key]
         }
       })
-      console.log(newTag)
       this.activeData = newTag
       this.updateDrawingList(newTag, this.drawingList)
     },
@@ -420,7 +419,6 @@ export default {
       this.drawingList = JSON.parse(JSON.stringify(data.fields))
       delete data.fields
       this.formConf = data
-      console.log(this.drawingList, this.formConf)
     }
   }
 }

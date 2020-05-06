@@ -113,6 +113,8 @@ export default {
       cssCode: '',
       codeFrame: '',
       isIframeLoaded: false,
+      isInitcode: false, // 保证open后两个异步只执行一次runcode
+      isRefreshCode: false, // 每次打开都需要重新刷新代码
       resourceVisible: false,
       scripts: [],
       links: [],
@@ -170,14 +172,23 @@ export default {
           this.setEditorValue('editorHtml', 'html', this.htmlCode)
           this.setEditorValue('editorJs', 'js', this.jsCode)
           this.setEditorValue('editorCss', 'css', this.cssCode)
-          this.isIframeLoaded && this.runCode()
+          if (!this.isInitcode) {
+            this.isRefreshCode = true
+            this.isIframeLoaded && (this.isInitcode = true) && this.runCode()
+          }
         })
       })
     },
-    onClose() {},
+    onClose() {
+      this.isInitcode = false
+      this.isRefreshCode = false
+      this.isIframeLoaded = false
+    },
     iframeLoad() {
-      this.isIframeLoaded = true
-      monaco && this.jsCode && this.runCode()
+      if (!this.isInitcode) {
+        this.isIframeLoaded = true
+        this.isRefreshCode && (this.isInitcode = true) && this.runCode()
+      }
     },
     setEditorValue(id, type, codeStr) {
       if (editorObj[type]) {

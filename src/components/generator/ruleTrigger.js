@@ -12,5 +12,6 @@ export default {
   'el-cascader': 'change',
   'el-time-picker': 'change',
   'el-date-picker': 'change',
-  'el-rate': 'change'
+  'el-rate': 'change',
+  tinymce: 'blur'
 }

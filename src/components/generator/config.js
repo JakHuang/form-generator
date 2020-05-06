@@ -136,7 +136,7 @@ export const inputComponents = [
       labelWidth: null,
       tag: 'tinymce',
       tagIcon: 'rich-text',
-      defaultValue: undefined,
+      defaultValue: null,
       span: 24,
       layout: 'colFormItem',
       required: true,
@@ -144,7 +144,7 @@ export const inputComponents = [
       document: 'http://tinymce.ax-z.cn'
     },
     height: 300, // 编辑器高度
-    branding: false // 隐藏右下角技术支持
+    branding: false // 隐藏右下角品牌烙印
   }
 ]
 

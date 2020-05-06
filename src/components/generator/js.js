@@ -134,12 +134,7 @@ function mixinMethod(type) {
 function buildData(scheme, dataList) {
   const config = scheme.__config__
   if (scheme.__vModel__ === undefined) return
-  let defaultValue
-  if (typeof (config.defaultValue) === 'string' && !scheme.multiple) {
-    defaultValue = `'${config.defaultValue}'`
-  } else {
-    defaultValue = `${JSON.stringify(config.defaultValue)}`
-  }
+  const defaultValue = JSON.stringify(config.defaultValue)
   dataList.push(`${scheme.__vModel__}: ${defaultValue},`)
 }
 
