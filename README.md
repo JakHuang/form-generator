@@ -26,7 +26,7 @@ Element UI表单设计及代码生成器，可将生成的代码直接运行在�
 // 安装
 npm i form-gen-parser
 ```
-[更多信息](https://github.com/JakHuang/form-generator/tree/dev/src/components/parser/README.md) 
+[更多信息](https://github.com/JakHuang/form-generator/tree/dev/src/components/parser) 
 
 ## vscode插件
 帮助使用element UI的开发者完成基本的表单代码搭建任务，减少重复的劳动。  
