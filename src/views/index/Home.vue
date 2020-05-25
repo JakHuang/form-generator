@@ -133,7 +133,7 @@ import {
   inputComponents, selectComponents, layoutComponents, formConf
 } from '@/components/generator/config'
 import {
-  exportDefault, beautifierConf, isNumberStr, titleCase
+  exportDefault, beautifierConf, isNumberStr, titleCase, deepClone
 } from '@/utils/index'
 import {
   makeUpHtml, vueTemplate, vueScript, cssStyle
@@ -283,7 +283,7 @@ export default {
       this.activeFormItem(clone)
     },
     cloneComponent(origin) {
-      const clone = JSON.parse(JSON.stringify(origin))
+      const clone = deepClone(origin)
       const config = clone.__config__
       config.formId = ++this.idGlobal
       config.span = this.formConf.span
@@ -300,7 +300,7 @@ export default {
     },
     AssembleFormData() {
       this.formData = {
-        fields: JSON.parse(JSON.stringify(this.drawingList)),
+        fields: deepClone(this.drawingList),
         ...this.formConf
       }
     },
@@ -330,7 +330,7 @@ export default {
       )
     },
     drawingItemCopy(item, parent) {
-      let clone = JSON.parse(JSON.stringify(item))
+      let clone = deepClone(item)
       clone = this.createIdAndKey(clone)
       parent.push(clone)
       this.activeFormItem(clone)
@@ -416,7 +416,7 @@ export default {
       }
     },
     refreshJson(data) {
-      this.drawingList = JSON.parse(JSON.stringify(data.fields))
+      this.drawingList = deepClone(data.fields)
       delete data.fields
       this.formConf = data
     }

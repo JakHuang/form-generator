@@ -60,6 +60,8 @@
   </div>
 </template>
 <script>
+import { deepClone } from '@/utils/index'
+
 export default {
   components: {},
   inheritAttrs: false,
@@ -75,7 +77,7 @@ export default {
   mounted() {},
   methods: {
     onOpen() {
-      this.resources = this.originResource.length ? JSON.parse(JSON.stringify(this.originResource)) : ['']
+      this.resources = this.originResource.length ? deepClone(this.originResource) : ['']
     },
     onClose() {
     },

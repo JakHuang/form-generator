@@ -1,5 +1,5 @@
 import { isArray } from 'util'
-import { exportDefault, titleCase } from '@/utils/index'
+import { exportDefault, titleCase, deepClone } from '@/utils/index'
 import ruleTrigger from './ruleTrigger'
 
 const units = {
@@ -19,7 +19,7 @@ const inheritAttrs = {
  * @param {String} type 生成类型，文件或弹窗等
  */
 export function makeUpJs(formConfig, type) {
-  confGlobal = formConfig = JSON.parse(JSON.stringify(formConfig))
+  confGlobal = formConfig = deepClone(formConfig)
   const dataList = []
   const ruleList = []
   const optionsList = []
