@@ -157,7 +157,6 @@ export const selectComponents = [
       labelWidth: null,
       tag: 'el-select',
       tagIcon: 'select',
-      defaultValue: undefined,
       layout: 'colFormItem',
       span: 24,
       required: true,
@@ -513,8 +512,7 @@ export const layoutComponents = [
       tagIcon: 'row',
       label: '行容器',
       layoutTree: true,
-      children: [],
-      document: 'https://element.eleme.cn/#/zh-CN/component/layout'
+      document: 'https://element.eleme.cn/#/zh-CN/component/layout#row-attributes'
     },
     type: 'default',
     justify: 'start',
@@ -528,9 +526,8 @@ export const layoutComponents = [
       labelWidth: null,
       tag: 'el-button',
       tagIcon: 'button',
-      defaultValue: undefined,
       span: 24,
-      layout: 'colFormItem',
+      layout: 'layoutItem',
       document: 'https://element.eleme.cn/#/zh-CN/component/button'
     },
     __slot__: {

@@ -285,18 +285,27 @@ export default {
     cloneComponent(origin) {
       const clone = deepClone(origin)
       const config = clone.__config__
-      config.formId = ++this.idGlobal
-      config.span = this.formConf.span
-      config.renderKey = +new Date() // 改变renderKey后可以实现强制更新组件
-      if (config.layout === 'colFormItem') {
-        clone.__vModel__ = `field${this.idGlobal}`
-        clone.placeholder !== undefined && (clone.placeholder += config.label)
-      } else if (config.layout === 'rowFormItem') {
-        config.componentName = `row${this.idGlobal}`
-        config.gutter = this.formConf.gutter
-      }
+      config.span = this.formConf.span // 生成代码时，会根据span做精简判断
+      this.createIdAndKey(clone)
+      clone.placeholder !== undefined && (clone.placeholder += config.label)
       tempActiveData = clone
       return tempActiveData
+    },
+    createIdAndKey(item) {
+      const config = item.__config__
+      config.formId = ++this.idGlobal
+      config.renderKey = +new Date() // 改变renderKey后可以实现强制更新组件
+      if (config.layout === 'colFormItem') {
+        item.__vModel__ = `field${this.idGlobal}`
+      } else if (config.layout === 'rowFormItem') {
+        config.componentName = `row${this.idGlobal}`
+        !Array.isArray(config.children) && (config.children = [])
+        delete config.label // rowFormItem无需配置label属性
+      }
+      if (Array.isArray(config.children)) {
+        config.children = config.children.map(childItem => this.createIdAndKey(childItem))
+      }
+      return item
     },
     AssembleFormData() {
       this.formData = {
@@ -334,20 +343,6 @@ export default {
       clone = this.createIdAndKey(clone)
       parent.push(clone)
       this.activeFormItem(clone)
-    },
-    createIdAndKey(item) {
-      const config = item.__config__
-      config.formId = ++this.idGlobal
-      config.renderKey = +new Date()
-      if (config.layout === 'colFormItem') {
-        item.__vModel__ = `field${this.idGlobal}`
-      } else if (config.layout === 'rowFormItem') {
-        config.componentName = `row${this.idGlobal}`
-      }
-      if (Array.isArray(config.children)) {
-        config.children = config.children.map(childItem => this.createIdAndKey(childItem))
-      }
-      return item
     },
     drawingItemDelete(index, parent) {
       parent.splice(index, 1)
