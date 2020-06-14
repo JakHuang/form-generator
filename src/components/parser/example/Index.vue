@@ -237,8 +237,29 @@ export default {
   computed: {},
   watch: {},
   created() {},
-  mounted() {},
+  mounted() {
+    // 表单数据回填，模拟异步请求场景
+    setTimeout(() => {
+      // 请求回来的表单数据
+      const data = {
+        mobile: '18836662555'
+      }
+      // 回填数据
+      this.fillFormData(this.formConf, data)
+      // 更新表单
+      this.key2 = +new Date()
+    }, 2000)
+  },
   methods: {
+    fillFormData(form, data) {
+      form.fields.map(item => {
+        const val = data[item.__vModel__]
+        if (val) {
+          item.__config__.defaultValue = val
+        }
+        return item
+      })
+    },
     change() {
       this.key2 = +new Date()
       const t = this.formConf
