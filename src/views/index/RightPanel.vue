@@ -38,10 +38,10 @@
             {{ activeData.__config__.componentName }}
           </el-form-item>
           <el-form-item v-if="activeData.__config__.label!==undefined" label="标题">
-            <el-input v-model="activeData.__config__.label" placeholder="请输入标题" />
+            <el-input v-model="activeData.__config__.label" placeholder="请输入标题" @input="changeRenderKey" />
           </el-form-item>
           <el-form-item v-if="activeData.placeholder!==undefined" label="占位提示">
-            <el-input v-model="activeData.placeholder" placeholder="请输入占位提示" />
+            <el-input v-model="activeData.placeholder" placeholder="请输入占位提示" @input="changeRenderKey" />
           </el-form-item>
           <el-form-item v-if="activeData['start-placeholder']!==undefined" label="开始占位">
             <el-input v-model="activeData['start-placeholder']" placeholder="请输入占位提示" />
@@ -629,6 +629,9 @@ const dateTimeFormat = {
   datetimerange: 'yyyy-MM-dd HH:mm:ss'
 }
 
+// 使changeRenderKey在目标组件改变时可用
+const needRerenderList = ['tinymce']
+
 export default {
   components: {
     TreeNodeDialog,
@@ -922,7 +925,9 @@ export default {
       this.$emit('tag-change', target)
     },
     changeRenderKey() {
-      this.activeData.__config__.renderKey = +new Date()
+      if (needRerenderList.includes(this.activeData.__config__.tag)) {
+        this.activeData.__config__.renderKey = +new Date()
+      }
     }
   }
 }

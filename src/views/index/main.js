@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from '@/router'
 import '@/styles/index.scss'
 import '@/icons'
-import Tinymce from '@/components/tinymce'
+import Tinymce from '@/components/tinymce/index.vue'
 
 Vue.component('tinymce', Tinymce)
 

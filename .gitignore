@@ -3,6 +3,7 @@ node_modules
 /dist
 /src/components/parser/lib
 /src/components/render/lib
+/src/components/tinymce/lib
 
 # local env files
 .env.local

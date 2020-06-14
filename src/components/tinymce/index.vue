@@ -1,10 +1,11 @@
 <template>
-  <textarea :id="tinymceId" class="textarea" />
+  <textarea :id="tinymceId" style="visibility: hidden" />
 </template>
 
 <script>
 import loadTinymce from '@/utils/loadTinymce'
 import { plugins, toolbar } from './config'
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { debounce } from 'throttle-debounce'
 
 let num = 1
@@ -19,7 +20,6 @@ export default {
       }
     },
     value: {
-      type: [String, Number, Boolean],
       default: ''
     }
   },
@@ -30,31 +30,33 @@ export default {
   },
   mounted() {
     loadTinymce(tinymce => {
-      import('./zh_CN').then(() => {
-        tinymce.init({
-          selector: `#${this.tinymceId}`,
-          language: 'zh_CN',
-          menubar: 'file edit insert view format table',
-          plugins,
-          toolbar,
-          height: this.$attrs.height || 300,
-          branding: this.$attrs.branding || false,
-          object_resizing: false,
-          end_container_on_empty_block: true,
-          powerpaste_word_import: 'clean',
-          code_dialog_height: 450,
-          code_dialog_width: 1000,
-          advlist_bullet_styles: 'square',
-          advlist_number_styles: 'default',
-          default_link_target: '_blank',
-          link_title: false,
-          nonbreaking_force_tab: true,
-          init_instance_callback: editor => {
-            if (this.value) editor.setContent(this.value)
-            this.vModel(editor)
-          }
-        })
-      })
+      // eslint-disable-next-line global-require
+      require('./zh_CN')
+      let conf = {
+        selector: `#${this.tinymceId}`,
+        language: 'zh_CN',
+        menubar: 'file edit insert view format table',
+        plugins,
+        toolbar,
+        height: 300,
+        branding: false,
+        object_resizing: false,
+        end_container_on_empty_block: true,
+        powerpaste_word_import: 'clean',
+        code_dialog_height: 450,
+        code_dialog_width: 1000,
+        advlist_bullet_styles: 'square',
+        advlist_number_styles: 'default',
+        default_link_target: '_blank',
+        link_title: false,
+        nonbreaking_force_tab: true
+      }
+      conf = Object.assign(conf, this.$attrs)
+      conf.init_instance_callback = editor => {
+        if (this.value) editor.setContent(this.value)
+        this.vModel(editor)
+      }
+      tinymce.init(conf)
     })
   },
   destroyed() {
@@ -85,9 +87,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.textarea{
-  visibility: hidden;
-}
-</style>

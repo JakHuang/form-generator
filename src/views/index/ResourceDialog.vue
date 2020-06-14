@@ -27,7 +27,7 @@
       <el-button-group class="add-item">
         <el-button
           plain
-          @click="addOne('https://cdn.bootcss.com/jquery/1.8.3/jquery.min.js')"
+          @click="addOne('https://lib.baomitu.com/jquery/1.8.3/jquery.min.js')"
         >
           jQuery1.8.3
         </el-button>

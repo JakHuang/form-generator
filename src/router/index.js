@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/views/index/Home.vue'
-import Parser from '@/components/parser/example/Index.vue'
 
 Vue.use(VueRouter)
 
@@ -14,7 +13,12 @@ const routes = [
   {
     path: '/parser',
     name: 'parser',
-    component: Parser
+    component: () => import(/* webpackChunkName: "parser-example" */'@/components/parser/example/Index.vue')
+  },
+  {
+    path: '/tinymce',
+    name: 'tinymce',
+    component: () => import(/* webpackChunkName: "tinymce-example" */'@/components/tinymce/example/Index.vue')
   }
 ]
 

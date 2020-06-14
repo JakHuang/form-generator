@@ -17,7 +17,7 @@ export default function loadBeautifier(cb) {
     background: 'rgba(255, 255, 255, 0.5)'
   })
 
-  loadScript('https://cdn.bootcss.com/js-beautify/1.10.2/beautifier.min.js', () => {
+  loadScript('https://lib.baomitu.com/js-beautify/1.10.2/beautifier.min.js', () => {
     loading.close()
     // eslint-disable-next-line no-undef
     beautifierObj = beautifier

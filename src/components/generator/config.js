@@ -143,6 +143,7 @@ export const inputComponents = [
       regList: [],
       document: 'http://tinymce.ax-z.cn'
     },
+    placeholder: '请输入',
     height: 300, // 编辑器高度
     branding: false // 隐藏右下角品牌烙印
   }
@@ -527,7 +528,7 @@ export const layoutComponents = [
       tag: 'el-button',
       tagIcon: 'button',
       span: 24,
-      layout: 'layoutItem',
+      layout: 'colFormItem',
       document: 'https://element.eleme.cn/#/zh-CN/component/button'
     },
     __slot__: {
