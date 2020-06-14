@@ -103,7 +103,7 @@ const layouts = {
     const type = scheme.type === 'default' ? '' : `type="${scheme.type}"`
     const justify = scheme.type === 'default' ? '' : `justify="${scheme.justify}"`
     const align = scheme.type === 'default' ? '' : `align="${scheme.align}"`
-    const gutter = scheme.gutter ? `gutter="${scheme.gutter}"` : ''
+    const gutter = scheme.gutter ? `:gutter="${scheme.gutter}"` : ''
     const children = config.children.map(el => layouts[el.__config__.layout](el))
     let str = `<el-row ${type} ${justify} ${align} ${gutter}>
       ${children.join('\n')}
@@ -114,6 +114,21 @@ const layouts = {
 }
 
 const tags = {
+  'el-button': el => {
+    const {
+      tag, disabled
+    } = attrBuilder(el)
+    const type = el.type ? `type="${el.type}"` : ''
+    const icon = el.icon ? `icon="${el.icon}"` : ''
+    const round = el.round ? 'round' : ''
+    const size = el.size ? `size="${el.size}"` : ''
+    const plain = el.plain ? 'plain' : ''
+    const circle = el.circle ? 'circle' : ''
+    let child = buildElButtonChild(el)
+
+    if (child) child = `\n${child}\n` // 换行
+    return `<${tag} ${type} ${icon} ${round} ${size} ${plain} ${disabled} ${circle}>${child}</${tag}>`
+  },
   'el-input': el => {
     const {
       tag, disabled, vModel, clearable, placeholder, width
@@ -269,6 +284,12 @@ const tags = {
 
     if (child) child = `\n${child}\n` // 换行
     return `<${tag} ${ref} ${fileList} ${action} ${autoUpload} ${multiple} ${beforeUpload} ${listType} ${accept} ${name} ${disabled}>${child}</${tag}>`
+  },
+  tinymce: el => {
+    const { tag, vModel, placeholder } = attrBuilder(el)
+    const height = el.height ? `:height="${el.height}"` : ''
+    const branding = el.branding ? `:branding="${el.branding}"` : ''
+    return `<${tag} ${vModel} ${placeholder} ${height} ${branding}></${tag}>`
   }
 }
 
@@ -281,6 +302,16 @@ function attrBuilder(el) {
     width: el.style && el.style.width ? ':style="{width: \'100%\'}"' : '',
     disabled: el.disabled ? ':disabled=\'true\'' : ''
   }
+}
+
+// el-buttin 子级
+function buildElButtonChild(scheme) {
+  const children = []
+  const slot = scheme.__slot__ || {}
+  if (slot.default) {
+    children.push(slot.default)
+  }
+  return children.join('\n')
 }
 
 // el-input 子级

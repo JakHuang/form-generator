@@ -1,4 +1,5 @@
 <script>
+import { deepClone } from '@/utils/index'
 import render from '@/components/render/render.js'
 
 const ruleTrigger = {
@@ -108,7 +109,7 @@ export default {
   },
   data() {
     const data = {
-      formConfCopy: JSON.parse(JSON.stringify(this.formConf)),
+      formConfCopy: deepClone(this.formConf),
       [this.formConf.formModel]: {},
       [this.formConf.formRules]: {}
     }
@@ -147,7 +148,7 @@ export default {
       })
     },
     resetForm() {
-      this.formConfCopy = JSON.parse(JSON.stringify(this.formConf))
+      this.formConfCopy = deepClone(this.formConf)
       this.$refs[this.formConf.formRef].resetFields()
     },
     submitForm() {

@@ -124,7 +124,6 @@
 import draggable from 'vuedraggable'
 import { debounce } from 'throttle-debounce'
 import { saveAs } from 'file-saver'
-import beautifier from 'beautifier'
 import ClipboardJS from 'clipboard'
 import render from '@/components/render/render'
 import FormDrawer from './FormDrawer'
@@ -134,7 +133,7 @@ import {
   inputComponents, selectComponents, layoutComponents, formConf
 } from '@/components/generator/config'
 import {
-  exportDefault, beautifierConf, isNumberStr, titleCase
+  exportDefault, beautifierConf, isNumberStr, titleCase, deepClone
 } from '@/utils/index'
 import {
   makeUpHtml, vueTemplate, vueScript, cssStyle
@@ -148,7 +147,9 @@ import DraggableItem from './DraggableItem'
 import {
   getDrawingList, saveDrawingList, getIdGlobal, saveIdGlobal, getFormConf
 } from '@/utils/db'
+import loadBeautifier from '@/utils/loadBeautifier'
 
+let beautifier
 const emptyActiveData = { style: {}, autosize: {} }
 let oldActiveId
 let tempActiveData
@@ -247,7 +248,9 @@ export default {
     if (formConfInDB) {
       this.formConf = formConfInDB
     }
-
+    loadBeautifier(btf => {
+      beautifier = btf
+    })
     const clipboard = new ClipboardJS('#copyNode', {
       text: trigger => {
         const codeStr = this.generateCode()
@@ -280,24 +283,33 @@ export default {
       this.activeFormItem(clone)
     },
     cloneComponent(origin) {
-      const clone = JSON.parse(JSON.stringify(origin))
+      const clone = deepClone(origin)
       const config = clone.__config__
-      config.formId = ++this.idGlobal
-      config.span = formConf.span
-      config.renderKey = +new Date() // 改变renderKey后可以实现强制更新组件
-      if (config.layout === 'colFormItem') {
-        clone.__vModel__ = `field${this.idGlobal}`
-        clone.placeholder !== undefined && (clone.placeholder += config.label)
-      } else if (config.layout === 'rowFormItem') {
-        config.componentName = `row${this.idGlobal}`
-        config.gutter = this.formConf.gutter
-      }
+      config.span = this.formConf.span // 生成代码时，会根据span做精简判断
+      this.createIdAndKey(clone)
+      clone.placeholder !== undefined && (clone.placeholder += config.label)
       tempActiveData = clone
       return tempActiveData
     },
+    createIdAndKey(item) {
+      const config = item.__config__
+      config.formId = ++this.idGlobal
+      config.renderKey = +new Date() // 改变renderKey后可以实现强制更新组件
+      if (config.layout === 'colFormItem') {
+        item.__vModel__ = `field${this.idGlobal}`
+      } else if (config.layout === 'rowFormItem') {
+        config.componentName = `row${this.idGlobal}`
+        !Array.isArray(config.children) && (config.children = [])
+        delete config.label // rowFormItem无需配置label属性
+      }
+      if (Array.isArray(config.children)) {
+        config.children = config.children.map(childItem => this.createIdAndKey(childItem))
+      }
+      return item
+    },
     AssembleFormData() {
       this.formData = {
-        fields: JSON.parse(JSON.stringify(this.drawingList)),
+        fields: deepClone(this.drawingList),
         ...this.formConf
       }
     },
@@ -327,24 +339,10 @@ export default {
       )
     },
     drawingItemCopy(item, parent) {
-      let clone = JSON.parse(JSON.stringify(item))
+      let clone = deepClone(item)
       clone = this.createIdAndKey(clone)
       parent.push(clone)
       this.activeFormItem(clone)
-    },
-    createIdAndKey(item) {
-      const config = item.__config__
-      config.formId = ++this.idGlobal
-      config.renderKey = +new Date()
-      if (config.layout === 'colFormItem') {
-        item.__vModel__ = `field${this.idGlobal}`
-      } else if (config.layout === 'rowFormItem') {
-        config.componentName = `row${this.idGlobal}`
-      }
-      if (Array.isArray(config.children)) {
-        config.children = config.children.map(childItem => this.createIdAndKey(childItem))
-      }
-      return item
     },
     drawingItemDelete(index, parent) {
       parent.splice(index, 1)
@@ -399,7 +397,6 @@ export default {
           newTag[key] = this.activeData[key]
         }
       })
-      console.log(newTag)
       this.activeData = newTag
       this.updateDrawingList(newTag, this.drawingList)
     },
@@ -414,10 +411,9 @@ export default {
       }
     },
     refreshJson(data) {
-      this.drawingList = JSON.parse(JSON.stringify(data.fields))
+      this.drawingList = deepClone(data.fields)
       delete data.fields
       this.formConf = data
-      console.log(this.drawingList, this.formConf)
     }
   }
 }

@@ -1,30 +1,4 @@
-export function makeMap(str, expectsLowerCase) {
-  const map = Object.create(null)
-  const list = str.split(',')
-  for (let i = 0; i < list.length; i++) {
-    map[list[i]] = true
-  }
-  return expectsLowerCase
-    ? val => map[val.toLowerCase()]
-    : val => map[val]
-}
-
-// 参考https://github.com/vuejs/vue/blob/v2.6.10/src/platforms/web/server/util.js
-const isAttr = makeMap(
-  'accept,accept-charset,accesskey,action,align,alt,async,autocomplete,'
-  + 'autofocus,autoplay,autosave,bgcolor,border,buffered,challenge,charset,'
-  + 'checked,cite,class,code,codebase,color,cols,colspan,content,http-equiv,'
-  + 'name,contenteditable,contextmenu,controls,coords,data,datetime,default,'
-  + 'defer,dir,dirname,disabled,download,draggable,dropzone,enctype,method,for,'
-  + 'form,formaction,headers,height,hidden,high,href,hreflang,http-equiv,'
-  + 'icon,id,ismap,itemprop,keytype,kind,label,lang,language,list,loop,low,'
-  + 'manifest,max,maxlength,media,method,GET,POST,min,multiple,email,file,'
-  + 'muted,name,novalidate,open,optimum,pattern,ping,placeholder,poster,'
-  + 'preload,radiogroup,readonly,rel,required,reversed,rows,rowspan,sandbox,'
-  + 'scope,scoped,seamless,selected,shape,size,type,text,password,sizes,span,'
-  + 'spellcheck,src,srcdoc,srclang,srcset,start,step,style,summary,tabindex,'
-  + 'target,title,type,usemap,value,width,wrap'
-)
+import { deepClone } from '@/utils/index'
 
 function vModel(self, dataObject, defaultValue) {
   dataObject.props.value = defaultValue
@@ -34,80 +8,33 @@ function vModel(self, dataObject, defaultValue) {
   }
 }
 
-const componentChild = {
-  'el-input': {
-    prepend(h, conf, key) {
-      return <template slot="prepend">{conf.__slot__[key]}</template>
-    },
-    append(h, conf, key) {
-      return <template slot="append">{conf.__slot__[key]}</template>
-    }
-  },
-  'el-select': {
-    options(h, conf, key) {
-      const list = []
-      conf.__slot__.options.forEach(item => {
-        list.push(<el-option label={item.label} value={item.value} disabled={item.disabled}></el-option>)
-      })
-      return list
-    }
-  },
-  'el-radio-group': {
-    options(h, conf, key) {
-      const list = []
-      conf.__slot__.options.forEach(item => {
-        if (conf.__config__.optionType === 'button') {
-          list.push(<el-radio-button label={item.value}>{item.label}</el-radio-button>)
-        } else {
-          list.push(<el-radio label={item.value} border={conf.border}>{item.label}</el-radio>)
-        }
-      })
-      return list
-    }
-  },
-  'el-checkbox-group': {
-    options(h, conf, key) {
-      const list = []
-      conf.__slot__.options.forEach(item => {
-        if (conf.__config__.optionType === 'button') {
-          list.push(<el-checkbox-button label={item.value}>{item.label}</el-checkbox-button>)
-        } else {
-          list.push(<el-checkbox label={item.value} border={conf.border}>{item.label}</el-checkbox>)
-        }
-      })
-      return list
-    }
-  },
-  'el-upload': {
-    'list-type': (h, conf, key) => {
-      const list = []
-      const config = conf.__config__
-      if (conf['list-type'] === 'picture-card') {
-        list.push(<i class="el-icon-plus"></i>)
-      } else {
-        list.push(<el-button size="small" type="primary" icon="el-icon-upload">{config.buttonText}</el-button>)
-      }
-      if (config.showTip) {
-        list.push(
-          <div slot="tip" class="el-upload__tip">只能上传不超过 {config.fileSize}{config.sizeUnit} 的{conf.accept}文件</div>
-        )
-      }
-      return list
-    }
-  }
-}
+const componentChild = {}
+/**
+ * 将./slots中的文件挂载到对象componentChild上
+ * 文件名为key，对应JSON配置中的__config__.tag
+ * 文件内容为value，解析JSON配置中的__slot__
+ */
+const slotsFiles = require.context('./slots', false, /\.js$/)
+const keys = slotsFiles.keys() || []
+keys.forEach(key => {
+  const tag = key.replace(/^\.\/(.*)\.\w+$/, '$1')
+  const value = slotsFiles(key).default
+  componentChild[tag] = value
+})
 
 export default {
   render(h) {
     const dataObject = {
       attrs: {},
       props: {},
+      nativeOn: {},
       on: {},
       style: {}
     }
-    const confClone = JSON.parse(JSON.stringify(this.conf))
+    const confClone = deepClone(this.conf)
     const children = []
 
+    // 如果slots文件夹存在与当前tag同名的文件，则执行文件中的代码
     const childObjs = componentChild[confClone.__config__.tag]
     if (childObjs) {
       Object.keys(childObjs).forEach(key => {
@@ -118,20 +45,22 @@ export default {
       })
     }
 
+    // 将json表单配置转化为vue render可以识别的 “数据对象（dataObject）”
     Object.keys(confClone).forEach(key => {
       const val = confClone[key]
       if (key === '__vModel__') {
         vModel(this, dataObject, confClone.__config__.defaultValue)
       } else if (dataObject[key]) {
         dataObject[key] = { ...dataObject[key], ...val }
-      } else if (!isAttr(key)) {
-        dataObject.props[key] = val
       } else {
         dataObject.attrs[key] = val
       }
     })
-    delete dataObject.props.__config__
-    delete dataObject.props.__slot__
+
+    // 清理属性
+    delete dataObject.attrs.__config__
+    delete dataObject.attrs.__slot__
+
     return h(this.conf.__config__.tag, dataObject, children)
   },
   props: ['conf']

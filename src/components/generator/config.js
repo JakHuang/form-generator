@@ -127,6 +127,25 @@ export const inputComponents = [
     precision: undefined,
     'controls-position': '',
     disabled: false
+  },
+  {
+    __config__: {
+      label: '编辑器',
+      showLabel: true,
+      changeTag: true,
+      labelWidth: null,
+      tag: 'tinymce',
+      tagIcon: 'rich-text',
+      defaultValue: null,
+      span: 24,
+      layout: 'colFormItem',
+      required: true,
+      regList: [],
+      document: 'http://tinymce.ax-z.cn'
+    },
+    placeholder: '请输入',
+    height: 300, // 编辑器高度
+    branding: false // 隐藏右下角品牌烙印
   }
 ]
 
@@ -139,7 +158,6 @@ export const selectComponents = [
       labelWidth: null,
       tag: 'el-select',
       tagIcon: 'select',
-      defaultValue: undefined,
       layout: 'colFormItem',
       span: 24,
       required: true,
@@ -495,11 +513,33 @@ export const layoutComponents = [
       tagIcon: 'row',
       label: '行容器',
       layoutTree: true,
-      children: [],
-      document: 'https://element.eleme.cn/#/zh-CN/component/layout'
+      document: 'https://element.eleme.cn/#/zh-CN/component/layout#row-attributes'
     },
     type: 'default',
     justify: 'start',
     align: 'top'
+  },
+  {
+    __config__: {
+      label: '按钮',
+      showLabel: true,
+      changeTag: true,
+      labelWidth: null,
+      tag: 'el-button',
+      tagIcon: 'button',
+      span: 24,
+      layout: 'colFormItem',
+      document: 'https://element.eleme.cn/#/zh-CN/component/button'
+    },
+    __slot__: {
+      default: '主要按钮'
+    },
+    type: 'primary',
+    icon: 'el-icon-search',
+    round: false,
+    size: 'medium',
+    plain: false,
+    circle: false,
+    disabled: false
   }
 ]
