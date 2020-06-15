@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { loadScriptQueue } from '@/utils/loadScript'
-import Tinymce from '@/components/tinymce'
+import Tinymce from '@/components/tinymce/index.vue'
 
 Vue.component('tinymce', Tinymce)
 

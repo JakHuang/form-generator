@@ -286,10 +286,10 @@ const tags = {
     return `<${tag} ${ref} ${fileList} ${action} ${autoUpload} ${multiple} ${beforeUpload} ${listType} ${accept} ${name} ${disabled}>${child}</${tag}>`
   },
   tinymce: el => {
-    const { tag, vModel } = attrBuilder(el)
+    const { tag, vModel, placeholder } = attrBuilder(el)
     const height = el.height ? `:height="${el.height}"` : ''
     const branding = el.branding ? `:branding="${el.branding}"` : ''
-    return `<${tag} ${vModel} ${height} ${branding}></${tag}>`
+    return `<${tag} ${vModel} ${placeholder} ${height} ${branding}></${tag}>`
   }
 }
 

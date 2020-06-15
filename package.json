@@ -7,6 +7,7 @@
     "build:report": "vue-cli-service build --report",
     "build:render": "vue-cli-service build --target lib --name form-gen-render --dest ./src/components/render/lib/ ./src/components/render/render.js",
     "build:parser": "vue-cli-service build --target lib --name form-gen-parser --dest ./src/components/parser/lib/ ./src/components/parser/index.js",
+    "build:tinymce": "vue-cli-service build --target lib --name form-gen-tinymce --dest ./src/components/tinymce/lib/ ./src/components/tinymce/index.js",
     "lint": "vue-cli-service lint",
     "dev": "vue-cli-service serve"
   },

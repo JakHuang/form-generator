@@ -27,7 +27,7 @@
       <el-button-group class="add-item">
         <el-button
           plain
-          @click="addOne('https://cdn.bootcss.com/jquery/1.8.3/jquery.min.js')"
+          @click="addOne('https://lib.baomitu.com/jquery/1.8.3/jquery.min.js')"
         >
           jQuery1.8.3
         </el-button>
@@ -60,6 +60,8 @@
   </div>
 </template>
 <script>
+import { deepClone } from '@/utils/index'
+
 export default {
   components: {},
   inheritAttrs: false,
@@ -75,7 +77,7 @@ export default {
   mounted() {},
   methods: {
     onOpen() {
-      this.resources = this.originResource.length ? JSON.parse(JSON.stringify(this.originResource)) : ['']
+      this.resources = this.originResource.length ? deepClone(this.originResource) : ['']
     },
     onClose() {
     },

@@ -38,10 +38,10 @@
             {{ activeData.__config__.componentName }}
           </el-form-item>
           <el-form-item v-if="activeData.__config__.label!==undefined" label="标题">
-            <el-input v-model="activeData.__config__.label" placeholder="请输入标题" />
+            <el-input v-model="activeData.__config__.label" placeholder="请输入标题" @input="changeRenderKey" />
           </el-form-item>
           <el-form-item v-if="activeData.placeholder!==undefined" label="占位提示">
-            <el-input v-model="activeData.placeholder" placeholder="请输入占位提示" />
+            <el-input v-model="activeData.placeholder" placeholder="请输入占位提示" @input="changeRenderKey" />
           </el-form-item>
           <el-form-item v-if="activeData['start-placeholder']!==undefined" label="开始占位">
             <el-input v-model="activeData['start-placeholder']" placeholder="请输入占位提示" />
@@ -52,10 +52,10 @@
           <el-form-item v-if="activeData.__config__.span!==undefined" label="表单栅格">
             <el-slider v-model="activeData.__config__.span" :max="24" :min="1" :marks="{12:''}" @change="spanChange" />
           </el-form-item>
-          <el-form-item v-if="activeData.__config__.layout==='rowFormItem'" label="栅格间隔">
+          <el-form-item v-if="activeData.__config__.layout==='rowFormItem'&&activeData.gutter!==undefined" label="栅格间隔">
             <el-input-number v-model="activeData.gutter" :min="0" placeholder="栅格间隔" />
           </el-form-item>
-          <el-form-item v-if="activeData.__config__.layout==='rowFormItem'" label="布局模式">
+          <el-form-item v-if="activeData.__config__.layout==='rowFormItem'&&activeData.type!==undefined" label="布局模式">
             <el-radio-group v-model="activeData.type">
               <el-radio-button label="default" />
               <el-radio-button label="flex" />
@@ -523,7 +523,7 @@
             </el-tree>
           </template>
 
-          <template v-if="activeData.__config__.layout === 'colFormItem'">
+          <template v-if="Array.isArray(activeData.__config__.regList)">
             <el-divider>正则校验</el-divider>
             <div
               v-for="(item, index) in activeData.__config__.regList"
@@ -628,6 +628,9 @@ const dateTimeFormat = {
   monthrange: 'yyyy-MM',
   datetimerange: 'yyyy-MM-dd HH:mm:ss'
 }
+
+// 使changeRenderKey在目标组件改变时可用
+const needRerenderList = ['tinymce']
 
 export default {
   components: {
@@ -922,7 +925,9 @@ export default {
       this.$emit('tag-change', target)
     },
     changeRenderKey() {
-      this.activeData.__config__.renderKey = +new Date()
+      if (needRerenderList.includes(this.activeData.__config__.tag)) {
+        this.activeData.__config__.renderKey = +new Date()
+      }
     }
   }
 }

@@ -143,6 +143,7 @@ export const inputComponents = [
       regList: [],
       document: 'http://tinymce.ax-z.cn'
     },
+    placeholder: '请输入',
     height: 300, // 编辑器高度
     branding: false // 隐藏右下角品牌烙印
   }
@@ -157,7 +158,6 @@ export const selectComponents = [
       labelWidth: null,
       tag: 'el-select',
       tagIcon: 'select',
-      defaultValue: undefined,
       layout: 'colFormItem',
       span: 24,
       required: true,
@@ -513,8 +513,7 @@ export const layoutComponents = [
       tagIcon: 'row',
       label: '行容器',
       layoutTree: true,
-      children: [],
-      document: 'https://element.eleme.cn/#/zh-CN/component/layout'
+      document: 'https://element.eleme.cn/#/zh-CN/component/layout#row-attributes'
     },
     type: 'default',
     justify: 'start',
@@ -528,7 +527,6 @@ export const layoutComponents = [
       labelWidth: null,
       tag: 'el-button',
       tagIcon: 'button',
-      defaultValue: undefined,
       span: 24,
       layout: 'colFormItem',
       document: 'https://element.eleme.cn/#/zh-CN/component/button'
