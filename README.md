@@ -15,6 +15,7 @@ Element UI表单设计及代码生成器，可将生成的代码直接运行在�
 [《表单解析器 · 开发教程》](https://github.com/JakHuang/form-generator/issues/32)
 [《vue代码生成器 · 开发教程》](https://github.com/JakHuang/form-generator/issues/31)
 [《vue代码预览器 · 开发教程》](https://github.com/JakHuang/form-generator/issues/33)
+- [JSON表单参数对照表](https://github.com/JakHuang/form-generator/issues/46)
 
 ## JSON解析器
 将保存在数据库中的JSON表单，解析成真实的表单  
