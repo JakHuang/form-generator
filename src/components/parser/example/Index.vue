@@ -252,12 +252,11 @@ export default {
   },
   methods: {
     fillFormData(form, data) {
-      form.fields.map(item => {
+      form.fields.forEach(item => {
         const val = data[item.__vModel__]
         if (val) {
           item.__config__.defaultValue = val
         }
-        return item
       })
     },
     change() {

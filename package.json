@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
+    "build:report": "vue-cli-service build --report",
     "build:render": "vue-cli-service build --target lib --name form-gen-render --dest ./src/components/render/lib/ ./src/components/render/render.js",
     "build:parser": "vue-cli-service build --target lib --name form-gen-parser --dest ./src/components/parser/lib/ ./src/components/parser/index.js",
     "build:tinymce": "vue-cli-service build --target lib --name form-gen-tinymce --dest ./src/components/tinymce/lib/ ./src/components/tinymce/index.js",
@@ -13,24 +14,25 @@
   "dependencies": {
     "@babel/parser": "^7.7.4",
     "clipboard": "^2.0.4",
-    "core-js": "^3.4.3",
+    "core-js": "^3.6.5",
+    "vue": "^2.6.11",
     "file-saver": "^2.0.2",
     "throttle-debounce": "^2.1.0",
     "vuedraggable": "^2.23.2"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.2.3",
-    "@vue/cli-plugin-eslint": "~4.2.3",
-    "@vue/cli-service": "~4.2.3",
-    "babel-eslint": "^10.0.3",
+    "@vue/cli-plugin-babel": "~4.4.0",
+    "@vue/cli-plugin-eslint": "~4.4.0",
+    "@vue/cli-service": "~4.4.0",
+    "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.20.0",
-    "eslint-plugin-vue": "^6.1.2",
+    "eslint-plugin-vue": "^6.2.2",
     "sass": "^1.23.7",
     "sass-loader": "^8.0.0",
     "svg-sprite-loader": "^4.1.6",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.11"
   },
   "homepage": "https://jakhuang.github.io/form-generator"
 }
