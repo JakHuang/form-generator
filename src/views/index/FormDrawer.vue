@@ -182,7 +182,6 @@ export default {
     onClose() {
       this.isInitcode = false
       this.isRefreshCode = false
-      this.isIframeLoaded = false
     },
     iframeLoad() {
       if (!this.isInitcode) {
