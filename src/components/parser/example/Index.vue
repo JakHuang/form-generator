@@ -135,8 +135,48 @@ export default {
             type: 'default',
             justify: 'start',
             align: 'top'
+          },
+          {
+            __config__: {
+              label: '按钮',
+              showLabel: true,
+              changeTag: true,
+              labelWidth: null,
+              tag: 'el-button',
+              tagIcon: 'button',
+              span: 24,
+              layout: 'colFormItem',
+              document: 'https://element.eleme.cn/#/zh-CN/component/button',
+              renderKey: 1594288459289
+            },
+            __slot__: {
+              default: '测试按钮1'
+            },
+            type: 'primary',
+            icon: 'el-icon-search',
+            round: false,
+            size: 'medium',
+            plain: false,
+            circle: false,
+            disabled: false,
+            on: {
+              click: 'clickTestButton1'
+            }
           }
         ],
+        __methods__: {
+          clickTestButton1() {
+            console.log(
+              `%c【测试按钮1】点击事件里可以访问当前表单：
+                1) formModel='formData', 所以this.formData可以拿到当前表单的model
+                2) formRef='elForm', 所以this.$refs.elForm可以拿到当前表单的ref(vue组件)
+              `,
+              'color:#409EFF;font-size: 15px'
+            )
+            console.log('表单的Model：', this.formData)
+            console.log('表单的ref：', this.$refs.elForm)
+          }
+        },
         formRef: 'elForm',
         formModel: 'formData',
         size: 'small',

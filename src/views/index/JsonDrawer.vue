@@ -39,9 +39,7 @@ export default {
   props: {
     jsonStr: {
       type: String,
-      required: true,
-      beautifier: null,
-      jsonEditor: null
+      required: true
     }
   },
   data() {

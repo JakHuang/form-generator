@@ -14,6 +14,39 @@ const ruleTrigger = {
   'el-rate': 'change'
 }
 
+const layouts = {
+  colFormItem(h, scheme) {
+    const config = scheme.__config__
+    const listeners = buildListeners.call(this, scheme)
+
+    let labelWidth = config.labelWidth ? `${config.labelWidth}px` : null
+    if (config.showLabel === false) labelWidth = '0'
+    return (
+      <el-col span={config.span}>
+        <el-form-item label-width={labelWidth} prop={scheme.__vModel__}
+          label={config.showLabel ? config.label : ''}>
+          <render conf={scheme} {...{ on: listeners }} />
+        </el-form-item>
+      </el-col>
+    )
+  },
+  rowFormItem(h, scheme) {
+    let child = renderChildren.apply(this, arguments)
+    if (scheme.type === 'flex') {
+      child = <el-row type={scheme.type} justify={scheme.justify} align={scheme.align}>
+              {child}
+            </el-row>
+    }
+    return (
+      <el-col span={scheme.span}>
+        <el-row gutter={scheme.gutter}>
+          {child}
+        </el-row>
+      </el-col>
+    )
+  }
+}
+
 function renderFrom(h) {
   const { formConfCopy } = this
 
@@ -63,38 +96,24 @@ function renderChildren(h, scheme) {
   return renderFormItem.call(this, h, config.children)
 }
 
-const layouts = {
-  colFormItem(h, scheme) {
-    const config = scheme.__config__
-    let labelWidth = config.labelWidth ? `${config.labelWidth}px` : null
-    if (config.showLabel === false) labelWidth = '0'
-    return (
-      <el-col span={config.span}>
-        <el-form-item label-width={labelWidth} prop={scheme.__vModel__}
-          label={config.showLabel ? config.label : ''}>
-          <render conf={scheme} onInput={ event => {
-            this.$set(config, 'defaultValue', event)
-            this.$set(this[this.formConf.formModel], scheme.__vModel__, event)
-          }} />
-        </el-form-item>
-      </el-col>
-    )
-  },
-  rowFormItem(h, scheme) {
-    let child = renderChildren.apply(this, arguments)
-    if (scheme.type === 'flex') {
-      child = <el-row type={scheme.type} justify={scheme.justify} align={scheme.align}>
-              {child}
-            </el-row>
-    }
-    return (
-      <el-col span={scheme.span}>
-        <el-row gutter={scheme.gutter}>
-          {child}
-        </el-row>
-      </el-col>
-    )
-  }
+function setValue(event, config, scheme) {
+  this.$set(config, 'defaultValue', event)
+  this.$set(this[this.formConf.formModel], scheme.__vModel__, event)
+}
+
+function buildListeners(scheme) {
+  const config = scheme.__config__
+  const methods = this.formConf.__methods__ || {}
+  const listeners = {}
+
+  // 给__methods__中的方法绑定this和event
+  Object.keys(methods).forEach(key => {
+    listeners[key] = event => methods[key].call(this, event)
+  })
+  // 响应 render.js 中的 vModel $emit('input', val)
+  listeners.input = event => setValue.call(this, event, config, scheme)
+
+  return listeners
 }
 
 export default {
