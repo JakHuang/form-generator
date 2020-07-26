@@ -71,10 +71,10 @@
           >
             <draggable class="drawing-board" :list="drawingList" :animation="340" group="componentsGroup">
               <draggable-item
-                v-for="(element, index) in drawingList"
-                :key="element.renderKey"
+                v-for="(item, index) in drawingList"
+                :key="item.renderKey"
                 :drawing-list="drawingList"
-                :element="element"
+                :current-item="item"
                 :index="index"
                 :active-id="activeId"
                 :form-conf="formConf"
@@ -267,9 +267,9 @@ export default {
     })
   },
   methods: {
-    activeFormItem(element) {
-      this.activeData = element
-      this.activeId = element.__config__.formId
+    activeFormItem(currentItem) {
+      this.activeData = currentItem
+      this.activeId = currentItem.__config__.formId
     },
     onEnd(obj) {
       if (obj.from !== obj.to) {
@@ -294,7 +294,7 @@ export default {
     createIdAndKey(item) {
       const config = item.__config__
       config.formId = ++this.idGlobal
-      config.renderKey = +new Date() // 改变renderKey后可以实现强制更新组件
+      config.renderKey = `${config.formId}${+new Date()}` // 改变renderKey后可以实现强制更新组件
       if (config.layout === 'colFormItem') {
         item.__vModel__ = `field${this.idGlobal}`
       } else if (config.layout === 'rowFormItem') {
@@ -338,14 +338,14 @@ export default {
         }
       )
     },
-    drawingItemCopy(item, parent) {
+    drawingItemCopy(item, list) {
       let clone = deepClone(item)
       clone = this.createIdAndKey(clone)
-      parent.push(clone)
+      list.push(clone)
       this.activeFormItem(clone)
     },
-    drawingItemDelete(index, parent) {
-      parent.splice(index, 1)
+    drawingItemDelete(index, list) {
+      list.splice(index, 1)
       this.$nextTick(() => {
         const len = this.drawingList.length
         if (len) {

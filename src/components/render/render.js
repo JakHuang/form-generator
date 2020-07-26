@@ -88,7 +88,7 @@ export default {
   render(h) {
     const dataObject = makeDataObject()
     const confClone = deepClone(this.conf)
-    const children = []
+    const children = this.$slots.default || []
 
     // 如果slots文件夹存在与当前tag同名的文件，则执行文件中的代码
     mountSlotFlies.call(this, h, confClone, children)
