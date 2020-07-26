@@ -42,6 +42,10 @@ input, textarea{
   .el-icon-document{
     color: #a95812;
   }
+  :focus.is-active.is-focus:not(:active) {
+    box-shadow: none;
+    border-radius: 0;
+  }
 }
 
 // home
