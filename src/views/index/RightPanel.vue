@@ -468,6 +468,9 @@
           <el-form-item v-if="activeData.__config__.tag === 'el-input-number'" label="严格步数">
             <el-switch v-model="activeData['step-strictly']" />
           </el-form-item>
+          <el-form-item v-if="activeData.__config__.tag === 'el-cascader'" label="任选层级">
+            <el-switch v-model="activeData.props.props.checkStrictly" />
+          </el-form-item>
           <el-form-item v-if="activeData.__config__.tag === 'el-cascader'" label="是否多选">
             <el-switch v-model="activeData.props.props.multiple" />
           </el-form-item>
