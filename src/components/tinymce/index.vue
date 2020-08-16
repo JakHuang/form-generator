@@ -5,7 +5,6 @@
 <script>
 import loadTinymce from '@/utils/loadTinymce'
 import { plugins, toolbar } from './config'
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { debounce } from 'throttle-debounce'
 
 let num = 1
