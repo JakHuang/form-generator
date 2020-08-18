@@ -1,4 +1,3 @@
-
 <template>
   <div class="container">
     <div class="left-board">

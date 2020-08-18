@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import { loadScriptQueue } from '@/utils/loadScript'
+import axios from 'axios'
 import Tinymce from '@/components/tinymce/index.vue'
 
 Vue.component('tinymce', Tinymce)
+Vue.prototype.$axios = axios
 
 const $previewApp = document.getElementById('previewApp')
 const childAttrs = {
