@@ -26,9 +26,10 @@ export function makeUpJs(formConfig, type) {
   const propsList = []
   const methodList = mixinMethod(type)
   const uploadVarList = []
+  const created = []
 
   formConfig.fields.forEach(el => {
-    buildAttributes(el, dataList, ruleList, optionsList, methodList, propsList, uploadVarList)
+    buildAttributes(el, dataList, ruleList, optionsList, methodList, propsList, uploadVarList, created)
   })
 
   const script = buildexport(
@@ -39,14 +40,15 @@ export function makeUpJs(formConfig, type) {
     optionsList.join('\n'),
     uploadVarList.join('\n'),
     propsList.join('\n'),
-    methodList.join('\n')
+    methodList.join('\n'),
+    created.join('\n')
   )
   confGlobal = null
   return script
 }
 
 // 构建组件属性
-function buildAttributes(scheme, dataList, ruleList, optionsList, methodList, propsList, uploadVarList) {
+function buildAttributes(scheme, dataList, ruleList, optionsList, methodList, propsList, uploadVarList, created) {
   const config = scheme.__config__
   const slot = scheme.__slot__
   buildData(scheme, dataList)
@@ -58,7 +60,9 @@ function buildAttributes(scheme, dataList, ruleList, optionsList, methodList, pr
     if (config.dataType === 'dynamic') {
       const model = `${scheme.__vModel__}Options`
       const options = titleCase(model)
-      buildOptionMethod(`get${options}`, model, methodList)
+      const methodName = `get${options}`
+      buildOptionMethod(methodName, model, methodList, scheme)
+      callInCreated(methodName, created)
     }
   }
 
@@ -83,9 +87,14 @@ function buildAttributes(scheme, dataList, ruleList, optionsList, methodList, pr
   // 构建子级组件属性
   if (config.children) {
     config.children.forEach(item => {
-      buildAttributes(item, dataList, ruleList, optionsList, methodList, propsList, uploadVarList)
+      buildAttributes(item, dataList, ruleList, optionsList, methodList, propsList, uploadVarList, created)
     })
   }
+}
+
+// 在Created调用函数
+function callInCreated(methodName, created) {
+  created.push(`this.${methodName}()`)
 }
 
 // 混入处理函数
@@ -214,16 +223,23 @@ function buildSubmitUpload(scheme) {
   return str
 }
 
-function buildOptionMethod(methodName, model, methodList) {
+function buildOptionMethod(methodName, model, methodList, scheme) {
+  const config = scheme.__config__
   const str = `${methodName}() {
-    // TODO 发起请求获取数据
-    this.${model}
+    // 注意：this.$axios是通过Vue.prototype.$axios = axios挂载产生的
+    this.$axios({
+      method: '${config.method}',
+      url: '${config.url}'
+    }).then(resp => {
+      var { data } = resp
+      this.${model} = data.${config.dataKey}
+    })
   },`
   methodList.push(str)
 }
 
 // js整体拼接
-function buildexport(conf, type, data, rules, selectOptions, uploadVar, props, methods) {
+function buildexport(conf, type, data, rules, selectOptions, uploadVar, props, methods, created) {
   const str = `${exportDefault}{
   ${inheritAttrs[type]}
   components: {},
@@ -243,7 +259,9 @@ function buildexport(conf, type, data, rules, selectOptions, uploadVar, props, m
   },
   computed: {},
   watch: {},
-  created () {},
+  created () {
+    ${created}
+  },
   mounted () {},
   methods: {
     ${methods}
