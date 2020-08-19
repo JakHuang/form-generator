@@ -353,6 +353,28 @@
             </el-form-item>
 
             <template v-if="activeData.__config__.dataType === 'dynamic'">
+              <el-form-item label="接口地址">
+                <el-input
+                  v-model="activeData.__config__.url"
+                  :title="activeData.__config__.url"
+                  placeholder="请输入接口地址"
+                  clearable
+                >
+                  <el-select
+                    slot="prepend"
+                    v-model="activeData.__config__.method"
+                    :style="{width: '85px'}"
+                  >
+                    <el-option label="get" value="get" />
+                    <el-option label="post" value="post" />
+                    <el-option label="put" value="put" />
+                    <el-option label="delete" value="delete" />
+                  </el-select>
+                </el-input>
+              </el-form-item>
+              <el-form-item label="数据位置">
+                <el-input v-model="activeData.__config__.dataKey" placeholder="请输入标签键名" />
+              </el-form-item>
               <el-form-item label="标签键名">
                 <el-input v-model="activeData.props.props.label" placeholder="请输入标签键名" />
               </el-form-item>
@@ -473,6 +495,9 @@
           </el-form-item>
           <el-form-item v-if="activeData.__config__.tag === 'el-input-number'" label="严格步数">
             <el-switch v-model="activeData['step-strictly']" />
+          </el-form-item>
+          <el-form-item v-if="activeData.__config__.tag === 'el-cascader'" label="任选层级">
+            <el-switch v-model="activeData.props.props.checkStrictly" />
           </el-form-item>
           <el-form-item v-if="activeData.__config__.tag === 'el-cascader'" label="是否多选">
             <el-switch v-model="activeData.props.props.multiple" />
