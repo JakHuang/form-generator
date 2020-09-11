@@ -22,7 +22,7 @@ function vModel(dataObject, defaultValue) {
   }
 }
 
-function mountSlotFlies(h, confClone, children) {
+function mountSlotFiles(h, confClone, children) {
   const childObjs = componentChild[confClone.__config__.tag]
   if (childObjs) {
     Object.keys(childObjs).forEach(key => {
@@ -91,7 +91,7 @@ export default {
     const children = this.$slots.default || []
 
     // 如果slots文件夹存在与当前tag同名的文件，则执行文件中的代码
-    mountSlotFlies.call(this, h, confClone, children)
+    mountSlotFiles.call(this, h, confClone, children)
 
     // 将字符串类型的事件，发送为消息
     emitEvents.call(this, confClone)
