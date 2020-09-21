@@ -95,6 +95,7 @@
       :form-conf="formConf"
       :show-field="!!drawingList.length"
       @tag-change="tagChange"
+      @fetch-data="fetchData"
     />
 
     <form-drawer
@@ -266,18 +267,48 @@ export default {
     })
   },
   methods: {
+    fetchData(component) {
+      const {
+        dataType, method, url, dataKey, renderKey
+      } = component.__config__
+      if (dataType === 'dynamic' && method && url) {
+        this.setLoading(component, true)
+        this.$axios({
+          method,
+          url
+        }).then(resp => {
+          this.setLoading(component, false)
+          if (dataKey) {
+            component.data = dataKey.split('.').reduce((pre, item) => pre[item], resp.data)
+          } else {
+            component.data = resp.data
+          }
+          const i = this.drawingList.findIndex(item => item.__config__.renderKey === renderKey)
+          if (i > -1) this.$set(this.drawingList, i, component)
+        })
+      }
+    },
+    setLoading(component, val) {
+      const { directives } = component
+      if (Array.isArray(directives)) {
+        const t = directives.find(d => d.name === 'loading')
+        if (t) t.value = val
+      }
+    },
     activeFormItem(currentItem) {
       this.activeData = currentItem
       this.activeId = currentItem.__config__.formId
     },
     onEnd(obj) {
       if (obj.from !== obj.to) {
+        this.fetchData(tempActiveData)
         this.activeData = tempActiveData
         this.activeId = this.idGlobal
       }
     },
     addComponent(item) {
       const clone = this.cloneComponent(item)
+      this.fetchData(clone)
       this.drawingList.push(clone)
       this.activeFormItem(clone)
     },

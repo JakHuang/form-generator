@@ -559,6 +559,10 @@ export const layoutComponents = [
       changeTag: true,
       labelWidth: null,
       label: '表格[开发中]',
+      dataType: 'dynamic',
+      method: 'get',
+      dataKey: 'list',
+      url: 'https://www.fastmock.site/mock/f8d7a54fb1e60561e2f720d5a810009d/fg/tableData',
       children: [{
         __config__: {
           layout: 'raw',
@@ -610,10 +614,10 @@ export const layoutComponents = [
         label: '操作'
       }]
     },
-    data: [{
-      date: '2016-05-02',
-      name: '王小虎',
-      address: '上海市普陀区金沙江路 1518 弄'
+    data: [],
+    directives: [{
+      name: 'loading',
+      value: true
     }],
     border: true,
     type: 'default',
