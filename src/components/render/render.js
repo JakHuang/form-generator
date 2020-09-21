@@ -51,8 +51,16 @@ function buildDataObject(confClone, dataObject) {
     const val = confClone[key]
     if (key === '__vModel__') {
       vModel.call(this, dataObject, confClone.__config__.defaultValue)
-    } else if (dataObject[key]) {
-      dataObject[key] = { ...dataObject[key], ...val }
+    } else if (dataObject[key] !== undefined) {
+      if (dataObject[key] === null
+        || dataObject[key] instanceof RegExp
+        || ['boolean', 'string', 'number', 'function'].includes(typeof dataObject[key])) {
+        dataObject[key] = val
+      } else if (Array.isArray(dataObject[key])) {
+        dataObject[key] = [...dataObject[key], ...val]
+      } else {
+        dataObject[key] = { ...dataObject[key], ...val }
+      }
     } else {
       dataObject.attrs[key] = val
     }
@@ -69,12 +77,22 @@ function clearAttrs(dataObject) {
 }
 
 function makeDataObject() {
+  // 深入数据对象：
+  // https://cn.vuejs.org/v2/guide/render-function.html#%E6%B7%B1%E5%85%A5%E6%95%B0%E6%8D%AE%E5%AF%B9%E8%B1%A1
   return {
+    class: {},
     attrs: {},
     props: {},
+    domProps: {},
     nativeOn: {},
     on: {},
-    style: {}
+    style: {},
+    directives: [],
+    scopedSlots: {},
+    slot: null,
+    key: null,
+    ref: null,
+    refInFor: true
   }
 }
 
