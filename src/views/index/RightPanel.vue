@@ -376,7 +376,7 @@
               </el-form-item>
               <el-form-item label="数据位置">
                 <el-input
-                  v-model="activeData.__config__.dataKey"
+                  v-model="activeData.__config__.dataPath"
                   placeholder="请输入数据位置"
                   @blur="$emit('fetch-data', activeData)"
                 />

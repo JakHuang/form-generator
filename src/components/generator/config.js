@@ -186,7 +186,8 @@ export const selectComponents = [
       label: '级联选择',
       url: 'https://www.fastmock.site/mock/f8d7a54fb1e60561e2f720d5a810009d/fg/cascaderList',
       method: 'get',
-      dataKey: 'list',
+      dataPath: 'list',
+      dataConsumer: 'options',
       showLabel: true,
       labelWidth: null,
       tag: 'el-cascader',
@@ -561,7 +562,8 @@ export const layoutComponents = [
       label: '表格[开发中]',
       dataType: 'dynamic',
       method: 'get',
-      dataKey: 'list',
+      dataPath: 'list',
+      dataConsumer: 'data',
       url: 'https://www.fastmock.site/mock/f8d7a54fb1e60561e2f720d5a810009d/fg/tableData',
       children: [{
         __config__: {

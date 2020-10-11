@@ -267,10 +267,27 @@ export default {
     })
   },
   methods: {
+    setObjectValueByStringKeys(obj, strKeys, val) {
+      const arr = strKeys.split('.')
+      arr.reduce((pre, item, i) => {
+        if (arr.length === i + 1) {
+          pre[item] = val
+        } else if (Object.prototype.toString.call(pre[item]) !== '[Object Object]') {
+          pre[item] = {}
+        }
+        return pre[item]
+      }, obj)
+    },
+    setRespData(component, respData) {
+      const { dataPath, renderKey, dataConsumer } = component.__config__
+      if (!dataPath || !dataConsumer) return
+      const data = dataPath.split('.').reduce((pre, item) => pre[item], respData)
+      this.setObjectValueByStringKeys(component, dataConsumer, data)
+      const i = this.drawingList.findIndex(item => item.__config__.renderKey === renderKey)
+      if (i > -1) this.$set(this.drawingList, i, component)
+    },
     fetchData(component) {
-      const {
-        dataType, method, url, dataKey, renderKey
-      } = component.__config__
+      const { dataType, method, url } = component.__config__
       if (dataType === 'dynamic' && method && url) {
         this.setLoading(component, true)
         this.$axios({
@@ -278,13 +295,7 @@ export default {
           url
         }).then(resp => {
           this.setLoading(component, false)
-          if (dataKey) {
-            component.data = dataKey.split('.').reduce((pre, item) => pre[item], resp.data)
-          } else {
-            component.data = resp.data
-          }
-          const i = this.drawingList.findIndex(item => item.__config__.renderKey === renderKey)
-          if (i > -1) this.$set(this.drawingList, i, component)
+          this.setRespData(component, resp.data)
         })
       }
     },
