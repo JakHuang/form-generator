@@ -141,3 +141,17 @@ export function deepClone(obj) {
 
   return result
 }
+
+const toStr = Function.prototype.call.bind(Object.prototype.toString)
+export function isObjectObject(t) {
+  return toStr(t) === '[object Object]'
+}
+export function isObjectArray(t) {
+  return toStr(t) === '[object Array]'
+}
+export function isObjectNull(t) {
+  return toStr(t) === '[object Null]'
+}
+export function isObjectUnde(t) {
+  return toStr(t) === '[object Undefined]'
+}

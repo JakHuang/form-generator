@@ -133,7 +133,7 @@ import {
   inputComponents, selectComponents, layoutComponents, formConf
 } from '@/components/generator/config'
 import {
-  exportDefault, beautifierConf, isNumberStr, titleCase, deepClone
+  exportDefault, beautifierConf, isNumberStr, titleCase, deepClone, isObjectObject
 } from '@/utils/index'
 import {
   makeUpHtml, vueTemplate, vueScript, cssStyle
@@ -267,22 +267,27 @@ export default {
     })
   },
   methods: {
-    setObjectValueByStringKeys(obj, strKeys, val) {
+    setObjectValueReduce(obj, strKeys, data) {
       const arr = strKeys.split('.')
       arr.reduce((pre, item, i) => {
         if (arr.length === i + 1) {
-          pre[item] = val
-        } else if (Object.prototype.toString.call(pre[item]) !== '[Object Object]') {
+          pre[item] = data
+        } else if (!isObjectObject(pre[item])) {
           pre[item] = {}
         }
         return pre[item]
       }, obj)
     },
-    setRespData(component, respData) {
+    setRespData(component, resp) {
       const { dataPath, renderKey, dataConsumer } = component.__config__
       if (!dataPath || !dataConsumer) return
-      const data = dataPath.split('.').reduce((pre, item) => pre[item], respData)
-      this.setObjectValueByStringKeys(component, dataConsumer, data)
+      const respData = dataPath.split('.').reduce((pre, item) => pre[item], resp)
+
+      // 将请求回来的数据，赋值到指定属性。
+      // 以el-tabel为例，根据Element文档，应该将数据赋值给el-tabel的data属性，所以dataConsumer的值应为'data';
+      // 此时赋值代码可写成 component[dataConsumer] = respData；
+      // 但为支持更深层级的赋值（如：dataConsumer的值为'options.data'）,使用setObjectValueReduce
+      this.setObjectValueReduce(component, dataConsumer, respData)
       const i = this.drawingList.findIndex(item => item.__config__.renderKey === renderKey)
       if (i > -1) this.$set(this.drawingList, i, component)
     },
