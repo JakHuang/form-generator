@@ -62,7 +62,8 @@
       </div>
       <el-scrollbar class="center-scrollbar">
         <el-row class="center-board-row" :gutter="formConf.gutter">
-          <el-form
+          <div class="render-container">
+           <el-form
             :size="formConf.size"
             :label-position="formConf.labelPosition"
             :disabled="formConf.disabled"
@@ -86,6 +87,7 @@
               从左侧拖入或点选组件进行表单设计
             </div>
           </el-form>
+          </div>
         </el-row>
       </el-scrollbar>
     </div>
