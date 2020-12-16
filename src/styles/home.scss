@@ -7,6 +7,21 @@ $lighterBlue: #409EFF;
   height: 100%;
 }
 
+.center-board {
+
+  .el-tab-pane {
+    height: calc(100vh - 40px);
+  }
+}
+
+.el-tabs__header {
+  margin: 0;
+}
+
+
+.el-tabs__nav-wrap::after {
+  //background-color: transparent;
+}
 .components-list {
   padding: 8px;
   box-sizing: border-box;
@@ -59,21 +74,31 @@ $lighterBlue: #409EFF;
   height: 100vh;
 }
 .left-scrollbar{
-  height: calc(100vh - 42px);
+  height: calc(100vh - 40px);
   overflow: hidden;
 }
 .center-scrollbar {
-  height: calc(100vh - 42px);
+  height: calc(100vh - 40px);
   overflow: hidden;
   border-left: 1px solid #f1e8e8;
   border-right: 1px solid #f1e8e8;
   box-sizing: border-box;
+
+  .render-container {
+    height: calc(100vh - 69px);
+  }
 }
 .center-board {
   height: 100vh;
   width: auto;
-  margin: 0 350px 0 260px;
+  margin: 0 250px 0 260px;
   box-sizing: border-box;
+}
+
+.btns-tools {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 .empty-info{
   position: absolute;
@@ -87,9 +112,8 @@ $lighterBlue: #409EFF;
 }
 .action-bar{
   position: relative;
-  height: 42px;
+  height: 100%;
   text-align: right;
-  padding: 0 15px;
   box-sizing: border-box;;
   border: 1px solid #f1e8e8;
   border-top: none;
@@ -100,7 +124,7 @@ $lighterBlue: #409EFF;
 }
 .logo-wrapper{
   position: relative;
-  height: 42px;
+  height: 40px;
   background: #fff;
   border-bottom: 1px solid #f1e8e8;
   box-sizing: border-box;
@@ -133,8 +157,8 @@ $lighterBlue: #409EFF;
   padding: 12px 12px 15px 12px;
   box-sizing: border-box;
   & > .el-form {
-    // 69 = 12+15+42
-    height: calc(100vh - 69px);
+    // 69 = 12+15+40
+    height: calc(100vh - 67px);
   }
 }
 .drawing-board {

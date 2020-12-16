@@ -1,6 +1,7 @@
+/* eslint-disable*/
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '@/views/index/Home.vue'
+import Home from '@/views/index/Home/index.vue'
 
 Vue.use(VueRouter)
 

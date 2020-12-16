@@ -25,23 +25,35 @@ const layouts = {
     const config = currentItem.__config__
     const child = renderChildren.apply(this, arguments)
     let className = this.activeId === config.formId ? 'drawing-item active-from-item' : 'drawing-item'
-    if (this.formConf.unFocusedComponentBorder) className += ' unfocus-bordered'
+    // if (this.formConf.unFocusedComponentBorder) className += ' unfocus-bordered'
     let labelWidth = config.labelWidth ? `${config.labelWidth}px` : null
     if (config.showLabel === false) labelWidth = '0'
+
     return (
       <el-col span={config.span} class={className}
         nativeOnClick={event => { activeItem(currentItem); event.stopPropagation() }}>
-        <el-form-item label-width={labelWidth}
-          label={config.showLabel ? config.label : ''} required={config.required}>
           <render key={config.renderKey} conf={currentItem} onInput={ event => {
             this.$set(config, 'defaultValue', event)
           }}>
             {child}
           </render>
-        </el-form-item>
         {components.itemBtns.apply(this, arguments)}
       </el-col>
     )
+	  //   return (
+	  //   <el-col span={config.span} class={className}
+	  //     nativeOnClick={event => { activeItem(currentItem); event.stopPropagation() }}>
+	  //    <el-form-item label-width={labelWidth}
+	  //       label={config.showLabel ? config.label : ''} required={config.required}>
+	  //       <render key={config.renderKey} conf={currentItem} onInput={ event => {
+	  //         this.$set(config, 'defaultValue', event)
+	  //       }}>
+	  //         {child}
+	  //       </render>
+	  //     </el-form-item>
+	  //     {components.itemBtns.apply(this, arguments)}
+	  //   </el-col>
+	  // )
   },
   rowFormItem(h, currentItem, index, list) {
     const { activeItem } = this.$listeners
