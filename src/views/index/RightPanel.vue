@@ -801,6 +801,10 @@ export default {
         {
           label: '选择型组件',
           options: selectComponents
+        },
+        {
+          label: '布局型组件',
+          options: layoutComponents
         }
       ]
     },
