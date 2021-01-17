@@ -41,4 +41,4 @@ module.exports = {
   globals: {
     location: false
   }
-};
+}

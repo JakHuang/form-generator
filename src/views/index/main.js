@@ -5,6 +5,7 @@ import '@/styles/index.scss'
 import '@/icons'
 import axios from 'axios'
 import Tinymce from '@/components/tinymce/index.vue'
+import i18n from '../../i18n'
 
 Vue.component('tinymce', Tinymce)
 
@@ -12,6 +13,7 @@ Vue.config.productionTip = false
 Vue.prototype.$axios = axios
 
 new Vue({
+  i18n,
   router,
   render: h => h(App)
 }).$mount('#app')
