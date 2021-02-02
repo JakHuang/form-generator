@@ -1,7 +1,12 @@
 <script>
-import draggable from 'vuedraggable'
 import render from '@/components/render/render'
 import { debounce } from 'throttle-debounce'
+
+// dom属性data-drag-node作为可拖拽标识，记录着formId
+const findNearestDraggableNode = element => {
+  if (!element || !element.path) return undefined
+  return element.path.find(el => el.dataset && el.dataset.draggableNode)
+}
 
 const activeClickItem = (event, activeItem, currentItem) => {
   activeItem(currentItem)
@@ -9,8 +14,17 @@ const activeClickItem = (event, activeItem, currentItem) => {
 }
 
 let cache = {}
-const setIsDragover = (self, currentItem, val) => {
-  self.$set(currentItem.__config__, 'isDragover', val)
+const setIsDragover = (self, val) => {
+  self.dragover = val
+}
+/**
+ * 产生横向或纵向的悬浮样式
+ */
+const buildDragoverStyle = (self, currentItem) => {
+  const { formId, span } = currentItem.__config__
+  if (self.dragover !== formId.toString()) return ''
+  if (span < 24) return ' is-dragover vertical-mode '
+  return ' is-dragover horizontal-mode '
 }
 
 /**
@@ -19,38 +33,57 @@ const setIsDragover = (self, currentItem, val) => {
  */
 const dragDropHandles = (self, currentItem, index, list) => ({
   dragenter: event => {
+    const { formId: cscheFormId } = cache.currentItem.__config__
+    const { formId } = currentItem.__config__
+    if (formId === cscheFormId) return
     // 将isDragover设置为true(立即执行)
-    setIsDragover(self, currentItem, true)
+    setIsDragover(self, formId)
   },
   dragleave: event => {
+    const { formId: cscheFormId } = cache.currentItem.__config__
+    const { isWrapper, formId } = currentItem.__config__
+    if (formId === cscheFormId) return
     // 将isDragover设置为false(防抖执行)
-    self.setIsDragoverDebounce(self, currentItem, false)
+    self.setIsDragoverDebounce(self, -1)
   },
   dragover: event => {
-    self.setIsDragoverDebounce(self, currentItem, true)
+    event.preventDefault()
+    const dropNode = findNearestDraggableNode(event)
+    const { formId: cscheFormId } = cache.currentItem.__config__
+    const { isWrapper, formId } = currentItem.__config__
+    if (!dropNode || formId === cscheFormId) return
+    self.setIsDragoverDebounce(self, dropNode.dataset.draggableNode)
   },
   dragstart: event => {
+    event.stopPropagation()
     cache = { currentItem, index, list }
   },
   drop: event => {
-    self.setIsDragoverDebounce(self, currentItem, false)
-    if (cache) {
-      // cache.currentItem和currentItem 位置互换
-      self.$set(list, index, cache.currentItem)
-      self.$set(cache.list, cache.index, currentItem)
+    event.preventDefault()
+    self.setIsDragoverDebounce(self, -1)
+    if (!cache) return
+
+    const { formId: cscheFormId } = cache.currentItem.__config__
+    const { isWrapper, formId } = currentItem.__config__
+    if (formId !== cscheFormId) {
+      // 根据被拖动的节点的isWrapper，判读是交换位置还是拖入
+      if (isWrapper) {
+        const { children } = currentItem.__config__
+        Array.isArray(children)
+          ? children.push(cache.currentItem) // 待优化，不一定是push
+          : self.$set(currentItem, 'children', [cache.currentItem])
+        cache.list.splice(cache.index, 1)
+      } else {
+        // cache.currentItem和currentItem 位置互换
+        self.$set(list, index, cache.currentItem)
+        self.$set(cache.list, cache.index, currentItem)
+      }
       // 高亮被拖动的节点
       self.$listeners.activeItem(cache.currentItem)
       cache = null
     }
   }
 })
-
-const buildDragoverStyle = currentItem => {
-  const { isDragover, span } = currentItem.__config__
-  if (!isDragover) return ''
-  if (span < 24) return ' is-dragover vertical-mode '
-  return ' is-dragover horizontal-mode '
-}
 
 const components = {
   itemBtns(h, currentItem, index, list) {
@@ -73,14 +106,15 @@ const layouts = {
   colFormItem(h, currentItem, index, list) {
     const { activeItem } = this.$listeners
     const config = currentItem.__config__
+    config.isWrapper = false
     const child = renderChildren.apply(this, arguments)
     let className = this.activeId === config.formId ? 'drawing-item active-from-item' : 'drawing-item'
     if (this.formConf.unFocusedComponentBorder) className += ' unfocus-bordered'
-    className += buildDragoverStyle(currentItem) // 使用悬停标记
+    className += buildDragoverStyle(this, currentItem) // 使用悬停标记
     let labelWidth = config.labelWidth ? `${config.labelWidth}px` : null
     if (config.showLabel === false) labelWidth = '0'
     return (
-      <el-col span={config.span} class={className} draggable
+      <el-col span={config.span} class={className} draggable data-draggable-node={config.formId}
         {...{ nativeOn: dragDropHandles(this, currentItem, index, list) }}
         nativeOnClick={event => activeClickItem(event, activeItem, currentItem)}>
         <el-form-item label-width={labelWidth}
@@ -98,26 +132,28 @@ const layouts = {
   rowFormItem(h, currentItem, index, list) {
     const { activeItem } = this.$listeners
     const config = currentItem.__config__
-    const className = this.activeId === config.formId
+    config.isWrapper = true
+    let className = this.activeId === config.formId
       ? 'drawing-row-item active-from-item'
       : 'drawing-row-item'
-    let child = renderChildren.apply(this, arguments)
+    className += buildDragoverStyle(this, currentItem) // 使用悬停标记
+    const child = renderChildren.apply(this, arguments)
+    const flexProps = {}
     if (currentItem.type === 'flex') {
-      child = <el-row type={currentItem.type} justify={currentItem.justify} align={currentItem.align}>
-              {child}
-            </el-row>
+      const { type, justify, align } = currentItem
+      flexProps.props = { type, justify, align }
     }
     return (
-      <el-col span={config.span}>
-        <el-row gutter={config.gutter} class={className}
+      <el-col span={config.span} class={`${className} drawing-item drag-wrapper`}
+        draggable data-draggable-node={config.formId}
+        {...{ nativeOn: dragDropHandles(this, currentItem, index, list) }}
+      >
+        <span class="component-name">{config.componentName}</span>
+        <el-row gutter={config.gutter} {...flexProps}
           nativeOnClick={event => activeClickItem(event, activeItem, currentItem)}>
-          <span class="component-name">{config.componentName}</span>
-          <draggable list={config.children || []} animation={340}
-            group="componentsGroup" class="drag-wrapper">
-            {child}
-          </draggable>
-          {components.itemBtns.apply(this, arguments)}
+          {child}
         </el-row>
+        {components.itemBtns.apply(this, arguments)}
       </el-col>
     )
   },
@@ -150,8 +186,7 @@ function layoutIsNotFound() {
 
 export default {
   components: {
-    render,
-    draggable
+    render
   },
   props: [
     'currentItem',
@@ -162,7 +197,8 @@ export default {
   ],
   data() {
     return {
-      setIsDragoverDebounce: debounce(60, setIsDragover)
+      setIsDragoverDebounce: debounce(60, setIsDragover),
+      dragover: -1
     }
   },
   render(h) {

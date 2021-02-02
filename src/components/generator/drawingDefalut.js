@@ -1,6 +1,7 @@
 export default [
   {
     __config__: {
+      formId: 1,
       label: '单行文本',
       labelWidth: null,
       showLabel: true,

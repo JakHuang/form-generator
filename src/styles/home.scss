@@ -230,9 +230,6 @@ $lighterBlue: #409EFF;
   .el-form-item{
     margin-bottom: 0;
   }
-  .drag-wrapper{
-    min-height: 80px;
-  }
   &.active-from-item{
     border: 1px dashed $lighterBlue;
   }
@@ -245,6 +242,9 @@ $lighterBlue: #409EFF;
     display: inline-block;
     padding: 0 6px;
   }
+}
+.drag-wrapper{
+  min-height: 80px;
 }
 .drawing-item, .drawing-row-item{
   &:hover {

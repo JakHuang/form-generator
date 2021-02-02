@@ -59,25 +59,21 @@
           :label-position="formConf.labelPosition"
           :disabled="formConf.disabled"
           :label-width="formConf.labelWidth + 'px'"
+          @drop.native="drop"
+          @dragover.native="dragover"
         >
-          <el-row
-            :gutter="formConf.gutter"
-            @drop.native="drop"
-            @dragover.native="dragover"
-          >
-            <draggable-item
-              v-for="(item, index) in drawingList"
-              :key="item.renderKey"
-              :drawing-list="drawingList"
-              :current-item="item"
-              :index="index"
-              :active-id="activeId"
-              :form-conf="formConf"
-              @activeItem="activeFormItem"
-              @copyItem="drawingItemCopy"
-              @deleteItem="drawingItemDelete"
-            />
-          </el-row>
+          <draggable-item
+            v-for="(item, index) in drawingList"
+            :key="item.renderKey"
+            :drawing-list="drawingList"
+            :current-item="item"
+            :index="index"
+            :active-id="activeId"
+            :form-conf="formConf"
+            @activeItem="activeFormItem"
+            @copyItem="drawingItemCopy"
+            @deleteItem="drawingItemDelete"
+          />
           <div v-show="!drawingList.length" class="empty-info">
             从左侧拖入或点选组件进行表单设计
           </div>
