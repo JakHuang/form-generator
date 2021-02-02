@@ -16,27 +16,19 @@
               <svg-icon icon-class="component" />
               {{ item.title }}
             </div>
-            <draggable
-              class="components-draggable"
-              :list="item.list"
-              :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
-              :clone="cloneComponent"
-              draggable=".components-item"
-              :sort="false"
-              @end="onEnd"
+            <div
+              v-for="(element, index) in item.list"
+              :key="index"
+              class="components-item"
+              draggable
+              @dragstart="e => dragstart(e, element)"
+              @click="addComponent(element)"
             >
-              <div
-                v-for="(element, index) in item.list"
-                :key="index"
-                class="components-item"
-                @click="addComponent(element)"
-              >
-                <div class="components-body">
-                  <svg-icon :icon-class="element.__config__.tagIcon" />
-                  {{ element.__config__.label }}
-                </div>
+              <div class="components-body">
+                <svg-icon :icon-class="element.__config__.tagIcon" />
+                {{ element.__config__.label }}
               </div>
-            </draggable>
+            </div>
           </div>
         </div>
       </el-scrollbar>
@@ -61,32 +53,35 @@
         </el-button>
       </div>
       <el-scrollbar class="center-scrollbar">
-        <el-row class="center-board-row" :gutter="formConf.gutter">
-          <el-form
-            :size="formConf.size"
-            :label-position="formConf.labelPosition"
-            :disabled="formConf.disabled"
-            :label-width="formConf.labelWidth + 'px'"
+        <el-form
+          class="center-board-row"
+          :size="formConf.size"
+          :label-position="formConf.labelPosition"
+          :disabled="formConf.disabled"
+          :label-width="formConf.labelWidth + 'px'"
+        >
+          <el-row
+            :gutter="formConf.gutter"
+            @drop.native="drop"
+            @dragover.native="dragover"
           >
-            <draggable class="drawing-board" :list="drawingList" :animation="340" group="componentsGroup">
-              <draggable-item
-                v-for="(item, index) in drawingList"
-                :key="item.renderKey"
-                :drawing-list="drawingList"
-                :current-item="item"
-                :index="index"
-                :active-id="activeId"
-                :form-conf="formConf"
-                @activeItem="activeFormItem"
-                @copyItem="drawingItemCopy"
-                @deleteItem="drawingItemDelete"
-              />
-            </draggable>
-            <div v-show="!drawingList.length" class="empty-info">
-              从左侧拖入或点选组件进行表单设计
-            </div>
-          </el-form>
-        </el-row>
+            <draggable-item
+              v-for="(item, index) in drawingList"
+              :key="item.renderKey"
+              :drawing-list="drawingList"
+              :current-item="item"
+              :index="index"
+              :active-id="activeId"
+              :form-conf="formConf"
+              @activeItem="activeFormItem"
+              @copyItem="drawingItemCopy"
+              @deleteItem="drawingItemDelete"
+            />
+          </el-row>
+          <div v-show="!drawingList.length" class="empty-info">
+            从左侧拖入或点选组件进行表单设计
+          </div>
+        </el-form>
       </el-scrollbar>
     </div>
 
@@ -267,6 +262,19 @@ export default {
     })
   },
   methods: {
+    dragstart(event, element) {
+      tempActiveData = element
+      event.dataTransfer.setData('dragFrom', 'template')
+    },
+    drop(event, b) {
+      event.preventDefault()
+      if (event.dataTransfer.getData('dragFrom') === 'template') {
+        this.addComponent(tempActiveData)
+      }
+    },
+    dragover(event) {
+      event.preventDefault()
+    },
     setObjectValueReduce(obj, strKeys, data) {
       const arr = strKeys.split('.')
       arr.reduce((pre, item, i) => {
@@ -315,13 +323,6 @@ export default {
       this.activeData = currentItem
       this.activeId = currentItem.__config__.formId
     },
-    onEnd(obj) {
-      if (obj.from !== obj.to) {
-        this.fetchData(tempActiveData)
-        this.activeData = tempActiveData
-        this.activeId = this.idGlobal
-      }
-    },
     addComponent(item) {
       const clone = this.cloneComponent(item)
       this.fetchData(clone)
@@ -334,8 +335,7 @@ export default {
       config.span = this.formConf.span // 生成代码时，会根据span做精简判断
       this.createIdAndKey(clone)
       clone.placeholder !== undefined && (clone.placeholder += config.label)
-      tempActiveData = clone
-      return tempActiveData
+      return clone
     },
     createIdAndKey(item) {
       const config = item.__config__
