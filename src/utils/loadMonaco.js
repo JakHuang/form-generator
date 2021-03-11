@@ -1,5 +1,6 @@
 import { loadScriptQueue } from './loadScript'
 import ELEMENT from 'element-ui'
+import pluginsConfig from './pluginsConfig'
 
 // monaco-editor单例
 let monacoEidtor
@@ -14,7 +15,7 @@ export default function loadMonaco(cb) {
     return
   }
 
-  const vs = 'https://lib.baomitu.com/monaco-editor/0.19.3/min/vs'
+  const { monacoEditorUrl: vs } = pluginsConfig
 
   // 使用element ui实现加载提示
   const loading = ELEMENT.Loading.service({
