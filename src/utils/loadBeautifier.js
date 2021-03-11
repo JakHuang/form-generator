@@ -1,9 +1,11 @@
 import loadScript from './loadScript'
 import ELEMENT from 'element-ui'
+import pluginsConfig from './pluginsConfig'
 
 let beautifierObj
 
 export default function loadBeautifier(cb) {
+  const { beautifierUrl } = pluginsConfig
   if (beautifierObj) {
     cb(beautifierObj)
     return
@@ -17,7 +19,7 @@ export default function loadBeautifier(cb) {
     background: 'rgba(255, 255, 255, 0.5)'
   })
 
-  loadScript('https://lib.baomitu.com/js-beautify/1.10.2/beautifier.min.js', () => {
+  loadScript(beautifierUrl, () => {
     loading.close()
     // eslint-disable-next-line no-undef
     beautifierObj = beautifier
