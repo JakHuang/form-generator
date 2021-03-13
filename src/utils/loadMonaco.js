@@ -1,4 +1,4 @@
-import { loadScriptQueue } from './loadScript'
+import loadScript from './loadScript'
 import ELEMENT from 'element-ui'
 import pluginsConfig from './pluginsConfig'
 
@@ -30,14 +30,11 @@ export default function loadMonaco(cb) {
   !window.require.paths && (window.require.paths = {})
   window.require.paths.vs = vs
 
-  loadScriptQueue([
-    `${vs}/loader.js`,
-    `${vs}/editor/editor.main.nls.js`,
-    `${vs}/editor/editor.main.js`
-  ], () => {
-    loading.close()
-    // eslint-disable-next-line no-undef
-    monacoEidtor = monaco
-    cb(monacoEidtor)
+  loadScript(`${vs}/loader.js`, () => {
+    window.require(['vs/editor/editor.main'], () => {
+      loading.close()
+      monacoEidtor = window.monaco
+      cb(monacoEidtor)
+    })
   })
 }
