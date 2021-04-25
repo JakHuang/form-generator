@@ -19,7 +19,7 @@
           clearable
         />
       </div>
-      <ul class="icon-ul">
+      <ul ref="iconWrap" class="icon-ul">
         <li
           v-for="icon in iconList"
           :key="icon"
@@ -61,12 +61,21 @@ export default {
     onOpen() {
       this.active = this.current
       this.key = ''
+      this.scrollToActive()
     },
     onClose() {},
     onSelect(icon) {
       this.active = icon
       this.$emit('select', icon)
       this.$emit('update:visible', false)
+    },
+    scrollToActive() {
+      this.$nextTick(() => {
+        const $activeItem = this.active
+          ? document.getElementsByClassName('active-item')[0]
+          : this.$refs.iconWrap.childNodes[0]
+        $activeItem && $activeItem.scrollIntoView && $activeItem.scrollIntoView()
+      })
     }
   }
 }
