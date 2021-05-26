@@ -278,7 +278,7 @@ const tags = {
     const name = el.name !== 'file' ? `name="${el.name}"` : ''
     const autoUpload = el['auto-upload'] === false ? ':auto-upload="false"' : ''
     const beforeUpload = `:before-upload="${el.__vModel__}BeforeUpload"`
-    const onSuccess = `:before-upload="${el.__vModel__}OnSuccess"`
+    const onSuccess = `:on-success="${el.__vModel__}OnSuccess"`
     const fileList = `:file-list="${el.__vModel__}fileList"`
     const ref = `ref="${el.__vModel__}"`
     let child = buildElUploadChild(el)
