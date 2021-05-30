@@ -6,12 +6,6 @@ Element UI表单设计及代码生成器，可将生成的代码直接运行在�
 - [配套vscode插件](https://github.com/JakHuang/form-generator-plugin)
 - [配套JSON解析器](https://github.com/JakHuang/form-generator/blob/dev/src/components/parser/example/Index.vue)
 
-## 友情链接
-
-- **vue-admin-beautiful** —— [企业级、通用型中后台前端解决方案（基于vue/cli 4 最新版，同时支持电脑，手机，平板）](https://github.com/chuzhixin/vue-admin-beautiful)
-- **vue-admin-beautiful** —— [在线演示](http://beautiful.panm.cn/vue-admin-beautiful/#/index)
-- **pl-table** —— [完美解决 element 万级表格数据渲染卡顿问题](https://github.com/livelyPeng/pl-table)
-
 ## 文档
 - [el-dialog的封装与调用](https://github.com/JakHuang/form-generator/wiki/el-dialog%E7%9A%84%E5%B0%81%E8%A3%85%E4%B8%8E%E8%B0%83%E7%94%A8)
 - [项目主要结构分析](https://github.com/JakHuang/form-generator/wiki/%E9%A1%B9%E7%9B%AE%E4%B8%BB%E8%A6%81%E7%BB%93%E6%9E%84%E5%88%86%E6%9E%90)
@@ -60,6 +54,13 @@ npm run build
 ```
 ## 交流
 - QQ群 976154366【已满】   1137173566【已满】   514953560【3群】
+
+## 友情链接
+
+- **vue-admin-beautiful** —— [企业级、通用型中后台前端解决方案（基于vue/cli 4 最新版，同时支持电脑，手机，平板）](https://github.com/chuzhixin/vue-admin-beautiful)
+- **vue-admin-beautiful** —— [在线演示](http://beautiful.panm.cn/vue-admin-beautiful/#/index)
+- **pl-table** —— [完美解决 element 万级表格数据渲染卡顿问题](https://github.com/livelyPeng/pl-table)
+- **[go-admin](https://github.com/go-admin-team/go-admin)**
 
 
 ## PR鸣谢
