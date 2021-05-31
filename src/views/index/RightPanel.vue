@@ -247,8 +247,11 @@
           <el-form-item v-if="activeData.action !== undefined" label="上传地址">
             <el-input v-model="activeData.action" placeholder="请输入上传地址" clearable />
           </el-form-item>
+          <el-form-item v-if="activeData['on-success'] !== undefined" label="上传回调">
+            <el-input type="textarea" :rows="2" v-model="activeData['on-success']" placeholder="请输入上传回调" clearable />
+          </el-form-item>
           <el-form-item v-if="activeData['list-type'] !== undefined" label="列表类型">
-            <el-radio-group v-model="activeData['list-type']" size="small">
+            <el-radio-group v-model="activeData['list-type']" size="mini">
               <el-radio-button label="text">
                 text
               </el-radio-button>
@@ -256,7 +259,7 @@
                 picture
               </el-radio-button>
               <el-radio-button label="picture-card">
-                picture-card
+                card
               </el-radio-button>
             </el-radio-group>
           </el-form-item>

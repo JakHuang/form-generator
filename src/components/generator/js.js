@@ -78,6 +78,7 @@ function buildAttributes(scheme, dataList, ruleList, optionsList, methodList, pr
       ${scheme.__vModel__}fileList: [],`
     )
     methodList.push(buildBeforeUpload(scheme))
+    methodList.push(buildOnSuccess(scheme))
     // 非自动上传时，生成手动上传的函数
     if (!scheme['auto-upload']) {
       methodList.push(buildSubmitUpload(scheme))
@@ -213,6 +214,13 @@ function buildBeforeUpload(scheme) {
     return ${returnList.join('&&')}
   },`
   return returnList.length ? str : ''
+}
+
+function buildOnSuccess(scheme) {
+  const str = `${scheme.__vModel__}OnSuccess(req, file, fileList) {
+    return console.log(req)
+  },`
+  return str
 }
 
 // el-upload的submit

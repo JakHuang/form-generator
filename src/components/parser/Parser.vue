@@ -38,8 +38,8 @@ const layouts = {
             </el-row>
     }
     return (
-      <el-col span={scheme.span}>
-        <el-row gutter={scheme.gutter}>
+      <el-col span={scheme.__config__.span}>
+        <el-row gutter={this.formConfCopy.gutter}>
           {child}
         </el-row>
       </el-col>

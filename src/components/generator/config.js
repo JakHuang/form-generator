@@ -504,6 +504,7 @@ export const selectComponents = [
     accept: '',
     name: 'file',
     'auto-upload': true,
+    'on-success':	function(response, file, fileList){},
     'list-type': 'text',
     multiple: false
   }
