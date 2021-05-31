@@ -38,7 +38,7 @@ export default {
               document: 'https://element.eleme.cn/#/zh-CN/component/input',
               regList: [
                 {
-                  pattern: '/^1(3|4|5|7|8|9)\\d{9}$/',
+                  pattern: '/^1(3|4|5|6|7|8|9)\\d{9}$/',
                   message: '手机号格式错误'
                 }
               ]
@@ -205,7 +205,7 @@ export default {
               document: 'https://element.eleme.cn/#/zh-CN/component/input',
               regList: [
                 {
-                  pattern: '/^1(3|4|5|7|8|9)\\d{9}$/',
+                  pattern: '/^1(3|4|5|6|7|8|9)\\d{9}$/',
                   message: '手机号格式错误'
                 }
               ]
