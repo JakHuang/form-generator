@@ -45,20 +45,36 @@
     <div class="center-board">
       <div class="action-bar">
         <el-button icon="el-icon-video-play" type="text" @click="run">
-          运行
+          {{ $t('Run') }}
         </el-button>
         <el-button icon="el-icon-view" type="text" @click="showJson">
-          查看json
+          {{ $t('View Json') }}
         </el-button>
         <el-button icon="el-icon-download" type="text" @click="download">
-          导出vue文件
+          {{ $t('Export Vue file') }}
         </el-button>
         <el-button class="copy-btn-main" icon="el-icon-document-copy" type="text" @click="copy">
-          复制代码
+          {{ $t('Copy code') }}
         </el-button>
         <el-button class="delete-btn" icon="el-icon-delete" type="text" @click="empty">
           清空
         </el-button>
+        <el-dropdown trigger="click" @command="setLanguage">
+          <span class="el-dropdown-link">
+            {{ this.$i18n.locale }}<i class="el-icon-arrow-down el-icon--right" />
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="zh-CN">
+              简体中文
+            </el-dropdown-item>
+            <el-dropdown-item command="tr">
+              Türkçe
+            </el-dropdown-item>
+            <el-dropdown-item command="en">
+              English
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </div>
       <el-scrollbar class="center-scrollbar">
         <el-row class="center-board-row" :gutter="formConf.gutter">
@@ -148,6 +164,7 @@ import {
   getDrawingList, saveDrawingList, getIdGlobal, saveIdGlobal, getFormConf
 } from '@/utils/db'
 import loadBeautifier from '@/utils/loadBeautifier'
+import i18n from '../../i18n'
 
 let beautifier
 const emptyActiveData = { style: {}, autosize: {} }
@@ -190,7 +207,7 @@ export default {
       saveIdGlobalDebounce: debounce(340, saveIdGlobal),
       leftComponents: [
         {
-          title: '输入型组件',
+          title: this.$t('Inputs'),
           list: inputComponents
         },
         {
@@ -256,7 +273,7 @@ export default {
         const codeStr = this.generateCode()
         this.$notify({
           title: '成功',
-          message: '代码已复制到剪切板，可粘贴。',
+          message: this.$t('Code copied and can be pasted'),
           type: 'success'
         })
         return codeStr
@@ -460,6 +477,9 @@ export default {
       this.drawingList = deepClone(data.fields)
       delete data.fields
       this.formConf = data
+    },
+    setLanguage(lang) {
+      i18n.locale = lang
     }
   }
 }
