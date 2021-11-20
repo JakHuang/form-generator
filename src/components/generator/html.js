@@ -299,7 +299,7 @@ function attrBuilder(el) {
     vModel: `v-model="${confGlobal.formModel}.${el.__vModel__}"`,
     clearable: el.clearable ? 'clearable' : '',
     placeholder: el.placeholder ? `placeholder="${el.placeholder}"` : '',
-    width: el.style && el.style.width ? ':style="{width: \'100%\'}"' : '',
+    width: el.style && el.style.width ? `:style="{width: \'${el.style.width}\'}"` : '',
     disabled: el.disabled ? ':disabled=\'true\'' : ''
   }
 }
