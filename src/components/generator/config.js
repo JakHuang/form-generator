@@ -38,7 +38,6 @@ export const inputComponents = [
     },
     // 其余的为可直接写在组件标签上的属性
     placeholder: '请输入',
-    style: { width: '100%' },
     clearable: true,
     'prefix-icon': '',
     'suffix-icon': '',
@@ -68,7 +67,6 @@ export const inputComponents = [
       minRows: 4,
       maxRows: 4
     },
-    style: { width: '100%' },
     maxlength: null,
     'show-word-limit': false,
     readonly: false,
@@ -95,7 +93,6 @@ export const inputComponents = [
     },
     placeholder: '请输入',
     'show-password': true,
-    style: { width: '100%' },
     clearable: true,
     'prefix-icon': '',
     'suffix-icon': '',
@@ -175,7 +172,6 @@ export const selectComponents = [
       }]
     },
     placeholder: '请选择',
-    style: { width: '100%' },
     clearable: true,
     disabled: false,
     filterable: false,
@@ -212,7 +208,6 @@ export const selectComponents = [
       }]
     }],
     placeholder: '请选择',
-    style: { width: '100%' },
     props: {
       props: {
         multiple: false,
@@ -351,7 +346,6 @@ export const selectComponents = [
       document: 'https://element.eleme.cn/#/zh-CN/component/time-picker'
     },
     placeholder: '请选择',
-    style: { width: '100%' },
     disabled: false,
     clearable: true,
     'picker-options': {
@@ -375,7 +369,6 @@ export const selectComponents = [
       changeTag: true,
       document: 'https://element.eleme.cn/#/zh-CN/component/time-picker'
     },
-    style: { width: '100%' },
     disabled: false,
     clearable: true,
     'is-range': true,
@@ -402,7 +395,6 @@ export const selectComponents = [
     },
     placeholder: '请选择',
     type: 'date',
-    style: { width: '100%' },
     disabled: false,
     clearable: true,
     format: 'yyyy-MM-dd',
@@ -424,7 +416,6 @@ export const selectComponents = [
       changeTag: true,
       document: 'https://element.eleme.cn/#/zh-CN/component/date-picker'
     },
-    style: { width: '100%' },
     type: 'daterange',
     'range-separator': '至',
     'start-placeholder': '开始日期',
@@ -545,85 +536,5 @@ export const layoutComponents = [
     plain: false,
     circle: false,
     disabled: false
-  },
-  {
-    __config__: {
-      layout: 'colFormItem',
-      tagIcon: 'table',
-      tag: 'el-table',
-      document: 'https://element.eleme.cn/#/zh-CN/component/table',
-      span: 24,
-      formId: 101,
-      renderKey: 1595761764203,
-      componentName: 'row101',
-      showLabel: true,
-      changeTag: true,
-      labelWidth: null,
-      label: '表格[开发中]',
-      dataType: 'dynamic',
-      method: 'get',
-      dataPath: 'list',
-      dataConsumer: 'data',
-      url: 'https://www.fastmock.site/mock/f8d7a54fb1e60561e2f720d5a810009d/fg/tableData',
-      children: [{
-        __config__: {
-          layout: 'raw',
-          tag: 'el-table-column',
-          renderKey: 15957617660153
-        },
-        prop: 'date',
-        label: '日期'
-      }, {
-        __config__: {
-          layout: 'raw',
-          tag: 'el-table-column',
-          renderKey: 15957617660152
-        },
-        prop: 'address',
-        label: '地址'
-      }, {
-        __config__: {
-          layout: 'raw',
-          tag: 'el-table-column',
-          renderKey: 15957617660151
-        },
-        prop: 'name',
-        label: '名称'
-      }, {
-        __config__: {
-          layout: 'raw',
-          tag: 'el-table-column',
-          renderKey: 1595774496335,
-          children: [
-            {
-              __config__: {
-                label: '按钮',
-                tag: 'el-button',
-                tagIcon: 'button',
-                layout: 'raw',
-                renderKey: 1595779809901
-              },
-              __slot__: {
-                default: '主要按钮'
-              },
-              type: 'primary',
-              icon: 'el-icon-search',
-              round: false,
-              size: 'medium'
-            }
-          ]
-        },
-        label: '操作'
-      }]
-    },
-    data: [],
-    directives: [{
-      name: 'loading',
-      value: true
-    }],
-    border: true,
-    type: 'default',
-    justify: 'start',
-    align: 'top'
   }
 ]
