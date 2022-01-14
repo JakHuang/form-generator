@@ -11,7 +11,7 @@
     >
       <el-row :gutter="15">
         <el-form
-          ref="elForm"
+          ref="form"
           :model="formData"
           :rules="rules"
           size="medium"
@@ -95,7 +95,7 @@ export default {
       this.$emit('update:visible', false)
     },
     handelConfirm() {
-      this.$refs.elForm.validate(valid => {
+      this.$refs.form.validate(valid => {
         if (!valid) return
         this.$emit('confirm', { ...this.formData })
         this.close()
