@@ -17,6 +17,7 @@
     "clipboard": "^2.0.4",
     "core-js": "^3.6.5",
     "file-saver": "^2.0.2",
+    "lodash": "^4.17.21",
     "throttle-debounce": "^2.1.0",
     "vue": "^2.6.11",
     "vuedraggable": "^2.23.2"

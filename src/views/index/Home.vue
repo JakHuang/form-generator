@@ -97,6 +97,7 @@
       :active-data="activeData"
       :form-conf="formConf"
       :show-field="!!drawingList.length"
+      :default-field-conf="defaultFieldConf"
       @tag-change="tagChange"
       @fetch-data="fetchData"
     />
@@ -133,7 +134,7 @@ import FormDrawer from './FormDrawer'
 import JsonDrawer from './JsonDrawer'
 import RightPanel from './RightPanel'
 import {
-  inputComponents, selectComponents, layoutComponents, formConf
+  inputComponents, selectComponents, layoutComponents, formConf, defaultFieldConf
 } from '@/components/generator/config'
 import {
   exportDefault, beautifierConf, isNumberStr, titleCase, deepClone, isObjectObject
@@ -151,6 +152,7 @@ import {
   getDrawingList, saveDrawingList, getIdGlobal, saveIdGlobal, getFormConf
 } from '@/utils/db'
 import loadBeautifier from '@/utils/loadBeautifier'
+import { defaultsDeep } from 'lodash'
 
 let beautifier
 const emptyActiveData = { style: {}, autosize: {} }
@@ -175,6 +177,7 @@ export default {
       logo,
       idGlobal,
       formConf,
+      defaultFieldConf,
       inputComponents,
       selectComponents,
       layoutComponents,
@@ -321,14 +324,24 @@ export default {
         this.activeId = this.idGlobal
       }
     },
+    /**
+     * @description 点击添加表单
+     */
     addComponent(item) {
+    //   console.log('addComponent')
       const clone = this.cloneComponent(item)
       this.fetchData(clone)
       this.drawingList.push(clone)
       this.activeFormItem(clone)
     },
+    /**
+     * @description  复制组件配置
+     * @param {*} origin 配置
+     * @return {*}
+     */
     cloneComponent(origin) {
-      const clone = deepClone(origin)
+      const clone = defaultsDeep({}, this.defaultFieldConf, deepClone(origin))
+      //   console.log('cloneComponent', clone)
       const config = clone.__config__
       config.span = this.formConf.span // 生成代码时，会根据span做精简判断
       this.createIdAndKey(clone)

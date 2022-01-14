@@ -2,6 +2,7 @@
   <div class="right-board">
     <el-tabs v-model="currentTab" class="center-tabs">
       <el-tab-pane label="组件属性" name="field" />
+      <el-tab-pane label="组件默认属性" name="defaultField" />
       <el-tab-pane label="表单属性" name="form" />
     </el-tabs>
     <div class="field-box">
@@ -587,6 +588,12 @@
             </div>
           </template>
         </el-form>
+        <!-- 组件默认属性 -->
+        <el-form v-show="currentTab==='defaultField' && showField" size="small" label-width="90px">
+          <el-form-item v-if="defaultFieldConf.__config__.required !== undefined" label="是否必填">
+            <el-switch v-model="defaultFieldConf.__config__.required" />
+          </el-form-item>
+        </el-form>
         <!-- 表单属性 -->
         <el-form v-show="currentTab === 'form'" size="small" label-width="90px">
           <el-form-item label="表单名">
@@ -677,7 +684,7 @@ export default {
     TreeNodeDialog,
     IconsDialog
   },
-  props: ['showField', 'activeData', 'formConf'],
+  props: ['showField', 'activeData', 'formConf', 'defaultFieldConf'],
   data() {
     return {
       currentTab: 'field',
