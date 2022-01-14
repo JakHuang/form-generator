@@ -59,6 +59,9 @@
         <el-button class="delete-btn" icon="el-icon-delete" type="text" @click="empty">
           清空
         </el-button>
+        <el-button class="delete-btn" icon="el-icon-time" type="text" @click="reset">
+          重置
+        </el-button>
       </div>
       <el-scrollbar class="center-scrollbar">
         <el-row class="center-board-row" :gutter="formConf.gutter">
@@ -196,10 +199,6 @@ export default {
         {
           title: '选择型组件',
           list: selectComponents
-        },
-        {
-          title: '布局型组件',
-          list: layoutComponents
         }
       ]
     }
@@ -460,6 +459,14 @@ export default {
       this.drawingList = deepClone(data.fields)
       delete data.fields
       this.formConf = data
+    },
+    /**
+     * @description  重置所有配置
+     */
+    reset() {
+      saveDrawingList([])
+      // 刷新页面
+      location.reload()
     }
   }
 }
