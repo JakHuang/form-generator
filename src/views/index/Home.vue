@@ -149,7 +149,7 @@ import logo from '@/assets/logo.png'
 import CodeTypeDialog from './CodeTypeDialog'
 import DraggableItem from './DraggableItem'
 import {
-  getDrawingList, saveDrawingList, getIdGlobal, saveIdGlobal, getFormConf
+  getDrawingList, saveDrawingList, getIdGlobal, saveIdGlobal, getFormConf, saveFormConf
 } from '@/utils/db'
 import loadBeautifier from '@/utils/loadBeautifier'
 import { defaultsDeep } from 'lodash'
@@ -477,9 +477,14 @@ export default {
      * @description  重置所有配置
      */
     reset() {
-      saveDrawingList([])
-      // 刷新页面
-      location.reload()
+      this.$confirm('确定要清空所有组件并重置配置吗？', '提示', { type: 'warning' }).then(
+        () => {
+          saveDrawingList([])
+          saveFormConf(formConf)
+          // 刷新页面
+          location.reload()
+        }
+      )
     }
   }
 }
