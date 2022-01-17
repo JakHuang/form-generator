@@ -20,6 +20,14 @@ const components = {
   }
 }
 const layouts = {
+  /**
+   * @description 生成表单组件代码
+   * @param {*} h
+   * @param {*} currentItem
+   * @param {*} index
+   * @param {*} list
+   * @return {*}
+   */
   colFormItem(h, currentItem, index, list) {
     const { activeItem } = this.$listeners
     const config = currentItem.__config__

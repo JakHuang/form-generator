@@ -68,17 +68,32 @@ function buildFromBtns(scheme, type) {
   return str
 }
 
-// span不为24的用el-col包裹
+/**
+ * @description span不为24的用el-col包裹，如果配置了isContainer会在外面包裹一层div
+ * @param {*} scheme
+ * @param {*} str
+ * @return {*}
+ */
 function colWrapper(scheme, str) {
   if (someSpanIsNot24 || scheme.__config__.span !== 24) {
     return `<el-col :span="${scheme.__config__.span}">
       ${str}
     </el-col>`
+  } if (scheme.isContainer) {
+    return `<div class="item-el">
+        ${str}
+    </div>`
   }
+  //   console.log(scheme.isContainer, str)
   return str
 }
 
 const layouts = {
+  /**
+   * @description 运行时生成表单组件html
+   * @param {*} scheme 配置
+   * @return {*}
+   */
   colFormItem(scheme) {
     const config = scheme.__config__
     let labelWidth = ''
@@ -98,6 +113,11 @@ const layouts = {
     str = colWrapper(scheme, str)
     return str
   },
+  /**
+   * @description 运行时生成表单布局html
+   * @param {*} scheme
+   * @return {*}
+   */
   rowFormItem(scheme) {
     const config = scheme.__config__
     const type = scheme.type === 'default' ? '' : `type="${scheme.type}"`
