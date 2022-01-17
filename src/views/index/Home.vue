@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 <template>
   <div class="container">
     <div class="left-board">
@@ -98,6 +99,7 @@
       :form-conf="formConf"
       :show-field="!!drawingList.length"
       :default-field-conf="defaultFieldConf"
+      :extend-conf="extendConf"
       @tag-change="tagChange"
       @fetch-data="fetchData"
     />
@@ -107,6 +109,7 @@
       :form-data="formData"
       size="100%"
       :generate-conf="generateConf"
+      :extend-conf="extendConf"
     />
     <json-drawer
       size="60%"
@@ -134,7 +137,7 @@ import FormDrawer from './FormDrawer'
 import JsonDrawer from './JsonDrawer'
 import RightPanel from './RightPanel'
 import {
-  inputComponents, selectComponents, layoutComponents, formConf, defaultFieldConf
+  inputComponents, selectComponents, layoutComponents, formConf, defaultFieldConf, extendConf
 } from '@/components/generator/config'
 import {
   exportDefault, beautifierConf, isNumberStr, titleCase, deepClone, isObjectObject
@@ -178,20 +181,21 @@ export default {
       idGlobal,
       formConf,
       defaultFieldConf,
+      extendConf,
       inputComponents,
       selectComponents,
       layoutComponents,
       labelWidth: 100,
       drawingList: drawingDefalut,
       drawingData: {},
-      activeId: drawingDefalut[0].formId,
+      activeId: null,
       drawerVisible: false,
       formData: {},
       dialogVisible: false,
       jsonDrawerVisible: false,
       generateConf: null,
       showFileName: false,
-      activeData: drawingDefalut[0],
+      activeData: null,
       saveDrawingListDebounce: debounce(340, saveDrawingList),
       saveIdGlobalDebounce: debounce(340, saveIdGlobal),
       leftComponents: [
@@ -238,6 +242,14 @@ export default {
         this.saveIdGlobalDebounce(val)
       },
       immediate: true
+    }
+  },
+  created() {
+    const me = this
+    if (drawingDefalut.length) {
+      const defItem = drawingDefalut[0]
+      me.activeId = defItem.formId
+      me.activeData = defItem
     }
   },
   mounted() {
@@ -314,8 +326,10 @@ export default {
       }
     },
     activeFormItem(currentItem) {
-      this.activeData = currentItem
-      this.activeId = currentItem.__config__.formId
+      if (currentItem) {
+        this.activeData = currentItem
+        this.activeId = currentItem.__config__.formId
+      }
     },
     onEnd(obj) {
       if (obj.from !== obj.to) {
@@ -411,11 +425,15 @@ export default {
         }
       })
     },
+    /**
+     * @description  复制代码调用
+     */
     generateCode() {
       const { type } = this.generateConf
       this.AssembleFormData()
       const script = vueScript(makeUpJs(this.formData, type))
-      const html = vueTemplate(makeUpHtml(this.formData, type))
+      console.log(this.extendConf)
+      const html = vueTemplate(makeUpHtml(this.formData, type, this.extendConf))
       const css = cssStyle(makeUpCss(this.formData))
       return beautifier.html(html + script + css, beautifierConf.html)
     },

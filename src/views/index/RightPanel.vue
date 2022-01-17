@@ -2,7 +2,7 @@
   <div class="right-board">
     <el-tabs v-model="currentTab" class="center-tabs">
       <el-tab-pane label="组件属性" name="field" />
-      <el-tab-pane label="组件默认属性" name="defaultField" />
+      <el-tab-pane label="扩展配置" name="extendConfig" />
       <el-tab-pane label="表单属性" name="form" />
     </el-tabs>
     <div class="field-box">
@@ -11,7 +11,7 @@
       </a>
       <el-scrollbar class="right-scrollbar">
         <!-- 组件属性 -->
-        <el-form v-show="currentTab==='field' && showField" size="small" label-width="90px">
+        <el-form v-if="activeData" v-show="currentTab==='field' && showField" size="small" label-width="90px">
           <el-form-item v-if="activeData.__config__.changeTag" label="组件类型">
             <el-select
               v-model="activeData.__config__.tagIcon"
@@ -588,13 +588,27 @@
             </div>
           </template>
         </el-form>
-        <!-- 组件默认属性 -->
-        <el-form v-show="currentTab==='defaultField'" size="small" label-width="90px">
-          <!-- 根据配置循环遍历生成 -->
-          <el-form-item v-for="(item,index) in defaultOptions" :key="index" :label="item.label">
-            <component :is="item.type" v-if="item.isConfig" v-model="defaultFieldConf.__config__[item.valueField]" />
-            <component :is="item.type" v-else v-model="defaultFieldConf[item.valueField]" />
-          </el-form-item>
+        <!-- 扩展配置 -->
+        <el-form v-show="currentTab==='extendConfig'" size="small" label-width="90px">
+          <el-card>
+            <div slot="header">
+              <span>表单默认配置</span>
+            </div>
+            <!-- 根据配置循环遍历生成 -->
+            <el-form-item v-for="(item,index) in defaultOptions" :key="index" :label="item.label">
+              <component :is="item.type" v-if="item.isConfig" v-model="defaultFieldConf.__config__[item.valueField]" />
+              <component :is="item.type" v-else v-model="defaultFieldConf[item.valueField]" />
+            </el-form-item>
+          </el-card>
+          <el-card>
+            <div slot="header">
+              <span>代码生成扩展配置</span>
+            </div>
+            <!-- 根据配置循环遍历生成 -->
+            <el-form-item v-for="(item,index) in extendOptions" :key="index" :label="item.label">
+              <component :is="item.type" v-model="extendConf[item.valueField]" />
+            </el-form-item>
+          </el-card>
         </el-form>
         <!-- 表单属性 -->
         <el-form v-show="currentTab === 'form'" size="small" label-width="90px">
@@ -653,7 +667,7 @@
     </div>
 
     <treeNode-dialog :visible.sync="dialogVisible" title="添加选项" @commit="addNode" />
-    <icons-dialog :visible.sync="iconsVisible" :current="activeData[currentIconModel]" @select="setIcon" />
+    <icons-dialog v-if="activeData" :visible.sync="iconsVisible" :current="activeData[currentIconModel]" @select="setIcon" />
   </div>
 </template>
 
@@ -686,7 +700,7 @@ export default {
     TreeNodeDialog,
     IconsDialog
   },
-  props: ['showField', 'activeData', 'formConf', 'defaultFieldConf'],
+  props: ['showField', 'activeData', 'formConf', 'defaultFieldConf', 'extendConf'],
   data() {
     return {
       currentTab: 'field',
@@ -808,7 +822,10 @@ export default {
           label: '是否禁用',
           valueField: 'disabled',
           type: 'el-switch'
-        },
+        }
+      ],
+      // 代码生成扩展配置
+      extendOptions: [
         {
           label: '嵌套容器',
           valueField: 'isContainer',
@@ -820,13 +837,15 @@ export default {
   computed: {
     documentLink() {
       return (
-        this.activeData.__config__.document
-        || 'https://element.eleme.cn/#/zh-CN/component/installation'
+        this.activeData
+          ? this.activeData.__config__.document
+          : 'https://element.eleme.cn/#/zh-CN/component/installation'
       )
     },
     dateOptions() {
       if (
-        this.activeData.type !== undefined
+        this.activeData
+        && this.activeData.type !== undefined
         && this.activeData.__config__.tag === 'el-date-picker'
       ) {
         if (this.activeData['start-placeholder'] === undefined) {
@@ -849,7 +868,7 @@ export default {
       ]
     },
     activeTag() {
-      return this.activeData.__config__.tag
+      return this.activeData ? this.activeData.__config__.tag : ''
     },
     isShowMin() {
       return ['el-input-number', 'el-slider'].indexOf(this.activeTag) > -1

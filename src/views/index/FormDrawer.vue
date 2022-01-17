@@ -104,7 +104,7 @@ let monaco
 
 export default {
   components: { ResourceDialog },
-  props: ['formData', 'generateConf'],
+  props: ['formData', 'generateConf', 'extendConf'],
   data() {
     return {
       activeTab: 'html',
@@ -155,9 +155,12 @@ export default {
         e.preventDefault()
       }
     },
+    /**
+     * @description 打开运行界面
+     */
     onOpen() {
       const { type } = this.generateConf
-      this.htmlCode = makeUpHtml(this.formData, type)
+      this.htmlCode = makeUpHtml(this.formData, type, this.extendConf)
       this.jsCode = makeUpJs(this.formData, type)
       this.cssCode = makeUpCss(this.formData)
 

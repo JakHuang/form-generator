@@ -547,7 +547,11 @@ export const defaultFieldConf = {
   },
   clearable: true,
   readonly: false,
-  disabled: false,
+  disabled: false
+}
+
+// 代码生成扩展配置
+export const extendConf = {
   // 生成的代码是否包含在自定义容器中
   isContainer: true
 }

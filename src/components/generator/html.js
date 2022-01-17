@@ -3,6 +3,8 @@ import ruleTrigger from './ruleTrigger'
 
 let confGlobal
 let someSpanIsNot24
+// 扩展配置
+let extendConf
 
 export function dialogWrapper(str) {
   return `<el-dialog v-bind="$attrs" v-on="$listeners" @open="onOpen" @close="onClose" title="Dialog Titile">
@@ -55,7 +57,7 @@ function buildFormTemplate(scheme, child, type) {
 function buildFromBtns(scheme, type) {
   let str = ''
   if (scheme.formBtns && type === 'file') {
-    str = `<el-form-item size="large">
+    str = `<el-form-item>
           <el-button type="primary" @click="submitForm">提交</el-button>
           <el-button @click="resetForm">重置</el-button>
         </el-form-item>`
@@ -69,7 +71,7 @@ function buildFromBtns(scheme, type) {
 }
 
 /**
- * @description span不为24的用el-col包裹，如果配置了isContainer会在外面包裹一层div
+ * @description span不为24的用el-col包裹
  * @param {*} scheme
  * @param {*} str
  * @return {*}
@@ -79,7 +81,8 @@ function colWrapper(scheme, str) {
     return `<el-col :span="${scheme.__config__.span}">
       ${str}
     </el-col>`
-  } if (scheme.isContainer) {
+  } if (extendConf.isContainer) {
+    // 如果配置了isContainer会在外面包裹一层div
     return `<div class="item-el">
         ${str}
     </div>`
@@ -397,12 +400,14 @@ function buildElUploadChild(scheme) {
  * 组装html代码。【入口函数】
  * @param {Object} formConfig 整个表单配置
  * @param {String} type 生成类型，文件或弹窗等
+ * @param {Object} conf 代码生成扩展配置
  */
-export function makeUpHtml(formConfig, type) {
+export function makeUpHtml(formConfig, type, conf) {
   const htmlList = []
   confGlobal = formConfig
   // 判断布局是否都沾满了24个栅格，以备后续简化代码结构
   someSpanIsNot24 = formConfig.fields.some(item => item.__config__.span !== 24)
+  extendConf = conf
   // 遍历渲染每个组件成html
   formConfig.fields.forEach(el => {
     htmlList.push(layouts[el.__config__.layout](el))
