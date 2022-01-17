@@ -542,6 +542,12 @@ export const layoutComponents = [
 export const defaultFieldConf = {
   // 组件的自定义配置
   __config__: {
-    required: false
-  }
+    showLabel: true,
+    required: true
+  },
+  clearable: true,
+  readonly: false,
+  disabled: false,
+  // 生成的代码是否包含在自定义容器中
+  isContainer: true
 }

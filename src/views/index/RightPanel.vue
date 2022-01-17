@@ -589,9 +589,11 @@
           </template>
         </el-form>
         <!-- 组件默认属性 -->
-        <el-form v-show="currentTab==='defaultField' && showField" size="small" label-width="90px">
-          <el-form-item v-if="defaultFieldConf.__config__.required !== undefined" label="是否必填">
-            <el-switch v-model="defaultFieldConf.__config__.required" />
+        <el-form v-show="currentTab==='defaultField'" size="small" label-width="90px">
+          <!-- 根据配置循环遍历生成 -->
+          <el-form-item v-for="(item,index) in defaultOptions" :key="index" :label="item.label">
+            <component :is="item.type" v-if="item.isConfig" v-model="defaultFieldConf.__config__[item.valueField]" />
+            <component :is="item.type" v-else v-model="defaultFieldConf[item.valueField]" />
           </el-form-item>
         </el-form>
         <!-- 表单属性 -->
@@ -777,7 +779,42 @@ export default {
           const config = data.__config__
           return data.componentName || `${config.label}: ${data.__vModel__}`
         }
-      }
+      },
+      // 默认组件属性配置
+      defaultOptions: [
+        {
+          label: '是否必填',
+          valueField: 'required',
+          isConfig: true,
+          type: 'el-switch'
+        },
+        {
+          label: '显示标签',
+          valueField: 'showLabel',
+          isConfig: true,
+          type: 'el-switch'
+        },
+        {
+          label: '是否清空',
+          valueField: 'clearable',
+          type: 'el-switch'
+        },
+        {
+          label: '是否只读',
+          valueField: 'readonly',
+          type: 'el-switch'
+        },
+        {
+          label: '是否禁用',
+          valueField: 'disabled',
+          type: 'el-switch'
+        },
+        {
+          label: '嵌套容器',
+          valueField: 'isContainer',
+          type: 'el-switch'
+        }
+      ]
     }
   },
   computed: {
