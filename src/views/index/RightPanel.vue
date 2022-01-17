@@ -667,7 +667,9 @@
     </div>
 
     <treeNode-dialog :visible.sync="dialogVisible" title="添加选项" @commit="addNode" />
-    <icons-dialog v-if="activeData" :visible.sync="iconsVisible" :current="activeData[currentIconModel]" @select="setIcon" />
+    <icons-dialog v-if="activeData"
+                  :visible.sync="iconsVisible" :current="activeData[currentIconModel]" @select="setIcon"
+    />
   </div>
 </template>
 
