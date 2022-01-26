@@ -140,7 +140,6 @@ function mixinMethod(type) {
 
 // 构建data
 function buildData(scheme, dataList) {
-  console.log(scheme, dataList)
   const config = scheme.__config__
   if (scheme.__vModel__ === undefined) return
   // data自动加注释
