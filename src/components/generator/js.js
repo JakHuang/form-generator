@@ -31,7 +31,6 @@ export function makeUpJs(formConfig, type) {
   formConfig.fields.forEach(el => {
     buildAttributes(el, dataList, ruleList, optionsList, methodList, propsList, uploadVarList, created)
   })
-
   const script = buildexport(
     formConfig,
     type,
@@ -141,10 +140,13 @@ function mixinMethod(type) {
 
 // 构建data
 function buildData(scheme, dataList) {
+  console.log(scheme, dataList)
   const config = scheme.__config__
   if (scheme.__vModel__ === undefined) return
+  // data自动加注释
+  const annotate = config.label || ''
   const defaultValue = JSON.stringify(config.defaultValue)
-  dataList.push(`${scheme.__vModel__}: ${defaultValue},`)
+  dataList.push(`// ${annotate}\n${scheme.__vModel__}: ${defaultValue},`)
 }
 
 // 构建校验规则
