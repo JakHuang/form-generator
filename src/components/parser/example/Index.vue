@@ -9,10 +9,17 @@
 </template>
 
 <script>
+/* eslint-disable func-names */
 import Parser from '../Parser'
 
 // 若parser是通过安装npm方式集成到项目中的，使用此行引入
 // import Parser from 'form-gen-parser'
+
+const units = {
+  KB: 1024,
+  MB: 1024 * 1024,
+  GB: 1024 * 1024 * 1024
+}
 
 export default {
   components: {
@@ -62,35 +69,36 @@ export default {
           },
           {
             __config__: {
-              label: '日期范围',
-              tag: 'el-date-picker',
-              tagIcon: 'date-range',
+              label: '上传',
+              tag: 'el-upload',
+              tagIcon: 'upload',
+              layout: 'colFormItem',
               defaultValue: null,
-              span: 24,
               showLabel: true,
               labelWidth: null,
               required: true,
-              layout: 'colFormItem',
+              span: 24,
+              showTip: false,
+              buttonText: '点击上传',
               regList: [],
               changeTag: true,
-              document:
-                'https://element.eleme.cn/#/zh-CN/component/date-picker',
+              fileSize: 2,
+              sizeUnit: 'MB',
+              document: 'https://element.eleme.cn/#/zh-CN/component/upload',
               formId: 101,
-              renderKey: 1585980082729
+              renderKey: 1644834179356
             },
-            style: {
-              width: '100%'
+            __slot__: {
+              'list-type': true
             },
-            type: 'daterange',
-            'range-separator': '至',
-            'start-placeholder': '开始日期',
-            'end-placeholder': '结束日期',
+            action: 'https://qcl871.api.cloudendpoint.cn/upload',
             disabled: false,
-            clearable: true,
-            format: 'yyyy-MM-dd',
-            'value-format': 'yyyy-MM-dd',
-            readonly: false,
-            __vModel__: 'field101'
+            accept: 'image/*',
+            name: 'file',
+            'auto-upload': true,
+            'list-type': 'picture-card',
+            multiple: false,
+            __vModel__: 'imgList'
           },
           {
             __config__: {
@@ -122,7 +130,7 @@ export default {
                   'show-text': false,
                   'show-score': false,
                   disabled: false,
-                  __vModel__: 'field102'
+                  __vModel__: 'rate'
                 }
               ],
               document: 'https://element.eleme.cn/#/zh-CN/component/layout',
@@ -226,38 +234,6 @@ export default {
             'show-word-limit': true,
             readonly: false,
             disabled: false
-          },
-          {
-            __config__: {
-              label: '日期范围',
-              tag: 'el-date-picker',
-              tagIcon: 'date-range',
-              defaultValue: null,
-              span: 24,
-              showLabel: true,
-              labelWidth: null,
-              required: true,
-              layout: 'colFormItem',
-              regList: [],
-              changeTag: true,
-              document:
-                'https://element.eleme.cn/#/zh-CN/component/date-picker',
-              formId: 101,
-              renderKey: 1585980082729
-            },
-            style: {
-              width: '100%'
-            },
-            type: 'daterange',
-            'range-separator': '至',
-            'start-placeholder': '开始日期',
-            'end-placeholder': '结束日期',
-            disabled: false,
-            clearable: true,
-            format: 'yyyy-MM-dd',
-            'value-format': 'yyyy-MM-dd',
-            readonly: false,
-            __vModel__: 'field101'
           }
         ],
         formRef: 'elForm',
@@ -278,24 +254,93 @@ export default {
   watch: {},
   created() {},
   mounted() {
-    // 表单数据回填，模拟异步请求场景
-    setTimeout(() => {
-      // 请求回来的表单数据
-      const data = {
-        mobile: '18836662555'
-      }
-      // 回填数据
-      this.fillFormData(this.formConf, data)
-      // 更新表单
-      this.key2 = +new Date()
-    }, 2000)
+    // 异步请，回填表单数据
+    fetch('https://qcl871.api.cloudendpoint.cn/fillFormData')
+      .then(response => response.json())
+      .then(resp => {
+        if (resp.code === 0) {
+          // 回填数据
+          this.fillFormData(this.formConf.fields, this.formConf, resp.data)
+          // 更新表单
+          this.key2 = +new Date()
+        }
+      })
   },
   methods: {
-    fillFormData(form, data) {
-      form.fields.forEach(item => {
-        const val = data[item.__vModel__]
+    fillFormData(fields, formConf, data) {
+      const { formModel, formRef } = formConf
+      fields.forEach((item, i) => {
+        const vModel = item.__vModel__
+        const val = data[vModel]
+
+        // 特殊处理el-upload，包括 回显图片，on-success等各种回调函数
+        if (item.__config__.tag === 'el-upload') {
+          // 回显图片
+          item['file-list'] = (val || []).map(url => ({ name: `${vModel}${i}`, url }))
+
+          if (!item.headers) item.headers = {}
+          // 如果需要token，可以设置
+          // item.headers.AccessToken = ''
+
+          // 注意on-success不能绑定箭头函数！！！
+          item['on-success'] = function (resp) {
+            if (resp.code === 0) {
+              const prev = this[formModel][vModel] || []
+              this.$set(this[formModel], vModel, [
+                ...prev,
+                resp.data
+              ])
+              this.$refs[formRef].validateField(vModel)
+            }
+          }
+
+          item['on-remove'] = function (file, fileList) {
+            this.$set(
+              this[formModel],
+              vModel,
+              fileList.map(f => (f.response ? f.response.data : f.url))
+            )
+            this.$refs[formRef].validateField(vModel)
+          }
+
+          item['before-upload'] = function (file) {
+            const config = item.__config__
+            let isRightSize = true
+            let isAccept = true
+
+            if (item.accept) {
+              isAccept = new RegExp(`${item.accept}`).test(file.type)
+              if (!isAccept) {
+                setTimeout(() => {
+                  this.$message({
+                    message: `应该选择${item.accept}类型的文件`,
+                    type: 'warning'
+                  })
+                })
+              }
+            }
+            if (config.fileSize) {
+              isRightSize = file.size / units[config.sizeUnit] < config.fileSize
+              if (!isRightSize) {
+                setTimeout(() => {
+                  this.$message({
+                    message: `文件大小超过 ${config.fileSize}${config.sizeUnit}`,
+                    type: 'warning'
+                  })
+                })
+              }
+            }
+            return isRightSize && isAccept
+          }
+        }
+
+        // 设置各表单项的默认值（回填表单），包括el-upload的默认值
         if (val) {
           item.__config__.defaultValue = val
+        }
+
+        if (Array.isArray(item.__config__.children)) {
+          this.fillFormData(item.__config__.children, formConf, data)
         }
       })
     },
@@ -320,5 +365,8 @@ export default {
   margin: 15px auto;
   width: 800px;
   padding: 15px;
+  ::v-deep .el-upload-list__item {
+    transition: none !important;
+  }
 }
 </style>

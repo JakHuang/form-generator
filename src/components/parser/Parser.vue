@@ -6,6 +6,7 @@ const ruleTrigger = {
   'el-input': 'blur',
   'el-input-number': 'blur',
   'el-select': 'change',
+  'el-upload': 'change',
   'el-radio-group': 'change',
   'el-checkbox-group': 'change',
   'el-cascader': 'change',
@@ -116,6 +117,14 @@ function buildListeners(scheme) {
   return listeners
 }
 
+function bindFunctionInAttr(scheme) {
+  Object.keys(scheme).forEach(key => {
+    if (typeof (scheme[key]) === 'function') {
+      scheme[key] = scheme[key].bind(this)
+    }
+  })
+}
+
 export default {
   components: {
     render
@@ -124,11 +133,14 @@ export default {
     formConf: {
       type: Object,
       required: true
+    },
+    disabled: {
+      type: Boolean
     }
   },
   data() {
     const data = {
-      formConfCopy: deepClone(this.formConf),
+      formConfCopy: deepClone(this.formConf) || {},
       [this.formConf.formModel]: {},
       [this.formConf.formRules]: {}
     }
@@ -136,33 +148,43 @@ export default {
     this.buildRules(data.formConfCopy.fields, data[this.formConf.formRules])
     return data
   },
+  watch: {
+    disabled: {
+      handler(val) {
+        this.formConfCopy.disabled = val
+      },
+      immediate: true
+    }
+  },
   methods: {
     initFormData(componentList, formData) {
       componentList.forEach(cur => {
         const config = cur.__config__
         if (cur.__vModel__) formData[cur.__vModel__] = config.defaultValue
+        bindFunctionInAttr.call(this, cur)
         if (config.children) this.initFormData(config.children, formData)
       })
     },
     buildRules(componentList, rules) {
       componentList.forEach(cur => {
         const config = cur.__config__
-        if (Array.isArray(config.regList)) {
-          if (config.required) {
-            const required = { required: config.required, message: cur.placeholder }
-            if (Array.isArray(config.defaultValue)) {
-              required.type = 'array'
-              required.message = `请至少选择一个${config.label}`
-            }
-            required.message === undefined && (required.message = `${config.label}不能为空`)
-            config.regList.push(required)
-          }
-          rules[cur.__vModel__] = config.regList.map(item => {
-            item.pattern && (item.pattern = eval(item.pattern))
-            item.trigger = ruleTrigger && ruleTrigger[config.tag]
-            return item
-          })
+        if (!Array.isArray(config.regList)) {
+          config.regList = []
         }
+        if (config.required) {
+          const required = { required: config.required, message: cur.placeholder }
+          if (Array.isArray(config.defaultValue)) {
+            required.type = 'array'
+            required.message = `请至少选择一个${config.label}`
+          }
+          required.message === undefined && (required.message = `${config.label}不能为空`)
+          config.regList.push(required)
+        }
+        rules[cur.__vModel__] = config.regList.map(item => {
+          item.pattern && (item.pattern = eval(item.pattern))
+          item.trigger = ruleTrigger && ruleTrigger[config.tag]
+          return item
+        })
         if (config.children) this.buildRules(config.children, rules)
       })
     },
