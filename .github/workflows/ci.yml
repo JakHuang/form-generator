@@ -16,8 +16,8 @@ jobs:
     
     - name: 打包构建
       run: |
-        npm install
-        npm run build
+        yarn
+        yarn build
 
     - name: 发布
       uses: JamesIves/github-pages-deploy-action@releases/v3
