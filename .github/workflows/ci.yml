@@ -16,7 +16,7 @@ jobs:
     
     - name: 打包构建
       run: |
-        npm cache clear --force
+        npm cache clear
         npm install
         npm run build
 
