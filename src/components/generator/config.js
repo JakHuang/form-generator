@@ -41,7 +41,7 @@ export const inputComponents = [
     clearable: true,
     'prefix-icon': '',
     'suffix-icon': '',
-    maxlength: null,
+    maxlength: 50,
     'show-word-limit': false,
     readonly: false,
     disabled: false
@@ -57,6 +57,7 @@ export const inputComponents = [
       required: false,
       layout: 'colFormItem',
       span: 24,
+      resize: 'none',
       regList: [],
       changeTag: true,
       document: 'https://element.eleme.cn/#/zh-CN/component/input'
@@ -67,8 +68,9 @@ export const inputComponents = [
       minRows: 4,
       maxRows: 4
     },
-    maxlength: null,
-    'show-word-limit': false,
+    maxlength: 300,
+    resize: 'none',
+    'show-word-limit': true,
     readonly: false,
     disabled: false
   },
