@@ -176,6 +176,9 @@ $lighterBlue: #409EFF;
     & > .component-name{
       color: $lighterBlue;
     }
+    .drawing-mask {
+      background: rgba($color: $selectedColor, $alpha: 0.3);
+    }
   }
   .el-form-item{
     margin-bottom: 15px;
@@ -184,6 +187,13 @@ $lighterBlue: #409EFF;
 .drawing-item{
   position: relative;
   cursor: move;
+  .drawing-mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
   &.unfocus-bordered:not(.active-from-item) > div:first-child {
     border: 1px dashed #ccc;
   }

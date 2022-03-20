@@ -1,8 +1,17 @@
 <script>
 import draggable from 'vuedraggable'
 import render from '@/components/render/render'
-
 const components = {
+  mask (h) {
+
+    if (this.mask) {
+      return (
+        <div class="drawing-mask"></div>
+      );
+    }
+
+    return '';
+  },
   itemBtns(h, element, index, parent) {
     const { copyItem, deleteItem } = this.$listeners
     return [
@@ -36,6 +45,7 @@ const layouts = {
             this.$set(config, 'defaultValue', event)
           }} />
         </el-form-item>
+        {components.mask.apply(this, arguments)}
         {components.itemBtns.apply(this, arguments)}
       </el-col>
     )
@@ -92,7 +102,8 @@ export default {
     'index',
     'drawingList',
     'activeId',
-    'formConf'
+    'formConf',
+    'mask',
   ],
   render(h) {
     const layout = layouts[this.element.__config__.layout]

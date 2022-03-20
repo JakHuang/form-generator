@@ -44,6 +44,11 @@
 
     <div class="center-board">
       <div class="action-bar">
+        <span style="padding: 8px 12px; float: left;">
+          <el-tooltip effect="dark" content="遮罩开关" placement="bottom">
+            <el-switch v-model="mask"></el-switch>
+          </el-tooltip>
+        </span>
         <el-button icon="el-icon-video-play" type="text" @click="run">
           运行
         </el-button>
@@ -77,6 +82,7 @@
                 :index="index"
                 :active-id="activeId"
                 :form-conf="formConf"
+                :mask="mask"
                 @activeItem="activeFormItem"
                 @copyItem="drawingItemCopy"
                 @deleteItem="drawingItemDelete"
@@ -187,6 +193,7 @@ export default {
       activeData: drawingDefalut[0],
       saveDrawingListDebounce: debounce(340, saveDrawingList),
       saveIdGlobalDebounce: debounce(340, saveIdGlobal),
+      mask: true,
       leftComponents: [
         {
           title: '输入型组件',
