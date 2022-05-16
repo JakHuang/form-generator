@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@babel/parser": "^7.7.4",
-    "axios": "^0.19.2",
+    "axios": "^0.21.2",
     "clipboard": "^2.0.4",
     "core-js": "^3.6.5",
     "file-saver": "^2.0.2",
