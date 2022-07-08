@@ -47,7 +47,7 @@ const layouts = {
   }
 }
 
-function renderFrom(h) {
+function renderForm(h) {
   const { formConfCopy } = this
 
   return (
@@ -180,7 +180,7 @@ export default {
     }
   },
   render(h) {
-    return renderFrom.call(this, h)
+    return renderForm.call(this, h)
   }
 }
 </script>
