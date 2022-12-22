@@ -355,8 +355,8 @@ export default {
     },
     AssembleFormData() {
       this.formData = {
-        fields: deepClone(this.drawingList),
-        ...this.formConf
+        ...this.formConf,
+        fields: deepClone(this.drawingList)
       }
     },
     generate(data) {
