@@ -108,7 +108,7 @@ function buildListeners(scheme) {
 
   // 给__methods__中的方法绑定this和event
   Object.keys(methods).forEach(key => {
-    listeners[key] = event => methods[key].call(this, event)
+    listeners[key] = event => methods[key].call(this, event, scheme)
   })
   // 响应 render.js 中的 vModel $emit('input', val)
   listeners.input = event => setValue.call(this, event, config, scheme)

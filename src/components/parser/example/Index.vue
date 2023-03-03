@@ -165,7 +165,7 @@ export default {
           }
         ],
         __methods__: {
-          clickTestButton1() {
+          clickTestButton1(e, scheme) {
             console.log(
               `%c【测试按钮1】点击事件里可以访问当前表单：
                 1) formModel='formData', 所以this.formData可以拿到当前表单的model
@@ -175,6 +175,7 @@ export default {
             )
             console.log('表单的Model：', this.formData)
             console.log('表单的ref：', this.$refs.elForm)
+            console.log('当前点击组件的属性', scheme)
           }
         },
         formRef: 'elForm',
