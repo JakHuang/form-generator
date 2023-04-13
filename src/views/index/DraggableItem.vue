@@ -57,7 +57,7 @@ const layouts = {
     }
     return (
       <el-col span={config.span}>
-        <el-row gutter={config.gutter} class={className}
+        <el-row class={className}
           nativeOnClick={event => { activeItem(currentItem); event.stopPropagation() }}>
           <span class="component-name">{config.componentName}</span>
           <draggable list={config.children || []} animation={340}
